@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tienda Online</title>
+    <link rel="stylesheet" href="/css/index.css" />
+</head>
+
+<body>
+    <header>
+        <h1>Mi Tienda</h1>
+
+        <div class="user-actions">
+            <a href="/css/profile.css">
+                <img src="/img/userdefault.jpg" alt="Usuario" class="user-icon" />
+            </a>
+            <a href="#" class="user-link">Registrarse</a>
+            <a href="#" class="user-link">Iniciar sesión</a>
+        </div>
+    </header>
+
+    <div class="sidebar-toggle" onclick="toggleSidebar()">☰ Filtros</div>
+
+
+    <div class="sidebar">
+        <div class="sidebar-content">
+            <input type="text" placeholder="Buscar producto..." class="search-bar" />
+
+            <div class="filter-group">
+                <p>Ordenar por precio:</p>
+                <label>
+                    <input type="checkbox" name="sort" value="asc" /> Más barato primero
+                </label>
+                <label>
+                    <input type="checkbox" name="sort" value="desc" /> Más caro primero
+                </label>
+            </div>
+        </div>
+    </div>
+
+
+
+    <main>
+        <div class="product-container">
+            <!-- Tarjetas de productos -->
+            <div class="product-card"> <!-- esto se eliminara ya que se generaran dinamicamente (peticiones)-->
+                <img src="https://via.placeholder.com/200" alt="Producto" />
+                <h2>Producto 1</h2>
+                <p>$19.99</p>
+                <button>Agregar al carrito</button>
+            </div>
+
+            <div class="product-card">
+                <img src="https://via.placeholder.com/200" alt="Producto" />
+                <h2>Producto 2</h2>
+                <p>$29.99</p>
+                <button>Agregar al carrito</button>
+            </div>
+
+            <!-- Puedes duplicar más tarjetas aquí -->
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Mi Tienda</p>
+    </footer>
+
+    <script src="/js/index.js"></script>
+</body>
+
+
+</html>
