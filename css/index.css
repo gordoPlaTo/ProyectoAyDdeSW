@@ -1,4 +1,4 @@
-/* Reset básico */
+/* all */
 * {
   margin: 0;
   padding: 0;
@@ -11,7 +11,7 @@ body {
   color: #333;
 }
 
-/* Encabezado */
+/* encabezado */
 header {
   background-color: #2d2d2d;
   color: white;
@@ -22,22 +22,23 @@ header {
   position: relative;
 }
 
-/* Contenido principal */
+/* main */
 main {
   display: flex;
   justify-content: center;
   padding: 40px 20px;
 }
 
-/* Contenedor de productos */
+/* container productos */
 .product-container {
-  width: 1000px; /* ancho fijo */
+  width: 1000px;
+  /* ancho fijo */
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 20px;
 }
 
-/* Tarjeta de producto */
+/*productos */
 .product-card {
   background-color: white;
   border: 1px solid #ddd;
@@ -83,7 +84,7 @@ main {
   background-color: #218838;
 }
 
-/* Pie de página */
+/*footer*/
 footer {
   text-align: center;
   padding: 20px;
@@ -91,11 +92,11 @@ footer {
   margin-top: 40px;
 }
 
-/* Sidebar desplegable */
+/* sidebar */
 .sidebar {
   position: fixed;
   left: 0;
-  top: 80px; /* debajo del header */
+  top: 80px;
   width: 250px;
   background-color: #2d2d2d;
   color: white;
@@ -146,7 +147,8 @@ footer {
   font-size: 14px;
 }
 
-.sidebar.open ~ main {
+
+.sidebar.open~main {
   margin-left: 250px;
   transition: margin-left 0.3s ease;
 }
@@ -172,4 +174,42 @@ footer {
 
 .user-link:hover {
   color: #28a745;
+}
+
+/*overlay*/
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 900;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.overlay.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/*carrito*/
+
+.shopcart {
+  position: fixed;
+  right: 20px;
+  background: #28a745;
+  padding: 5px;
+  border-radius: 50%;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.shopcart-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  text-decoration: none;
+  transition: color 0.2s ease;
 }
