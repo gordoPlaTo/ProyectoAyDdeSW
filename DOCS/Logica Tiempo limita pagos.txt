@@ -1,0 +1,6 @@
+Se debe validar periódicamente las fechas de expiración de cada pedido, si estos no se efectúan
+en un determinado tiempo el estado del pedido sera "Expirado"
+
+
+	Fecha_Pedido < Fecha_Limite = vida buena
+	Fecha_Pedido > Fecha_Limite = mata pedido, pago no shego. No hay plata. vida trite...
