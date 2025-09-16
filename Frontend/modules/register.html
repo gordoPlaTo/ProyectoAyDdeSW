@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/Frontend/css/register.css">
     <title>Registro</title>
 </head>
 
@@ -15,20 +15,47 @@
 
     <main>
         <form id="registerForm" class="auth-form">
-            <input type="text" id="name" placeholder="Nombre completo" required maxlength="30">
-            <input type="text" id="surname" placeholder="Apellido" required maxlength="30">
-            <input type="text" id="dni" name="dni" placeholder="DNI" required minlength="7" maxlength="8" pattern="[0-9]{7,8}">
-            <input type="email" id="email" name="email" placeholder="Correo electrónico" required maxlength="40" inputmode="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$">
-            <input type="password" id="password" placeholder="Contraseña" required>
+            <label for="name">Nombre completo</label>
+            <input type="text" id="name" placeholder="Nombre completo" required maxlength="30"> <br>
+
+            <label for="surname">Apellido</label>
+            <input type="text" id="surname" placeholder="Apellido" required maxlength="30"> <br>
+
+            <label for="dni">DNI (sin puntos)</label>
+            <input type="text" id="dni" name="dni" placeholder="DNI" required minlength="7" maxlength="8"
+                pattern="[0-9]{7,8}"> <br>
+
+            <label for="email">Correo electrónico</label>
+            <input type="email" id="email" name="email" placeholder="Correo electrónico" required maxlength="40"
+                inputmode="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"><br>
+
+            <div class="password-wrapper">
+                <label for="password">Contraseña</label>
+                <input type="password" id="password" placeholder="Contraseña" required minlength="6" maxlength="30"
+                    pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}">
+
+                <button type="button" class="toggle-pswrd" onclick="togglePassword('password', this)">👁️</button>
+            </div>
+            <br>
+            <div>
+                <label for="confirmPassword">Confirmar contraseña</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Repita su contraseña"
+                    required minlength="6" maxlength="30">
+
+                <button type="button" class="toggle-pswrd"
+                    onclick="togglePassword('confirmPassword', this)">👁️</button>
+            </div>
 
             <button type="submit">Registrarse</button>
         </form>
-
-        <p>
-            ¿Ya tenés una cuenta? <a href="login.html">Inicia sesión acá</a>
-        </p>
+        <br>
+        <footer>
+            ¿Ya tenés una cuenta? <a href="/Frontend/modules/login.html">Inicia sesión acá</a>
+        </footer>
 
     </main>
+
+    <script src="/Frontend/js/register.js"></script>
 </body>
 
 </html>
