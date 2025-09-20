@@ -1,11 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inicia Sesión</title>
+    <link rel="stylesheet" href="/Frontend/css/regLog.css">
+    <title>Iniciar Sesión</title>
 </head>
+
 <body>
-    
+    <header>
+        <h1>Inicio</h1>
+    </header>
+    <main>
+
+        <form id="loginForm" class="auth-form">
+            <label for="email">Correo Electrónico</label>
+            <input type="email" name="email" id="email" placeholder="ejemplo@correo.com" required maxlength="40"
+                inputmode="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                title="Ingrese un correo válido por favor">
+            <br>
+            <div class="confirmPassword">
+                <label for="password">Contraseña (con al menos 1 minúscula, 1 mayúscula, 1 número y 1 símbolo)</label>
+                <br>
+                <br>
+                <input type="password" id="password" placeholder="Contraseña" required minlength="6" maxlength="30"
+                    pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$" title="La contraseña debe contener al menos una letra mayúscula, una letra minúscula y un número">
+
+                <button type="button" class="toggle-pswrd" onclick="togglePassword('password', this)">👁️</button>
+            </div>
+            <br>
+            <button type="submit">Ingresar</button>
+            <br>
+            <p>¿No tenes una cuenta? <a href="/Frontend/modules/register.html">Registrate acá</a></p>
+        </form>
+
+    </main>
+
+    <script src="/Frontend/js/regLog.js"></script>
 </body>
+
 </html>

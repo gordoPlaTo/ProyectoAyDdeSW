@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/Frontend/css/register.css">
+    <link rel="stylesheet" href="/Frontend/css/regLog.css">
     <title>Registro</title>
 </head>
 
@@ -30,9 +30,9 @@
                 inputmode="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"><br>
 
             <div class="confirmPassword">
-                <label for="password">Contraseña</label>
+                <label for="password">Contraseña (con al menos 1 minúscula, 1 mayúscula, 1 número y 1 símbolo)</label>
                 <input type="password" id="password" placeholder="Contraseña" required minlength="6" maxlength="30"
-                    pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}">
+                    pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$" title="La contraseña debe contener al menos una letra mayúscula, una letra minúscula y un número">
 
                 <button type="button" class="toggle-pswrd" onclick="togglePassword('password', this)">👁️</button>
             </div>
@@ -55,7 +55,7 @@
 
     </main>
 
-    <script src="/Frontend/js/register.js"></script>
+    <script src="/Frontend/js/regLog.js"></script>
 </body>
 
 </html>
