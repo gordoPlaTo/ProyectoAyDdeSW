@@ -27,7 +27,7 @@ public record RegisterRequestDTO(
 
         @NotBlank(message = "Ingresar un email es obligatorio")
         @Pattern(regexp = "\\d{8}", message = "El DNI debe tener 8 dígitos")
-        String dni,
+        Long dni,
 
         @NotNull(message = "Ingresar la fecha es obligatorio")
         @PastOrPresent(message="La fecha de nacimiento debe ser actual o anterior a este momento")

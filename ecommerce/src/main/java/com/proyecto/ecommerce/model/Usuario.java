@@ -20,7 +20,6 @@ import java.util.Set;
 @Entity
 @Table(name = "Users")
 @Getter@Setter
-@AllArgsConstructor
 @NoArgsConstructor
 public class Usuario {
     @Id
@@ -28,13 +27,28 @@ public class Usuario {
     private Long idUsuario;
 
     @Column(nullable = false, length = 35)
-    private String nombre;
+    private String username;
 
     @Column(nullable = false, length = 35)
     private String apellido;
 
     @Column(nullable = false, length = 60)
     private String password;
+
+    public Usuario(String username, String apellido, String password, String email, Long dni, LocalDate fechaNac, String direccion, boolean acceptedTerms, boolean enabled, boolean accountNotExpired, boolean accountNotLocked, boolean credentialNotExpired) {
+        this.username = username;
+        this.apellido = apellido;
+        this.password = password;
+        this.email = email;
+        this.dni = dni;
+        this.fechaNac = fechaNac;
+        this.direccion = direccion;
+        this.acceptedTerms = acceptedTerms;
+        this.enabled = enabled;
+        this.accountNotExpired = accountNotExpired;
+        this.accountNotLocked = accountNotLocked;
+        this.credentialNotExpired = credentialNotExpired;
+    }
 
     @Column(unique = true, length = 254, nullable = false)
     private String email;
