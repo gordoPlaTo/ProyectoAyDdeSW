@@ -8,8 +8,38 @@
     <title>Mi Perfil</title>
 </head>
 
-<body>
+<body class="darkMode">
+    <main class="profileContainer">
 
+        <div class="profPic">
+            <img src="/Frontend/img/userdefault.jpg" alt="Foto de perfil" id="userPic">
+            <label for="uploadPic" class="uploadBtn">Cambiar foto</label>
+            <input type="file" id="uploadPic" accept="image/*" hidden>
+        </div>
+
+        <div class="profInfo">
+            <h2>Nombre acá</h2>
+            <p>Email: ejemplo@gmail.com</p>
+            <p>DNI: 12345678</p>
+            <p>Fecha de nacimiento: </p>
+        </div>
+
+        <div class="profActions">
+            <div class="themeSwitch">
+                <label class="switch">
+                    <input type="checkbox" id="themeToggle">
+                    <span class="slider round"></span>
+                </label>
+                <span class="switchLabel">Modo oscuro</span>
+            </div>
+
+            <button class="changePassBtn"> Cambiar contraseña</button>
+            <button class="desactivateBtn">Desactivar cuenta</button>
+        </div>
+    </main>
+
+
+    <script src="/Frontend/js/profile.js"></script>
 </body>
 
 </html>

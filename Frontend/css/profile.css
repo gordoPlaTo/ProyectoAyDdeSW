@@ -1,1 +1,184 @@
-profile
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background: #f4f6f9;
+    color: #333;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.profileContainer {
+    background: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 500px;    
+}
+
+.profPic {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.profPic img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #28a745;
+}
+
+.uploadBtn {
+    display: inline-block;
+    margin-top: 10px;
+    background: #28a745;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.uploadBtn:hover {
+    background: #218838;
+}
+
+.profInfo {
+    margin-bottom: 20px;    
+}
+
+.profInfo h2 {
+    margin-bottom: 10px;
+}
+
+.profInfo p {
+    margin-bottom: 5px 0;
+    color: #666;
+}
+
+.profActions {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+}
+
+
+button {
+    width: 80%;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.changePassBtn {
+    /*background: #444; */
+    background: #007bff;
+    color: white;
+}
+
+.changePassBtn:hover {
+    /* background: #333; */
+    background: #0056b3;
+}
+
+.desactivateBtn {
+    background: #dc3545;
+    color: white;
+}
+
+.desactivateBtn:hover {
+    background: #a71d2a;
+}
+
+.themeSwitch {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 55px;
+    height: 28px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "☀️";
+    height: 22px; width: 22px;
+    left: 3px; bottom: 3px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 22px;
+    font-size: 14px;
+}
+
+input:checked + .slider {
+    background-color: #28a745;
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+    content: "🌙";
+}
+
+.slider.round {
+    border-radius: 34px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
+
+.switchLabel {
+    font-size: 14px;
+    color: #333;
+}
+
+/* modo oscuro */
+
+body.darkMode {
+    background: #1e1e1e;
+    color: #f1f1f1;
+}
+
+body.darkMode .profileContainer {
+    background: #2b2b2b;
+    color: #f1f1f1;
+}
+
+body.darkMode .uploadBtn {
+    background: #3aa956;
+}

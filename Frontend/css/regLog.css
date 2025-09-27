@@ -24,7 +24,17 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 150vh;
+  height: 170vh;
+}
+
+#loginBody {
+  font-family: 'Arial', sans-serif;
+  background: #f4f6f9;
+  color: #333;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
 
 /* Contenedor principal del formulario */
