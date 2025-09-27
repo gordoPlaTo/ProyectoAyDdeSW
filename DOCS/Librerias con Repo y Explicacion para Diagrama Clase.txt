@@ -1,0 +1,143 @@
+Las siguientes tres librerías de jjwt están bajo el proyecto: https://github.com/jwtk/jjwt
+
+
+jjwt-api es la interfaz pública (API) que usas para interactuar con JWTs en tu código.
+
+<dependency>
+    <groupId>io.jsonwebtoken</groupId>
+    <artifactId>jjwt-api</artifactId>
+    <version>0.12.3</version>
+</dependency>
+---------------------------------------------------------------------------------------------------
+
+jjwt-impl contiene la implementación (las clases que realizan el trabajo concreto)
+ y normalmente se añade con scope = runtime.
+
+<dependency>
+    <groupId>io.jsonwebtoken</groupId>
+    <artifactId>jjwt-impl</artifactId>
+    <version>0.12.3</version> 
+    <scope>runtime</scope>
+</dependency>
+---------------------------------------------------------------------------------------------------
+
+jjwt-jackson agrega soporte para usar Jackson para serialización / deserialización JSON 
+vinculada al módulo de implementación.
+
+<dependency>
+    <groupId>io.jsonwebtoken</groupId>
+    <artifactId>jjwt-jackson</artifactId>
+    <version>0.12.3</version> <!-- Puedes usar la versión más reciente -->
+    <scope>runtime</scope>
+</dependency> 
+
+---------------------------------------------------------------------------------------------------
+
+
+https://github.com/spring-projects/spring-boot
+
+Starter que incluye hibernate como imp JPA, permite usar entity, repository, entityManage, consultas JPQL/SQL, etc.
+<dependency>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-data-jpa</artifactId>
+</dependency>
+---------------------------------------------------------------------------------------------------
+
+https://github.com/spring-projects/spring-security
+
+Starter que trae Spring Security
+Brinda autenticación, autorización, filtros de seguridad, protección CSRF,etc.
+
+<dependency>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-security</artifactId>
+</dependency>
+---------------------------------------------------------------------------------------------------
+
+https://github.com/pgjdbc/pgjdbc
+
+Driver de PostgreSQL para JDBC
+
+<dependency>
+	<groupId>org.postgresql</groupId>
+	<artifactId>postgresql</artifactId>
+	<scope>runtime</scope>
+</dependency>
+---------------------------------------------------------------------------------------------------
+
+https://github.com/projectlombok/lombok
+
+Librería que evita boilerplate en java, mejora la legibilidad y reduce código repetido.
+
+<dependency>
+	<groupId>org.projectlombok</groupId>
+	<artifactId>lombok</artifactId>
+	<optional>true</optional>
+</dependency>
+---------------------------------------------------------------------------------------------------
+
+
+*****AQUI EN ADELANTE SON DOS LIBRERIAS PARA TEST UNITARIOS ******
+
+
+https://github.com/spring-projects/spring-boot
+
+Librerias de testing para spring boot
+Test unitarios e integrales de controladores, sericios, repositorios,etc.
+contiene JUnit5, Mockito, SPring Tect, AssetJ, entre otros.
+
+<dependency>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-test</artifactId>
+	<scope>test</scope>
+</dependency>
+
+---------------------------------------------------------------------------------------------------
+
+
+https://github.com/spring-projects/spring-security
+
+Librería de pruebas para Spring Security
+Permite simular usuarios, roles y autenticaciones en 
+test (@WithMockUser, SecurityMockMvcRequestPostProcessormetc.).
+
+<dependency>
+	<groupId>org.springframework.security</groupId>
+	<artifactId>spring-security-test</artifactId>
+	<scope>test</scope>
+</dependency>
+
+---------------------------------------------------------------------------------------------------
+
+
+https://github.com/auth0/java-jwt
+
+  <dependency>
+  <groupId>com.auth0</groupId>
+  <artifactId>java-jwt</artifactId>
+  <version>4.5.0</version>
+</dependency>
+
+
+---------------------------------------------------------------------------------------------------
+
+https://github.com/jakartaee/validation
+
+
+Proporciona anotaciones estándar para declarar reglas de validación directamente en tus clases Java (por ejemplo, en entidades JPA, DTOs, requests de API, etc.).
+
+Es solo la API: define las interfaces y anotaciones, no la implementación.
+
+Implementaciones comunes: Hibernate Validator (la más usada, compatible y suele incluirse por defecto en Spring Boot).
+
+<dependency> 
+	<groupId>jakarta.validation</groupId> 
+	<artifactId>jakarta.validation-api</artifactId> 
+	<version>3.1.1</version> 
+</dependency>
+
+
+
+
+
+

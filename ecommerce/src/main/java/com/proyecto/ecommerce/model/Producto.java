@@ -1,0 +1,42 @@
+package com.proyecto.ecommerce.model;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.math.BigDecimal;
+import java.util.List;
+
+@Entity
+@Table(name = "Productos")
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter @Setter
+public class Producto {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long idProducto;
+
+    @Column(nullable = false, length = 35)
+    private String nombre;
+
+    @Column(nullable = false, length = 300)
+    private String Descripcion;
+
+    @Column(precision = 10, scale = 2)
+    private BigDecimal precio;
+
+    @Column(nullable = false)
+    private int stock;
+
+    @ManyToOne
+    @JoinColumn (name="idProducto")
+    private IVA iva;
+
+    @OneToMany(mappedBy = "producto")
+    private List<DetallePedido> listDetallePedido;
+
+}
