@@ -10,6 +10,7 @@ import com.proyecto.ecommerce.repository.IRoleRepository;
 import com.proyecto.ecommerce.repository.IUserRepository;
 import com.proyecto.ecommerce.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -78,29 +79,32 @@ public class UserDetailsServiceImp implements UserDetailsService {
         UserDetails userDetails = this.loadUserByUsername(email);
 
         if (userDetails == null){
-            throw  new BadCredentialsException("Invalid username or password");
+            throw  new BadCredentialsException("Invalid email or password");
         }
 
         if(!passwordEncoder.matches(password, userDetails.getPassword())){
-            throw  new BadCredentialsException("Invalid username or password");
+            throw  new BadCredentialsException("Invalid enail or password");
         }
 
         if (!userDetails.isEnabled()){
             throw new DisabledException("La cuenta está deshabilitada");
         }
 
-        return new UsernamePasswordAuthenticationToken(email,userDetails.getPassword(),userDetails.getAuthorities());
+        return new UsernamePasswordAuthenticationToken(
+                userDetails,
+                userDetails.getPassword(),
+                userDetails.getAuthorities());
     }
 
     public AuthResponseDTO loginUserEmail (AuthLoginRequestDTO authLoginRequestDTO){
-        String username = authLoginRequestDTO.email();
+        String email = authLoginRequestDTO.email();
         String password = authLoginRequestDTO.password();
 
-        Authentication authentication = this.authenticate(username,password);
+        Authentication authentication = this.authenticate(email,password);
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String accesToken = jwtUtils.createToken(authentication);
-        AuthResponseDTO authResponseDTO = new AuthResponseDTO(username,"Autenticacion Realizada con Exito", accesToken, true);
+        AuthResponseDTO authResponseDTO = new AuthResponseDTO(email,"Autenticacion Realizada con Exito", accesToken, true);
         return authResponseDTO;
 
     }
@@ -120,7 +124,7 @@ public class UserDetailsServiceImp implements UserDetailsService {
         boolean acceptTerms = registerRequestDTO.acceptTerms();
 
         Role role = roleRepo.findById(idRol)
-                .orElseGet(null);
+                .orElse(null);
         Set<Role> roleList = new HashSet<>();
 
         if (role != null){
@@ -129,13 +133,14 @@ public class UserDetailsServiceImp implements UserDetailsService {
             usuario.setRolesList(roleList);
             userRepository.save(usuario);
 
-            return new RegisterResponseDTO("Se completo el Registro satisfactoriamente, el usuario " + usuario
-                    + "con el email " + email + " se encuentra activo para usar nuestra web.", true);
+            return new RegisterResponseDTO("Se completo el Registro satisfactoriamente, el usuario " + usuario.getUsername()
+                    + " con el email " + email + " se encuentra activo para usar nuestra web.", true);
         }
 
         return new RegisterResponseDTO("Algo sucedio mal y no se concreto el registro de la cuenta",
                 false);
     }
+
 
     public String encriptPassword(String password) {
         return new BCryptPasswordEncoder().encode(password);

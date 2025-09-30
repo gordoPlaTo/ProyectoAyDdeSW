@@ -18,6 +18,7 @@ public class Permission {
     @Column (unique = true, nullable = false)
     private String permissionName;
 
-
-
+    public Permission(String permissionName) {
+        this.permissionName = permissionName;
+    }
 }

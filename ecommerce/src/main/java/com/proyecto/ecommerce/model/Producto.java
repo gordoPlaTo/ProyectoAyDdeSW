@@ -33,7 +33,7 @@ public class Producto {
     private int stock;
 
     @ManyToOne
-    @JoinColumn (name="idProducto")
+    @JoinColumn (name="iva")
     private IVA iva;
 
     @OneToMany(mappedBy = "producto")

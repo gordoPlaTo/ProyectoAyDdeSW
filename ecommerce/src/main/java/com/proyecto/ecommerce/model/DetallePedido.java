@@ -26,11 +26,11 @@ public class DetallePedido {
     private BigDecimal total;
 
     @ManyToOne
-    @JoinColumn(name = "idDetalle")
+    @JoinColumn(name = "pedido")
     private Pedido pedido;
 
     @ManyToOne
-    @JoinColumn(name = "idDetalle")
+    @JoinColumn(name = "producto")
     private Producto producto;
 
 

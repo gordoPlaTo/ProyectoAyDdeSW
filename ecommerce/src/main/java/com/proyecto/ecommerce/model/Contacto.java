@@ -11,7 +11,6 @@ import lombok.Setter;
 @Entity
 @Table(name = "Contactos")
 @NoArgsConstructor
-@AllArgsConstructor
 public class Contacto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,9 +19,13 @@ public class Contacto {
     @Column(nullable = false, length = 60)
     private String descripcion;
 
+    public Contacto(String descripcion) {
+        this.emprendimiento.setIdEmprendimiento(1L);
+        this.descripcion = descripcion;
+    }
 
     @ManyToOne
-    @JoinColumn(name = "idContacto")
+    @JoinColumn(name = "emprendimiento")
     private Emprendimiento emprendimiento;
 
 }

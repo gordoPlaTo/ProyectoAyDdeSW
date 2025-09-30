@@ -9,15 +9,27 @@ import java.time.LocalDate;
 public record RegisterRequestDTO(
 
         @NotBlank(message = "El nombre es obligatorio")
-        @Size(min = 5, max = 35, message = "El nombre debe tener entre 2 y 35 caracteres")
+        @Size(min = 5, max = 35, message = "El nombre debe tener entre 5 y 35 caracteres")
+        @Pattern(
+                regexp = "^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\\s'-]+$",
+                message = "Solo se permiten letras, espacios, guiones y apóstrofes."
+        )
         String nombre,
 
         @NotBlank(message = "El apellido es obligatorio")
-        @Size(min = 5, max = 35, message = "El apellido debe tener entre 2 y 35 caracteres")
+        @Size(min = 5, max = 35, message = "El apellido debe tener entre 5 y 35 caracteres")
+        @Pattern(
+                regexp = "^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\\s'-]+$",
+                message = "Solo se permiten letras, espacios, guiones y apóstrofes."
+        )
         String apellido,
 
         @NotBlank(message = "Ingresar contraseña es obligatorio")
         @Size(min = 7, max = 20, message = "La contraseña debe tener entre 7 y 20 caracteres")
+        @Pattern(
+                regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).*$",
+                message = "La contraseña debe contener al menos una mayúscula, una minúscula, un número y un carácter especial (@#$%^&+=)."
+        )
         String password,
 
         @NotBlank(message = "Ingresar un email es obligatorio")
@@ -25,7 +37,7 @@ public record RegisterRequestDTO(
         @Email
         String email,
 
-        @NotBlank(message = "Ingresar un email es obligatorio")
+        @NotNull(message = "Ingresar un email es obligatorio")
         @Pattern(regexp = "\\d{8}", message = "El DNI debe tener 8 dígitos")
         Long dni,
 

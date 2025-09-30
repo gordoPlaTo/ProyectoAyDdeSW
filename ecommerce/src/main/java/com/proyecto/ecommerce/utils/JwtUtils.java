@@ -27,7 +27,7 @@ public class JwtUtils {
     public String createToken(Authentication authentication){
         Algorithm algorith = Algorithm.HMAC256(this.privateKey);
 
-        String username = authentication.getPrincipal().toString();
+        String email = authentication.getPrincipal().toString();
 
         String authorities = authentication.getAuthorities()
                 .stream()
@@ -35,7 +35,7 @@ public class JwtUtils {
                 .collect(Collectors.joining(","));
         String jwtToken = JWT.create()
                 .withIssuer(this.userGenerator)
-                .withSubject(username)
+                .withSubject(email)
                 .withClaim("authorities",authorities)
                 .withIssuedAt(new Date())
                 .withExpiresAt(new Date(System.currentTimeMillis() + 1800000))

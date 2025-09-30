@@ -8,29 +8,29 @@ import lombok.Setter;
 
 import java.util.List;
 
+@Entity
 @Getter
 @Setter
-@Entity
-@Table(name = "Emprendimientos")
 @NoArgsConstructor
-@AllArgsConstructor
+@Table(name = "Emprendimiento")
 public class Emprendimiento {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idEmprendimiento;
 
-    @Column(nullable = true, length = 20)
+    public Emprendimiento(List<Contacto> listContacto, String direccion, String titulo) {
+        this.listContacto = listContacto;
+        this.direccion = direccion;
+        this.titulo = titulo;
+    }
+
+    @Column(length = 20)
     private String titulo;
 
-    @Column(nullable = true, length = 650)
-    private  String descripcion;
-
-    @Column(nullable = true, length = 120)
+    @Column(length = 120)
     private String direccion;
-
+    
     @OneToMany(mappedBy = "emprendimiento")
     private List<Contacto> listContacto;
-
-
 
 }

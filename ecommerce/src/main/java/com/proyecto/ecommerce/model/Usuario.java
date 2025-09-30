@@ -75,7 +75,7 @@ public class Usuario {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> rolesList = new HashSet<>();
 
-    @OneToMany(mappedBy = "pedido")
+    @OneToMany(mappedBy = "usuario")
     private List<Pedido> listPedido;
 
 

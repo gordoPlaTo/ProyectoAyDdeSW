@@ -20,6 +20,11 @@ public class Role {
     private Long id;
     private String role;
 
+    public Role(String role, Set<Permission> permissionsList) {
+        this.role = role;
+        this.permissionsList = permissionsList;
+    }
+
     //FetchType.EAGER indica que se cargara con los permisos
     //Cascade indica que si se borra este role se borran sus relaciones en "cascada"
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
