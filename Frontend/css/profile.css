@@ -20,7 +20,7 @@ body {
     border-radius: 12px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     width: 100%;
-    max-width: 500px;    
+    max-width: 500px;
 }
 
 .profPic {
@@ -53,7 +53,7 @@ body {
 }
 
 .profInfo {
-    margin-bottom: 20px;    
+    margin-bottom: 20px;
 }
 
 .profInfo h2 {
@@ -126,7 +126,10 @@ button {
 .slider {
     position: absolute;
     cursor: pointer;
-    top: 0; left: 0; right: 0; bottom: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     background-color: #ccc;
     transition: 0.4s;
     border-radius: 34px;
@@ -135,8 +138,10 @@ button {
 .slider:before {
     position: absolute;
     content: "☀️";
-    height: 22px; width: 22px;
-    left: 3px; bottom: 3px;
+    height: 22px;
+    width: 22px;
+    left: 3px;
+    bottom: 3px;
     background-color: white;
     transition: 0.4s;
     border-radius: 50%;
@@ -145,11 +150,11 @@ button {
     font-size: 14px;
 }
 
-input:checked + .slider {
+input:checked+.slider {
     background-color: #28a745;
 }
 
-input:checked + .slider:before {
+input:checked+.slider:before {
     transform: translateX(26px);
     content: "🌙";
 }
@@ -167,6 +172,51 @@ input:checked + .slider:before {
     color: #333;
 }
 
+.profOrders {
+    margin-top: 30px;
+    text-align: left;
+}
+
+.profOrders h3 {
+    margin-top: 15px;
+    font-size: 18px;
+    border-bottom: 2px solid #28a745;
+    display: inline-block;
+    padding-bottom: 5px;
+}
+
+.ordersList {
+    padding-top: 20px;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.ordersList li {
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.ordersList li span {
+    font-size: 14px;
+    color: #333;
+}
+
+.detailBtn {
+    padding: 6px 10px;
+    font-size: 14px;
+    border-radius: 6px;
+    width: 100%;
+}
+
 /* modo oscuro */
 
 body.darkMode {
@@ -181,4 +231,47 @@ body.darkMode .profileContainer {
 
 body.darkMode .uploadBtn {
     background: #3aa956;
+}
+
+body.darkMode .uploadBtn:hover {
+    background: #2d8745;
+}
+
+body.darkMode .changePassBtn {
+    background: #3399ff;
+}
+
+body.darkMode .changePassBtn:hover {
+    background: #0056b3;
+}
+
+body.darkMode .desactivateBtn {
+    background: #dc3545;
+}
+
+body.darkMode .desactivateBtn:hover {
+    background: #a71d2a;
+}
+
+body.darkMode .profOrders {
+    color: #f1f1f1;
+}
+
+body.darkMode .ordersList li {
+    background: #2a2a2a;
+    border: 1px solid #444;
+    color: #f1f1f1;
+}
+
+body.darkMode .ordersList li span {
+    color: #f1f1f1;
+}
+
+body.darkMode .detailBtn {
+    background-color: #28a745;
+    color: white;
+}
+
+body.darkMode .detailBtn:hover {
+    background: #218838;
 }

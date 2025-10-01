@@ -213,3 +213,50 @@ footer {
   text-decoration: none;
   transition: color 0.2s ease;
 }
+
+/*modo oscuro*/
+body.darkMode {
+  background: #121212;
+  color: #f1f1f1;
+}
+
+body.darkMode header {
+  background: #1e1e1e;
+  color: #f1f1f1;
+}
+
+body.darkMode footer {
+  background: #1e1e1e;
+  color: #ccc;
+}
+
+body.darkMode .product-card {
+  background: #1f1f1f;
+  border: 1px solid #444;
+  color: #f1f1f1;
+}
+
+body.darkMode .product-card p {
+  color: #bbb;
+}
+
+body.darkMode .sidebar {
+  background: #1f1f1f;
+  color: #f1f1f1;
+}
+
+body.darkMode .sidebar-toggle {
+  background: #333;
+  color: #f1f1f1;
+}
+
+body.darkMode button,
+body.darkMode .btn {
+  background: #28a745;
+  color: #fff;
+}
+
+body.darkMode button:hover,
+body.darkMode .btn:hover {
+  background: #218838;
+}
