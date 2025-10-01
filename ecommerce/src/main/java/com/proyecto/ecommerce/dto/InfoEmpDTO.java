@@ -25,5 +25,11 @@ public record InfoEmpDTO (
                 regexp = "^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\\s'-]+$",
                 message = "Solo se permiten letras, espacios, guiones y apóstrofes."
         )
+        String direccion,
+
+        @Pattern(
+                regexp = "^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\\s'-]+$",
+                message = "Solo se permiten letras, espacios, guiones y apóstrofes."
+        )
         List<Contacto> contactos){
 }

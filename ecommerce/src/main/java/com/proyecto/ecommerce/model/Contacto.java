@@ -25,7 +25,7 @@ public class Contacto {
     }
 
     @ManyToOne
-    @JoinColumn(name = "emprendimiento")
+    @JoinColumn(name = "emprendimiento_id")
     private Emprendimiento emprendimiento;
 
 }

@@ -32,11 +32,11 @@ public class Pedido {
     private List<DetallePedido> listDetallePedido;
 
     @ManyToOne
-    @JoinColumn(name = "usuario")
+    @JoinColumn(name = "usuario_id")
     private Usuario usuario;
 
     @ManyToOne
-    @JoinColumn(name = "estadoPedido")
+    @JoinColumn(name = "estadoPedido_id")
     private EstadoPedido estadoPedido;
 
 

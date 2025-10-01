@@ -28,9 +28,12 @@ public class Emprendimiento {
     private String titulo;
 
     @Column(length = 120)
+    private String descripcion;
+
+    @Column(length = 120)
     private String direccion;
     
-    @OneToMany(mappedBy = "emprendimiento")
+    @OneToMany(mappedBy = "emprendimiento",cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Contacto> listContacto;
 
 }
