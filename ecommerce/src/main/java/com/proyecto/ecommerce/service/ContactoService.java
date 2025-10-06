@@ -43,6 +43,7 @@ public class ContactoService implements IContactoService {
         Emprendimiento emp = empRepository.findById(1L)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Emprendimiento no encontrado"));
         emp.getListContacto().add(con);
+        empRepository.save(emp);
         return con;
     }
 }

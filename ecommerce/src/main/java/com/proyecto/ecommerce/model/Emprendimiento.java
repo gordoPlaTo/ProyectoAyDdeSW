@@ -32,8 +32,11 @@ public class Emprendimiento {
 
     @Column(length = 120)
     private String direccion;
+
+    @Column(nullable = false)
+    private boolean isMod;
     
-    @OneToMany(mappedBy = "emprendimiento",cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Contacto> listContacto;
 
 }

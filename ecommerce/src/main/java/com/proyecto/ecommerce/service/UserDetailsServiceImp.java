@@ -9,6 +9,7 @@ import com.proyecto.ecommerce.model.Usuario;
 import com.proyecto.ecommerce.repository.IRoleRepository;
 import com.proyecto.ecommerce.repository.IUserRepository;
 import com.proyecto.ecommerce.utils.JwtUtils;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
@@ -27,6 +28,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -96,7 +98,7 @@ public class UserDetailsServiceImp implements UserDetailsService {
                 userDetails.getAuthorities());
     }
 
-    public AuthResponseDTO loginUserEmail (AuthLoginRequestDTO authLoginRequestDTO){
+    public AuthResponseDTO loginUserEmail (@RequestBody @Valid AuthLoginRequestDTO authLoginRequestDTO){
         String email = authLoginRequestDTO.email();
         String password = authLoginRequestDTO.password();
 
@@ -112,6 +114,7 @@ public class UserDetailsServiceImp implements UserDetailsService {
     @Autowired
     private IRoleRepository roleRepo;
 
+
     //Aca es posible crear un metodo para registrar y tener ya todo en USerDetails
     public RegisterResponseDTO register(RegisterRequestDTO registerRequestDTO, Long idRol){
         String username = registerRequestDTO.nombre();
@@ -122,6 +125,19 @@ public class UserDetailsServiceImp implements UserDetailsService {
         LocalDate fechaNac = registerRequestDTO.fechaNac();
         String direccion = registerRequestDTO.direccion();
         boolean acceptTerms = registerRequestDTO.acceptTerms();
+
+
+        if (userRepository.findUserEntityByEmail(email).isPresent()){
+            return new RegisterResponseDTO("Ya existe un usuario registrado con ese email.",
+                    false);
+        }
+
+
+        if (!acceptTerms){
+            return new RegisterResponseDTO("Para poder registrar una cuenta, el usuario adherente al contrato" +
+                    " de cuenta debe aceptar nuestros terminos y condiciones.",
+                    false);
+        }
 
         Role role = roleRepo.findById(idRol)
                 .orElse(null);

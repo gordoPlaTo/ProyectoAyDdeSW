@@ -20,12 +20,6 @@ public class Contacto {
     private String descripcion;
 
     public Contacto(String descripcion) {
-        this.emprendimiento.setIdEmprendimiento(1L);
         this.descripcion = descripcion;
     }
-
-    @ManyToOne
-    @JoinColumn(name = "emprendimiento_id")
-    private Emprendimiento emprendimiento;
-
 }

@@ -1,5 +1,6 @@
 package com.proyecto.ecommerce.config.filter;
 
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.proyecto.ecommerce.utils.JwtUtils;
 import jakarta.servlet.FilterChain;
@@ -30,21 +31,28 @@ public class JwtTokenValidator extends OncePerRequestFilter {
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
         String jwtToken = request.getHeader(HttpHeaders.AUTHORIZATION);
+         try{
+            if (jwtToken!=null){
+                jwtToken = jwtToken.substring(7);
+                DecodedJWT decodedJWT = jwtUtils.validateToken(jwtToken);
 
-        if (jwtToken!=null){
-            jwtToken = jwtToken.substring(7);
-            DecodedJWT decodedJWT = jwtUtils.validateToken(jwtToken);
+                String username = jwtUtils.extractUsername(decodedJWT);
+                String authorities = jwtUtils.getSpecificClaim(decodedJWT,"authorities").asString();
 
-            String username = jwtUtils.extractUsername(decodedJWT);
-            String authorities = jwtUtils.getSpecificClaim(decodedJWT,"authorities").asString();
+                Collection authorityList = AuthorityUtils.commaSeparatedStringToAuthorityList(authorities);
+                SecurityContext context = SecurityContextHolder.getContext();
+                Authentication authentication = new UsernamePasswordAuthenticationToken(username,null,authorityList);
+                context.setAuthentication(authentication);
+                SecurityContextHolder.setContext(context);
+            }
 
-            Collection authorityList = AuthorityUtils.commaSeparatedStringToAuthorityList(authorities);
-            SecurityContext context = SecurityContextHolder.getContext();
-            Authentication authentication = new UsernamePasswordAuthenticationToken(username,null,authorityList);
-            context.setAuthentication(authentication);
-            SecurityContextHolder.setContext(context);
-        }
+                filterChain.doFilter(request,response);
+         }catch (JWTVerificationException ex) {
 
-        filterChain.doFilter(request,response);
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.getWriter().write("{\"error\": \"Invalid or expired token\"}");
+         }
+
     }
 }

@@ -2,13 +2,12 @@ package com.proyecto.ecommerce.dto;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.proyecto.ecommerce.model.Contacto;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 
 import java.util.List;
 
 @JsonPropertyOrder
-public record InfoEmpDTO (
+public record InfoEmpRequestDTO(
         @Pattern(
                 regexp = "^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\\s'-]+$",
                 message = "Solo se permiten letras, espacios, guiones y apóstrofes."
@@ -25,11 +24,7 @@ public record InfoEmpDTO (
                 regexp = "^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\\s'-]+$",
                 message = "Solo se permiten letras, espacios, guiones y apóstrofes."
         )
-        String direccion,
+        String direccion
+        ){
 
-        @Pattern(
-                regexp = "^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\\s'-]+$",
-                message = "Solo se permiten letras, espacios, guiones y apóstrofes."
-        )
-        List<Contacto> contactos){
 }
