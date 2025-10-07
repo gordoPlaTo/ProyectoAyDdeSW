@@ -35,7 +35,7 @@ public class AuthenticationController {
     private IEmpRepository empRepository;
 
     @GetMapping("/login")
-    public ResponseEntity<AuthResponseDTO> login (@RequestBody @Valid AuthLoginRequestDTO userRequest){
+    public ResponseEntity<AuthResponseDTO> login (@Valid @RequestBody AuthLoginRequestDTO userRequest){
         return new ResponseEntity<>(this.userDetailsService.loginUserEmail(userRequest), HttpStatus.OK);
     }
 
@@ -43,7 +43,7 @@ public class AuthenticationController {
     //loguee y modifique la informacion del emprendimiento (minimo de personalizacion)
     //en caso de que no este registrado ningun Emprendimiento mostrará un mensaje
     @PostMapping("/register")
-    public ResponseEntity<RegisterResponseDTO> registerClient (@RequestBody @Valid RegisterRequestDTO register){
+    public ResponseEntity<RegisterResponseDTO> registerClient (@Valid @RequestBody RegisterRequestDTO register){
         Emprendimiento emp = empRepository.findById(1L)
                 .orElseThrow(() -> new IllegalStateException("El emprendimiento principal no se definio eb la base de datos"));
 
@@ -59,7 +59,9 @@ public class AuthenticationController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/registerAdmin")
-    public ResponseEntity<RegisterResponseDTO> registerAdmin (@RequestBody @Valid RegisterRequestDTO registerRequest){
+    public ResponseEntity<RegisterResponseDTO> registerAdmin (@Valid @RequestBody RegisterRequestDTO registerRequest){
+        System.out.println("DTO recibido: " + registerRequest);
+
         return  new ResponseEntity<>(this.userDetailsService.register(registerRequest, 2L), HttpStatus.OK);
     }
 

@@ -39,7 +39,7 @@ public class AdminController {
 
     @PutMapping("/emp/info/mod")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity modInfoEmprendimiento(@RequestBody @Valid InfoEmpRequestDTO InfoReq){
+    public ResponseEntity modInfoEmprendimiento(@Valid @RequestBody InfoEmpRequestDTO InfoReq){
         Emprendimiento emp = empRepository.findById(1L).orElse(null);
         if (emp == null){
             return new ResponseEntity<>("No hay ningun emprendimiento creado",HttpStatus.BAD_REQUEST);
@@ -61,7 +61,7 @@ public class AdminController {
 
     @PostMapping("/emp/info/contacto/new")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity crearContacto(@RequestBody @Valid ContactoRequestDTO contacto){
+        public ResponseEntity crearContacto(@Valid @RequestBody ContactoRequestDTO contacto){
         contactoService.save(contacto);
         return new ResponseEntity<>("Se creo el contacto con exito", HttpStatus.OK);
 

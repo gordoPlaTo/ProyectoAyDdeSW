@@ -45,6 +45,7 @@ public class Usuario {
         this.direccion = direccion;
         this.acceptedTerms = acceptedTerms;
         this.enabled = enabled;
+
         this.accountNotExpired = accountNotExpired;
         this.accountNotLocked = accountNotLocked;
         this.credentialNotExpired = credentialNotExpired;

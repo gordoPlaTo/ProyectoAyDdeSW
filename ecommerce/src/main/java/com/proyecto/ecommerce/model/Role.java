@@ -25,12 +25,9 @@ public class Role {
         this.permissionsList = permissionsList;
     }
 
-    //FetchType.EAGER indica que se cargara con los permisos
-    //Cascade indica que si se borra este role se borran sus relaciones en "cascada"
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable (name = "role_permissions", joinColumns = @JoinColumn(name = "role_id"),
             inverseJoinColumns = @JoinColumn(name = "permission_id"))
     private Set<Permission> permissionsList = new HashSet<>();
-    //Relacion unidireccional, ya que no nos intereza que los permisos sepan a que
-    //rol estan asociados
+
 }

@@ -15,6 +15,7 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.util.ContentCachingRequestWrapper;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -30,7 +31,11 @@ public class JwtTokenValidator extends OncePerRequestFilter {
     protected void doFilterInternal(@NonNull HttpServletRequest request,
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
-        String jwtToken = request.getHeader(HttpHeaders.AUTHORIZATION);
+
+        ContentCachingRequestWrapper cachedRequest = new ContentCachingRequestWrapper(request);
+
+        String jwtToken = cachedRequest.getHeader(HttpHeaders.AUTHORIZATION);
+
          try{
             if (jwtToken!=null){
                 jwtToken = jwtToken.substring(7);
@@ -46,7 +51,7 @@ public class JwtTokenValidator extends OncePerRequestFilter {
                 SecurityContextHolder.setContext(context);
             }
 
-                filterChain.doFilter(request,response);
+                filterChain.doFilter(cachedRequest,response);
          }catch (JWTVerificationException ex) {
 
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
