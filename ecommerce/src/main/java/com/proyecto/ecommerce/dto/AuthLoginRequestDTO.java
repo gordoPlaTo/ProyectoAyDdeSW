@@ -8,7 +8,7 @@ public record AuthLoginRequestDTO(
 
         @NotBlank(message = "Ingresar un email es obligatorio")
         @Size(min = 10, max = 254, message = "El Email debe tener entre 10 y 254 caracteres")
-        @Email
+        @Email(message = "El formato del correo electrónico es inválido. Debe incluir '@' y un dominio válido (ej: usuario@ejemplo.com)")
         String email,
 
         @NotBlank(message = "Ingresar contraseña es obligatorio")
