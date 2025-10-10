@@ -1,9 +1,6 @@
 package com.proyecto.ecommerce.service;
 
-import com.proyecto.ecommerce.dto.AuthLoginRequestDTO;
-import com.proyecto.ecommerce.dto.AuthResponseDTO;
-import com.proyecto.ecommerce.dto.RegisterRequestDTO;
-import com.proyecto.ecommerce.dto.RegisterResponseDTO;
+import com.proyecto.ecommerce.dto.*;
 import com.proyecto.ecommerce.model.Role;
 import com.proyecto.ecommerce.model.Usuario;
 import com.proyecto.ecommerce.repository.IRoleRepository;
@@ -11,9 +8,6 @@ import com.proyecto.ecommerce.repository.IUserRepository;
 import com.proyecto.ecommerce.utils.JwtUtils;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -31,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -50,7 +45,7 @@ public class UserDetailsServiceImp implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Usuario usuario = userRepository.findUserEntityByEmail(email)
+        Usuario usuario = userRepository.findUserEntityByEmail(email.toLowerCase())
                 .orElseThrow(() -> new UsernameNotFoundException("El usuario "+ email + " no fue encontrado."));
 
         List<GrantedAuthority> authorityList = new ArrayList<>();
@@ -99,7 +94,7 @@ public class UserDetailsServiceImp implements UserDetailsService {
     }
 
     public AuthResponseDTO loginUserEmail (@RequestBody @Valid AuthLoginRequestDTO authLoginRequestDTO){
-        String email = authLoginRequestDTO.email();
+        String email = authLoginRequestDTO.email().toLowerCase();
         String password = authLoginRequestDTO.password();
 
         Authentication authentication = this.authenticate(email,password);
@@ -116,27 +111,27 @@ public class UserDetailsServiceImp implements UserDetailsService {
 
 
     //Aca es posible crear un metodo para registrar y tener ya todo en USerDetails
-    public RegisterResponseDTO register(RegisterRequestDTO registerRequestDTO, Long idRol){
-        String username = registerRequestDTO.nombre();
-        String apellido = registerRequestDTO.apellido();
+    public RespDTO register(RegisterRequestDTO registerRequestDTO, Long idRol){
+        String username = registerRequestDTO.nombre().toLowerCase();
+        String apellido = registerRequestDTO.apellido().toLowerCase();
         String password = this.encriptPassword(registerRequestDTO.password());
-        String email = registerRequestDTO.email();
-        Long dni = registerRequestDTO.dni();
+        String email = registerRequestDTO.email().toLowerCase();
+        String dni = registerRequestDTO.dni();
         LocalDate fechaNac = registerRequestDTO.fechaNac();
-        String direccion = registerRequestDTO.direccion();
+        String direccion = registerRequestDTO.direccion().toLowerCase();
         boolean acceptTerms = registerRequestDTO.acceptTerms();
 
 
         if (userRepository.findUserEntityByEmail(email).isPresent()){
-            return new RegisterResponseDTO("Ya existe un usuario registrado con ese email.",
-                    false);
+            return new RespDTO("Ya existe un usuario registrado con ese email.",
+                    false, LocalDateTime.now());
         }
 
 
         if (!acceptTerms){
-            return new RegisterResponseDTO("Para poder registrar una cuenta, el usuario adherente al contrato" +
+            return new RespDTO("Para poder registrar una cuenta, el usuario adherente al contrato" +
                     " de cuenta debe aceptar nuestros terminos y condiciones.",
-                    false);
+                    false, LocalDateTime.now());
         }
 
         Role role = roleRepo.findById(idRol)
@@ -144,17 +139,17 @@ public class UserDetailsServiceImp implements UserDetailsService {
         Set<Role> roleList = new HashSet<>();
 
         if (role != null){
-            Usuario usuario = new Usuario(username,apellido,password,email,dni,fechaNac,direccion,acceptTerms,true,true,true,true);
+            Usuario usuario = new Usuario(username,apellido,password,email,dni,fechaNac,direccion,acceptTerms);
             roleList.add(role);
             usuario.setRolesList(roleList);
             userRepository.save(usuario);
 
-            return new RegisterResponseDTO("Se completo el Registro satisfactoriamente, el usuario " + usuario.getUsername()
-                    + " con el email " + email + " se encuentra activo para usar nuestra web.", true);
+            return new RespDTO("Se completo el Registro satisfactoriamente, el usuario " + usuario.getUsername()
+                    + " con el email " + email + " se encuentra activo para usar nuestra web.", true, LocalDateTime.now());
         }
 
-        return new RegisterResponseDTO("Algo sucedio mal y no se concreto el registro de la cuenta",
-                false);
+        return new RespDTO("Algo sucedio mal y no se concreto el registro de la cuenta",
+                false, LocalDateTime.now());
     }
 
 

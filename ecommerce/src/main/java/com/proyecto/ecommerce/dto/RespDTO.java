@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 @JsonPropertyOrder
 public record RespDTO (
         String message,
+        boolean status,
         LocalDateTime timestamp
 ){
 }

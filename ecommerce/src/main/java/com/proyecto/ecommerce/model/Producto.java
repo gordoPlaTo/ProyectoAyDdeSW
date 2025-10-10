@@ -24,13 +24,23 @@ public class Producto {
     private String nombre;
 
     @Column(nullable = false, length = 300)
-    private String Descripcion;
+    private String descripcion;
+
+    public Producto(String nombre, String descripcion, BigDecimal precio, int stock, IVA iva) {
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.precio = precio;
+        this.stock = stock;
+        this.iva = iva;
+    }
 
     @Column(precision = 10, scale = 2)
     private BigDecimal precio;
 
     @Column(nullable = false)
     private int stock;
+
+    private boolean isEnable = true;
 
     @ManyToOne
     @JoinColumn (name="iva")

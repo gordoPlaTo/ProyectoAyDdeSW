@@ -1,13 +1,15 @@
 package com.proyecto.ecommerce.controller;
 
 import com.proyecto.ecommerce.dto.*;
-import com.proyecto.ecommerce.model.Contacto;
 import com.proyecto.ecommerce.model.Emprendimiento;
+import com.proyecto.ecommerce.model.Producto;
 import com.proyecto.ecommerce.repository.IEmpRepository;
 import com.proyecto.ecommerce.service.ContactoService;
 import com.proyecto.ecommerce.service.EmprendimientoService;
-import com.proyecto.ecommerce.service.UserDetailsServiceImp;
+import com.proyecto.ecommerce.service.ProductoService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,70 +20,37 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/admin")
+@PreAuthorize("hasRole('ADMIN')")
 public class AdminController {
-
 
     @Autowired
     private ContactoService contactoService;
 
     @Autowired
-    private IEmpRepository empRepository;
-
-    @Autowired
     private EmprendimientoService emprendimientoService;
 
-    @GetMapping("/emp")
-    public ResponseEntity<InfoEmpResponseDTO> obtenerInfoEmprendimiento(){
-        return emprendimientoService.obtenerInfo()
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
-    }
+    @Autowired
+    private ProductoService productoService;
 
     @PutMapping("/emp/info/mod")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity modInfoEmprendimiento(@Valid @RequestBody InfoEmpRequestDTO InfoReq){
-        Emprendimiento emp = empRepository.findById(1L).orElse(null);
-        if (emp == null){
-            return new ResponseEntity<>("No hay ningun emprendimiento creado",HttpStatus.BAD_REQUEST);
-        }
-
-        if(InfoReq.titulo()!=null & !InfoReq.titulo().isBlank()){
-            emp.setTitulo(InfoReq.titulo());
-        }
-        if(InfoReq.descripcion()!=null & !InfoReq.descripcion().isBlank()){
-            emp.setDescripcion(InfoReq.descripcion());
-        }
-        if(InfoReq.direccion()!=null & !InfoReq.direccion().isBlank()){
-            emp.setDireccion(InfoReq.direccion());
-        }
-        emp.setMod(true);
-        empRepository.save(emp);
-        return new ResponseEntity<>("Se completó la modificación de datos del Emprendimiento",HttpStatus.OK);
+    public ResponseEntity modInfoEmprendimiento(@Valid @RequestBody InfoEmpRequestDTO infoReq){
+        emprendimientoService.modInfoEmprendimiento(infoReq);
+        return ResponseEntity.ok("Se completo correctamente la Modificacion de los datos de la empresa.");
     }
 
-    @PostMapping("/emp/info/contacto/new")
+    @PostMapping("/contacto/new")
     @PreAuthorize("hasRole('ADMIN')")
-        public ResponseEntity crearContacto(@Valid @RequestBody ContactoRequestDTO contacto){
+    public ResponseEntity crearContacto(@RequestBody @Valid ContactoRequestDTO contacto){
         contactoService.save(contacto);
         return new ResponseEntity<>("Se creo el contacto con exito", HttpStatus.OK);
 
     }
 
-    @GetMapping("/contactos")
-    public ResponseEntity<List<Contacto>> obtenerContactos(){
-        List<Contacto> contactos = contactoService.findAll();
-
-        if (contactos.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-
-        return new ResponseEntity<>(contactos, HttpStatus.OK);
-    }
-
-
-    @DeleteMapping("/emp/info/contacto/delete")
+    @DeleteMapping("/contacto/delete")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<RespDTO> EliminarContacto (@PathVariable Long id){
+    public ResponseEntity<RespDTO> EliminarContacto (@PathVariable
+                                                         Long id){
         return new ResponseEntity<>(contactoService.deleteContacto(id),HttpStatus.OK);
     }
 
@@ -91,7 +60,39 @@ public class AdminController {
      //Obtener Listado de Pedidos Completados
      //Obtener Listado de Pedidos en Proceso
 
+    @PostMapping("/producto/crear")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Producto> crearProducto (@Valid @RequestBody ProductoReqDTO prod){
+        return ResponseEntity.ok(productoService.crearProducto(prod));
+    }
+    @PostMapping("/producto/reducir/{id}/stock")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity reducirStockProd(@PathVariable Long id,
+                                           @RequestParam int stock){
+        productoService.reducirStock(id,stock);
+        return ResponseEntity.ok("Se redujo el stock en " + stock + " unidades correctamente.");
+    }
+    @PostMapping("/producto/aumentar/{id}/stock")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity aumentarStockProd(@PathVariable Long id,
+                                           @RequestParam int stock){
+        productoService.aumentarStock(id,stock);
+        return ResponseEntity.ok("Se aumento el stock en " + stock + " unidades correctamente.");
+    }
+
+    @PutMapping("/producto/estado/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity habilitarDeshabilitarProducto (@PathVariable Long id){
+        productoService.habDesProducto(id);
+        return ResponseEntity.ok("Se cambio el estado del producto correctamente");
+    }
 
 
+
+    @PostMapping("/productos/obtenerTodos")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<Producto>> obtenerProductos(){
+        return ResponseEntity.ok(productoService.obtenerProductos());
+    }
 
 }

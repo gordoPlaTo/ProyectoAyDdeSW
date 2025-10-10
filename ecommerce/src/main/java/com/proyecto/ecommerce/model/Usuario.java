@@ -35,7 +35,7 @@ public class Usuario {
     @Column(nullable = false, length = 60)
     private String password;
 
-    public Usuario(String username, String apellido, String password, String email, Long dni, LocalDate fechaNac, String direccion, boolean acceptedTerms, boolean enabled, boolean accountNotExpired, boolean accountNotLocked, boolean credentialNotExpired) {
+    public Usuario(String username, String apellido, String password, String email, String dni, LocalDate fechaNac, String direccion, boolean acceptedTerms) {
         this.username = username;
         this.apellido = apellido;
         this.password = password;
@@ -44,18 +44,14 @@ public class Usuario {
         this.fechaNac = fechaNac;
         this.direccion = direccion;
         this.acceptedTerms = acceptedTerms;
-        this.enabled = enabled;
 
-        this.accountNotExpired = accountNotExpired;
-        this.accountNotLocked = accountNotLocked;
-        this.credentialNotExpired = credentialNotExpired;
     }
 
     @Column(unique = true, length = 254, nullable = false)
     private String email;
 
-    @Column(nullable = false)
-    private Long dni;
+    @Column(nullable = false, length = 8)
+    private String dni;
 
     @Column(nullable = false)
     private LocalDate fechaNac;
@@ -65,11 +61,16 @@ public class Usuario {
 
     private boolean acceptedTerms;
 
-    private boolean enabled;//Habilitado o no por el usuario
+    private boolean enabled = true;
 
-    private boolean accountNotExpired;//Cuenta sin uso
-    private boolean accountNotLocked;//Bloqueado por admin
-    private boolean credentialNotExpired;//Casos para cambio de password periodico
+    //Los Siguientes atributos son exigidos por el framework
+    //No sea mapean en la Bd gracias a la siguiente anotacion
+    @Transient
+    private boolean accountNotExpired = true;
+    @Transient
+    private boolean accountNotLocked = true;
+    @Transient
+    private boolean credentialNotExpired = true;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL) //Eager se encarga de cargar todos los roles
     @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "usuario_id"),

@@ -8,13 +8,11 @@ import com.proyecto.ecommerce.repository.IContactoRepository;
 import com.proyecto.ecommerce.repository.IEmpRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ContactoService implements IContactoService {
@@ -32,9 +30,9 @@ public class ContactoService implements IContactoService {
     public RespDTO deleteContacto(Long id) {
         if(contactoRepository.existsById(id)){
             contactoRepository.deleteById(id);
-            return new RespDTO("Se elimino correctamente", LocalDateTime.now());
+            return new RespDTO("Se elimino correctamente",true, LocalDateTime.now());
         }
-        return new RespDTO("No se encontro el contacto que deseas eliminar",LocalDateTime.now());
+        return new RespDTO("No se encontro el contacto que deseas eliminar",false,LocalDateTime.now());
     }
 
     @Override
