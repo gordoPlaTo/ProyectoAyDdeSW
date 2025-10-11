@@ -119,7 +119,7 @@ public class UserDetailsServiceImp implements UserDetailsService {
         String dni = registerRequestDTO.dni();
         LocalDate fechaNac = registerRequestDTO.fechaNac();
         String direccion = registerRequestDTO.direccion().toLowerCase();
-        boolean acceptTerms = registerRequestDTO.acceptTerms();
+        boolean acceptTerms = true;/*registerRequestDTO.acceptTerms();*/
 
 
         if (userRepository.findUserEntityByEmail(email).isPresent()){

@@ -6,7 +6,7 @@ import jakarta.validation.constraints.*;
 import java.time.LocalDate;
 
 
-@JsonPropertyOrder
+
 public record RegisterRequestDTO(
         @NotBlank(message = "El nombre es obligatorio")
         @Size(min = 5, max = 35, message = "El nombre debe tener entre 5 y 35 caracteres")
@@ -39,8 +39,8 @@ public record RegisterRequestDTO(
         @NotBlank(message = "Ingresar una dirección es obligatorio")
         @Size(min = 15, max = 120, message = "La direccipon debe tener entre 15 y 120 caracteres")
         @Pattern(regexp = "^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\\s@._\\-=',()]+$" , message = "Solo se permiten letras, espacios, guiones, apóstrofes, comas y dos puntos.")
-        String direccion,
+        String direccion
 
-        @AssertTrue(message = "Debe aceptar los términos y condiciones")
-        boolean acceptTerms
+        /*@AssertTrue(message = "Debe aceptar los términos y condiciones")
+        boolean acceptTerms*/
 ){}

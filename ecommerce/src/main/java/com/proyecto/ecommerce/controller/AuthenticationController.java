@@ -28,7 +28,7 @@ public class AuthenticationController {
     @Autowired
     private IEmpRepository empRepository;
 
-    @GetMapping("/login")
+    @PostMapping("/login")
     public ResponseEntity<AuthResponseDTO> login (@Valid @RequestBody AuthLoginRequestDTO userRequest){
         return new ResponseEntity<>(this.userDetailsService.loginUserEmail(userRequest), HttpStatus.OK);
     }
@@ -51,10 +51,8 @@ public class AuthenticationController {
 
 
     @PreAuthorize("hasRole('ADMIN')")
-    //@PostMapping("/registerAdmin")
+    @PostMapping("/registerAdmin")
     public ResponseEntity<RespDTO> registerAdmin (@Valid @RequestBody RegisterRequestDTO registerRequest){
-        System.out.println("DTO recibido: " + registerRequest);
-
         return  new ResponseEntity<>(this.userDetailsService.register(registerRequest, 2L), HttpStatus.OK);
     }
 

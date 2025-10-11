@@ -3,7 +3,7 @@ function parseJwt(token) {
     try {
         const base64Url = token.split('.')[1];
         const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        const jsonPayload = docedeURIComponent(
+        const jsonPayload = decodeURIComponent(
             atob(base64)
                 .split('')
                 .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
@@ -20,9 +20,10 @@ function parseJwt(token) {
 
 //login y //registro
 
-const API_URL = "http://localhost:8080/...";
+const API_URL = "http://localhost:8080/api/auth";
 
 document.addEventListener("DOMContentLoaded", () => {
+    
     const registerForm = document.getElementById("registerForm");
     const loginForm = document.getElementById("loginForm");
 
@@ -39,17 +40,17 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            const data = {
-                name: document.getElementById("name").value,
-                surname: document.getElementById("surname").value,
+            const data = {//fijate que las variables de la izquierda aca abajo 
+                //deben tener el mismo nombre que los atributos del DTO correspondiente
+                nombre: document.getElementById("name").value,
+                apellido: document.getElementById("surname").value,
                 dni: document.getElementById("dni").value,
-                date: document.getElementById("date").value,
-                direction: document.getElementById("direction").value,
+                fechaNac: document.getElementById("date").value,
+                direccion: document.getElementById("direction").value,
                 email: document.getElementById("email").value,
                 password: password
 
             };
-
             try {
                 const res = await fetch(`${API_URL}/register`, {
                     method: "POST",
@@ -60,8 +61,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (res.ok) {
                     alert("Registro exitoso. A continuación inicie sesión.");
                     window.location.href = "login.html";
-                } else {
+                }else {
                     alert("Error en el registro!");
+                    const errorHttp = await res.text();
+                    console.error(errorHttp);
+
                 }
             } catch (error) {
                 console.error("Error al conectar con el servidor:", error);
@@ -89,6 +93,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 if (!res.ok) {
                     alert("Credenciales incorrectas");
+                    const errorHttp = await res.text();
+                    console.log(errorHttp);
                     return;
                 }
 
@@ -105,7 +111,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 //redirigimos dependiendo del rol
                 if (result.role === "ADMIN") {
-                    window.location.href = "dashboard.html";
+                    window.location.href = "dashboard.html";//Aca no accede a la ruta, gpt dice que es como que no encuentra esa ruta
                 } else {
                     window.location.href = "index.html";
                 }
