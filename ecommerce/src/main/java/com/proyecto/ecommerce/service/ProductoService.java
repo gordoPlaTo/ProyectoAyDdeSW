@@ -7,6 +7,7 @@ import com.proyecto.ecommerce.model.Producto;
 import com.proyecto.ecommerce.repository.IIvaRepository;
 import com.proyecto.ecommerce.repository.IProductoRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +27,7 @@ public class ProductoService implements IProductoService {
         Producto prod = new Producto();
         prod.setNombre(prodDto.nombre().toLowerCase());
         prod.setDescripcion(prodDto.descripcion().toLowerCase());
+        prod.setStock(prodDto.stock());
         prod.setPrecio(prodDto.precio());
 
         IVA iva = ivaRepository.findById(prodDto.idIva())
@@ -88,7 +90,27 @@ public class ProductoService implements IProductoService {
     }
 
     @Override
-    public void modificarProducto(Long id, ProductoReqDTO prod) {
+    public void modificarProducto(Long id, ProductoReqDTO prodDTO) {
+        Producto prod = this.obtenerProductoById(id);
+        boolean fueModificado = false;
 
+        if(prodDTO.nombre()!=null && !prodDTO.nombre().isBlank()){
+            prod.setNombre(prodDTO.nombre());
+            fueModificado = true;
+        }
+        if(prodDTO.descripcion()!=null && !prodDTO.descripcion().isBlank()){
+            prod.setDescripcion(prodDTO.descripcion());
+            fueModificado = true;
+        }
+        if(prodDTO.precio()!=null){
+            prod.setPrecio(prodDTO.precio());
+            fueModificado = true;
+        }
+
+        if (!fueModificado){
+            throw new IllegalArgumentException("Debe modificar al menos un campo");
+        }
+
+        productoRepository.save(prod);
     }
 }
