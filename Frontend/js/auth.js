@@ -23,7 +23,7 @@ function parseJwt(token) {
 const API_URL = "http://localhost:8080/api/auth";
 
 document.addEventListener("DOMContentLoaded", () => {
-    
+
     const registerForm = document.getElementById("registerForm");
     const loginForm = document.getElementById("loginForm");
 
@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (res.ok) {
                     alert("Registro exitoso. A continuación inicie sesión.");
                     window.location.href = "login.html";
-                }else {
+                } else {
                     alert("Error en el registro!");
                     const errorHttp = await res.text();
                     console.error(errorHttp);
@@ -74,7 +74,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         });
     }
-    
+
     //login
     if (loginForm) {
         loginForm.addEventListener("submit", async (e) => {
@@ -101,23 +101,28 @@ document.addEventListener("DOMContentLoaded", () => {
                 const result = await res.json();
                 const token = result.token;
 
-                //guardamos el token
-                localStorage.setItem("token", token);
-                
-                //guardamos token y rol en localstorage
+                //guardamos token y datos en localstorage
                 localStorage.setItem("email", result.email);
-                localStorage.setItem("message", result.message);
+                localStorage.setItem("message", result.message)
                 localStorage.setItem("token", result.token);
 
-                //redirigimos dependiendo del rol
-                if (result.role === "ADMIN") {
-                    window.location.href = "dashboard.html";//Aca no accede a la ruta, gpt dice que es como que no encuentra esa ruta
+                //decodificamos el payload del jwt
+                const payload = JSON.parse(atob(token.split(".")[1]));
+                const authorities = payload.authorities;
+
+                console.log("Token payload:", payload);
+                console.log("Authorities:", authorities);
+
+                //verificamos el rol
+                if (authorities && authorities.includes("ADMIN")) {
+                    window.location.href = "../modules/dashboard.html";
                 } else {
-                    window.location.href = "index.html";
+                    window.location.href = "/index.html";
                 }
+
             } catch (err) {
-                console.error("Error de conexión", err);
-                alert("Error al conectarse con el servidor")
+                console.error("Error de conexión:", err);
+                alert("Error al conectarse con el servidor");
             }
 
         });
