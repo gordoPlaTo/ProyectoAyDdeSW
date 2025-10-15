@@ -1,0 +1,28 @@
+Query PostgreeSQL
+
+----------------------------------------------------------------------------------
+INSERT INTO IVA (categoria, porcentaje) VALUES
+('Exento', 0.00),
+('No Gravado / Exportaciones', 0.00),
+('General 21% - Productos de consumo general', 21.00),
+('Reducido 10.5% - Alimentos básicos y medicamentos', 10.50),
+('Incrementado 27% - Servicios y energía eléctrica', 27.00),
+('Servicios de telecomunicaciones', 27.00),
+('Transporte público o escolar', 10.50),
+('Servicios de agua y cloacas', 10.50),
+('Medicamentos y productos farmacéuticos', 10.50),
+('Alimentos de primera necesidad', 10.50),
+('Productos de lujo o electrónica', 21.00),
+('Automóviles y motovehículos', 21.00),
+('Educación privada', 0.00),
+('Salud pública', 0.00),
+('Servicios financieros y bancarios', 21.00),
+('Construcción y obras públicas', 10.50),
+('Importaciones', 21.00),
+('Reparaciones y mantenimiento general', 21.00),
+('Software y servicios digitales', 21.00);
+----------------------------------------------------------------------------------
+----------------------------------------------------------------------------------
+----------------------------------------------------------------------------------
+----------------------------------------------------------------------------------
+----------------------------------------------------------------------------------

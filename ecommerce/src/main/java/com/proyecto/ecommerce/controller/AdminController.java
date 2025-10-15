@@ -3,12 +3,10 @@ package com.proyecto.ecommerce.controller;
 import com.proyecto.ecommerce.dto.*;
 import com.proyecto.ecommerce.model.Emprendimiento;
 import com.proyecto.ecommerce.model.Material;
+import com.proyecto.ecommerce.model.Pedido;
 import com.proyecto.ecommerce.model.Producto;
 import com.proyecto.ecommerce.repository.IEmpRepository;
-import com.proyecto.ecommerce.service.ContactoService;
-import com.proyecto.ecommerce.service.EmprendimientoService;
-import com.proyecto.ecommerce.service.MaterialService;
-import com.proyecto.ecommerce.service.ProductoService;
+import com.proyecto.ecommerce.service.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -37,6 +35,9 @@ public class AdminController {
     @Autowired
     private MaterialService materialService;
 
+    @Autowired
+    private PedidoService pedidoService;
+
     @PutMapping("/emp/info/mod")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity modInfoEmprendimiento(@Valid @RequestBody InfoEmpRequestDTO infoReq){
@@ -61,10 +62,21 @@ public class AdminController {
     //-----------------------------------Pedidos--------------------------------------
 
     //Endpoinsts para:
-
      //Acceder a estadisticas (Ventas, Producto mas comprado)
      //Obtener Listado de Pedidos Completados
      //Obtener Listado de Pedidos en Proceso
+    @PostMapping("/pedido/crear")
+    @PreAuthorize("hasRole('CLIENTE')")
+    public ResponseEntity crearPedido(@Valid @RequestBody PedidoCrearReqDTO pedidoDTO){
+        pedidoService.crearPedido(pedidoDTO);
+        return ResponseEntity.ok("Se cargo el pedido correctamente.");
+    }
+
+    @GetMapping("/pedido/ventasrealizadas")
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<Pedido> obtenerPedidoByEmail(){
+        return pedidoService.obtenerPedidoByEmail();
+    }
 
 
     //-----------------------------------Productos--------------------------------------
@@ -98,14 +110,14 @@ public class AdminController {
 
     @GetMapping("/producto/obtenerTodos")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<Producto>> obtenerProductos(){
+    public ResponseEntity<List<ProductoRespDTO>> obtenerProductos(){
         return ResponseEntity.ok(productoService.obtenerProductos());
     }
 
     @PatchMapping("/producto/mod/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity modificarProd(@PathVariable Long id,
-                                        @Valid @RequestBody ProductoReqDTO prodDTO){
+                                        @Valid @RequestBody ProductoPatchDTO prodDTO){
         productoService.modificarProducto(id,prodDTO);
         return ResponseEntity.ok("Se modifico correctamente el producto seleccionado.");
     }
@@ -140,7 +152,7 @@ public ResponseEntity<Material> crearMaterial (@Valid @RequestBody MaterialReqDT
     @PatchMapping("/material/mod/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity modificarMat(@PathVariable Long id,
-                                        @Valid @RequestBody MaterialReqDTO matDTO){
+                                        @Valid @RequestBody MaterialesPatchDTO matDTO){
         materialService.modificarMaterial(id,matDTO);
         return ResponseEntity.ok("Se modifico correctamente el material seleccionado.");
     }

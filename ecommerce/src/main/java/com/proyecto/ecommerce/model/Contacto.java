@@ -22,4 +22,10 @@ public class Contacto {
     public Contacto(String descripcion) {
         this.descripcion = descripcion;
     }
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "emprendimiento_id",nullable = false)
+    private Emprendimiento emprendimiento;
+
+
 }

@@ -26,12 +26,16 @@ public class EmprendimientoService implements IEmprendimientoService{
     public void modInfoEmprendimiento(InfoEmpRequestDTO InfoReq) {
         Emprendimiento emp = empRepository.findById(1L)
                 .orElseThrow(() -> new EntityNotFoundException("No se encontro el emprendimiento."));
+        boolean fueModificado = false;
+
 
         if(InfoReq.titulo()!=null && !InfoReq.titulo().isBlank()){
             emp.setTitulo(InfoReq.titulo());
+            fueModificado = true;
         }
         if(InfoReq.descripcion()!=null && !InfoReq.descripcion().isBlank()){
             emp.setDescripcion(InfoReq.descripcion());
+
         }
         if(InfoReq.direccion()!=null && !InfoReq.direccion().isBlank()){
             emp.setDireccion(InfoReq.direccion());

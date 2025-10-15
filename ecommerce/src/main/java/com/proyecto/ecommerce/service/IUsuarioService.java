@@ -1,5 +1,7 @@
 package com.proyecto.ecommerce.service;
 
+import com.proyecto.ecommerce.model.Usuario;
+
 public interface IUsuarioService {
     //Modificar Datos personales
 
@@ -10,5 +12,8 @@ public interface IUsuarioService {
     //Solicitar Lista de Pedidos Realizados
 
     //Deshabilitar su cuenta
+
+
+    Usuario obtenerUsuarioByEmail(String email);
 
 }

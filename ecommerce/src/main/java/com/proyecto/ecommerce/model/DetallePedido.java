@@ -20,10 +20,16 @@ public class DetallePedido {
     private Long idDetalle;
 
     @Column(nullable = false)
-    private int Cantidad;
+    private int cantidad;
 
     @Column(precision = 10, scale = 2, nullable = false)
-    private BigDecimal total;
+    private BigDecimal precioNeto;
+
+    @Column(name = "montoIva", precision = 10, scale = 2, nullable = false)
+    private BigDecimal montoIva;
+
+    @Column( name = "precioIva", precision = 10, scale = 2, nullable = false)
+    private BigDecimal precioTotal;
 
     @ManyToOne
     @JoinColumn(name = "pedido")
@@ -33,5 +39,12 @@ public class DetallePedido {
     @JoinColumn(name = "producto_id")
     private Producto producto;
 
-
+    public DetallePedido(int cantidad, Pedido pedido, BigDecimal precioNeto, BigDecimal montoIva, BigDecimal precioTotal, Producto producto) {
+        this.cantidad = cantidad;
+        this.pedido = pedido;
+        this.precioNeto = precioNeto;
+        this.montoIva = montoIva;
+        this.precioTotal = precioTotal;
+        this.producto = producto;
+    }
 }

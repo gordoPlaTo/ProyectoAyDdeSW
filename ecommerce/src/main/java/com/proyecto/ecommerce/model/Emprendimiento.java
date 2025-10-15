@@ -1,11 +1,9 @@
 package com.proyecto.ecommerce.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
 import java.util.List;
 
 @Entity
@@ -24,7 +22,7 @@ public class Emprendimiento {
         this.titulo = titulo;
     }
 
-    @Column(length = 20)
+    @Column(length = 35)
     private String titulo;
 
     @Column(length = 120)
@@ -36,7 +34,7 @@ public class Emprendimiento {
     @Column(nullable = false)
     private boolean isMod;
     
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "emprendimiento",cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Contacto> listContacto;
 
 }

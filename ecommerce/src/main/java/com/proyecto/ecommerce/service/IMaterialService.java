@@ -2,6 +2,7 @@ package com.proyecto.ecommerce.service;
 
 
 import com.proyecto.ecommerce.dto.MaterialReqDTO;
+import com.proyecto.ecommerce.dto.MaterialesPatchDTO;
 import com.proyecto.ecommerce.model.Material;
 import com.proyecto.ecommerce.model.Producto;
 
@@ -13,12 +14,13 @@ public interface IMaterialService {
     Material obtenerMaterialById (Long id);
     List<Material> obtenerMateriales();
 
-    //Modificar Material (nombre y descripcion)
-    void modificarMaterial(Long id, MaterialReqDTO matDTO);
+    void modificarMaterial(Long id, MaterialesPatchDTO matDTO);
 
     //Reducir Stock
     void reducirStock(Long id, int stock);
 
     //Aumentar Stock
     void aumentarStock(Long id, int stock);
+
+    Material borrarMaterial(Long id);
 }

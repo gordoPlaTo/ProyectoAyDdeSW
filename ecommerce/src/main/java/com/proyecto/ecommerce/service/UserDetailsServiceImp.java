@@ -43,10 +43,13 @@ public class UserDetailsServiceImp implements UserDetailsService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private UsuarioService usuarioService;
+
+
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Usuario usuario = userRepository.findUserEntityByEmail(email.toLowerCase())
-                .orElseThrow(() -> new UsernameNotFoundException("El usuario "+ email + " no fue encontrado."));
+        Usuario usuario = usuarioService.obtenerUsuarioByEmail(email);
 
         List<GrantedAuthority> authorityList = new ArrayList<>();
 
@@ -58,7 +61,7 @@ public class UserDetailsServiceImp implements UserDetailsService {
                 .forEach(permission -> authorityList.add(new SimpleGrantedAuthority(permission.getPermissionName())));
 
         return new User(
-                usuario.getEmail(), //Usamos el Email como identificador principal en ves del username
+                usuario.getEmail(), //Usamos el Email como identificador principal en vez de username
                 usuario.getPassword(),
                 usuario.isEnabled(),
                 //Los siguientes tres estados los exige el framework, pero solo usaremos
@@ -119,7 +122,7 @@ public class UserDetailsServiceImp implements UserDetailsService {
         String dni = registerRequestDTO.dni();
         LocalDate fechaNac = registerRequestDTO.fechaNac();
         String direccion = registerRequestDTO.direccion().toLowerCase();
-        boolean acceptTerms = true;/*registerRequestDTO.acceptTerms();*/
+        boolean acceptTerms = registerRequestDTO.acceptTerms();
 
 
         if (userRepository.findUserEntityByEmail(email).isPresent()){

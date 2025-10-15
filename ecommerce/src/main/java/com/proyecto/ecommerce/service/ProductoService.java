@@ -1,5 +1,6 @@
 package com.proyecto.ecommerce.service;
 
+import com.proyecto.ecommerce.dto.ProductoPatchDTO;
 import com.proyecto.ecommerce.dto.ProductoReqDTO;
 import com.proyecto.ecommerce.dto.ProductoRespDTO;
 import com.proyecto.ecommerce.model.IVA;
@@ -21,6 +22,7 @@ public class ProductoService implements IProductoService {
     private IProductoRepository productoRepository;
     @Autowired
     private IIvaRepository ivaRepository;
+
 
     @Override
     public Producto crearProducto(ProductoReqDTO prodDto) {
@@ -63,8 +65,15 @@ public class ProductoService implements IProductoService {
     }
 
     @Override
-    public List<Producto> obtenerProductos() {
-        return productoRepository.findAll();
+    public List<ProductoRespDTO> obtenerProductos() {
+        return productoRepository.findAll().stream()
+                .map(p -> new ProductoRespDTO(
+                        p.getNombre(),
+                        p.getDescripcion(),
+                        p.getPrecio(),
+                        p.getIva()
+                ))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -90,7 +99,7 @@ public class ProductoService implements IProductoService {
     }
 
     @Override
-    public void modificarProducto(Long id, ProductoReqDTO prodDTO) {
+    public void modificarProducto(Long id, ProductoPatchDTO prodDTO) {
         Producto prod = this.obtenerProductoById(id);
         boolean fueModificado = false;
 
@@ -104,6 +113,13 @@ public class ProductoService implements IProductoService {
         }
         if(prodDTO.precio()!=null){
             prod.setPrecio(prodDTO.precio());
+            fueModificado = true;
+        }
+
+        if (id != 0){
+            IVA iva = ivaRepository.findById(id)
+                    .orElseThrow(()-> new EntityNotFoundException("No se encontro el IVA que quieres asignar."));
+            prod.setIva(iva);
             fueModificado = true;
         }
 

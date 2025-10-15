@@ -1,5 +1,6 @@
 package com.proyecto.ecommerce.service;
 
+import com.proyecto.ecommerce.dto.ProductoPatchDTO;
 import com.proyecto.ecommerce.dto.ProductoReqDTO;
 import com.proyecto.ecommerce.dto.ProductoRespDTO;
 import com.proyecto.ecommerce.model.Producto;
@@ -18,12 +19,12 @@ public interface IProductoService {
     List<ProductoRespDTO> obtenerProductosActivos();
 
     //Obtener Productos
-    List<Producto> obtenerProductos();
+    List<ProductoRespDTO> obtenerProductos();
 
 
     //Modificar Producto (nombre, descripcion, precio)
 
-    void modificarProducto(Long id, ProductoReqDTO prod);
+    void modificarProducto(Long id, ProductoPatchDTO prod);
 
     //Reducir Stock
     void reducirStock(Long id, int stock);

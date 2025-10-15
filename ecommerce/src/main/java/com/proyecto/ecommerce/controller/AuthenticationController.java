@@ -39,7 +39,7 @@ public class AuthenticationController {
     @PostMapping("/register")
     public ResponseEntity<RespDTO> registerClient (@Valid @RequestBody RegisterRequestDTO register){
         Emprendimiento emp = empRepository.findById(1L)
-                .orElseThrow(() -> new IllegalStateException("El emprendimiento principal no se definio eb la base de datos"));
+                .orElseThrow(() -> new IllegalStateException("El emprendimiento principal no se definio en la base de datos"));
 
         if(!emp.isMod()){
             return  ResponseEntity.status(HttpStatus.FORBIDDEN)

@@ -25,10 +25,5 @@ public class IVA {
 
     @Column(precision = 10, scale = 2, nullable = false)
     private BigDecimal porcentaje;
-
-    @OneToMany(mappedBy = "iva")
-    private List<Producto> listProd;
     
-
-
 }

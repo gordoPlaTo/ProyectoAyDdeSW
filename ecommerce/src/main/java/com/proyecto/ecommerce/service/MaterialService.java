@@ -1,9 +1,11 @@
 package com.proyecto.ecommerce.service;
 
 import com.proyecto.ecommerce.dto.MaterialReqDTO;
+import com.proyecto.ecommerce.dto.MaterialesPatchDTO;
 import com.proyecto.ecommerce.model.Material;
 import com.proyecto.ecommerce.repository.IMaterialRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -36,7 +38,7 @@ public class MaterialService implements IMaterialService{
     }
 
     @Override
-    public void modificarMaterial(Long id, MaterialReqDTO matDTO) {
+    public void modificarMaterial(Long id, MaterialesPatchDTO matDTO) {
         Material mat = this.obtenerMaterialById(id);
         boolean fueModificado = false;
 
@@ -71,5 +73,13 @@ public class MaterialService implements IMaterialService{
         Material mat = this.obtenerMaterialById(id);
         mat.setStock(mat.getStock() - stock);
         materialRepository.save(mat);
+    }
+
+    @Override
+    @Transactional
+    public Material borrarMaterial(Long id) {
+        Material mat = this.obtenerMaterialById(id);
+        materialRepository.delete(mat);
+        return mat;
     }
 }
