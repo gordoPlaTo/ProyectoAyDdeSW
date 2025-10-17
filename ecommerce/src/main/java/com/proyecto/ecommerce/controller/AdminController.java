@@ -1,17 +1,20 @@
 package com.proyecto.ecommerce.controller;
 
 import com.proyecto.ecommerce.dto.*;
-import com.proyecto.ecommerce.model.Emprendimiento;
+import com.proyecto.ecommerce.dto.EmprendimientoDTO.InfoEmpRequestDTO;
+import com.proyecto.ecommerce.dto.MaterialesDTO.MaterialReqDTO;
+import com.proyecto.ecommerce.dto.MaterialesDTO.MaterialesPatchDTO;
+import com.proyecto.ecommerce.dto.PedidosDTO.PedidoCrearReqDTO;
+import com.proyecto.ecommerce.dto.ProductosDTO.ProductoPatchDTO;
+import com.proyecto.ecommerce.dto.ProductosDTO.ProductoReqDTO;
+import com.proyecto.ecommerce.dto.ProductosDTO.ProductoRespDTO;
 import com.proyecto.ecommerce.model.Material;
 import com.proyecto.ecommerce.model.Pedido;
-import com.proyecto.ecommerce.model.Producto;
-import com.proyecto.ecommerce.repository.IEmpRepository;
 import com.proyecto.ecommerce.service.*;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -65,12 +68,7 @@ public class AdminController {
      //Acceder a estadisticas (Ventas, Producto mas comprado)
      //Obtener Listado de Pedidos Completados
      //Obtener Listado de Pedidos en Proceso
-    @PostMapping("/pedido/crear")
-    @PreAuthorize("hasRole('CLIENTE')")
-    public ResponseEntity crearPedido(@Valid @RequestBody PedidoCrearReqDTO pedidoDTO){
-        pedidoService.crearPedido(pedidoDTO);
-        return ResponseEntity.ok("Se cargo el pedido correctamente.");
-    }
+
 
     @GetMapping("/pedido/ventasrealizadas")
     @PreAuthorize("hasRole('ADMIN')")
@@ -81,10 +79,11 @@ public class AdminController {
 
     //-----------------------------------Productos--------------------------------------
 
-    @PostMapping("/producto/crear")
+    @PostMapping(value = "/producto/crear", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Producto> crearProducto (@Valid @RequestBody ProductoReqDTO prod){
-        return ResponseEntity.ok(productoService.crearProducto(prod));
+    public ResponseEntity crearProducto (@Valid @ModelAttribute ProductoReqDTO prod){
+        productoService.crearProducto(prod);
+        return ResponseEntity.ok("Se completo la carga del producto correctamente.");
     }
     @PatchMapping("/producto/reducir/{id}/stock")
     @PreAuthorize("hasRole('ADMIN')")

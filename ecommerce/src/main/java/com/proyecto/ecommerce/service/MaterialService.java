@@ -1,7 +1,7 @@
 package com.proyecto.ecommerce.service;
 
-import com.proyecto.ecommerce.dto.MaterialReqDTO;
-import com.proyecto.ecommerce.dto.MaterialesPatchDTO;
+import com.proyecto.ecommerce.dto.MaterialesDTO.MaterialReqDTO;
+import com.proyecto.ecommerce.dto.MaterialesDTO.MaterialesPatchDTO;
 import com.proyecto.ecommerce.model.Material;
 import com.proyecto.ecommerce.repository.IMaterialRepository;
 import jakarta.persistence.EntityNotFoundException;

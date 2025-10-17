@@ -1,6 +1,6 @@
 package com.proyecto.ecommerce.controller;
 
-import com.proyecto.ecommerce.dto.PedidoCrearReqDTO;
+import com.proyecto.ecommerce.dto.PedidosDTO.PedidoCrearReqDTO;
 import com.proyecto.ecommerce.service.PedidoService;
 import com.proyecto.ecommerce.service.UsuarioService;
 import jakarta.validation.Valid;
@@ -18,18 +18,6 @@ public class UsuarioController {
     @Autowired
     private UsuarioService usuarioService;
 
-    @Autowired
-    private PedidoService pedidoService;
 
-    //ModificarDatos
-
-    //Solicitar Pedidos del Usuario
-
-    @PostMapping("/pedido/crear")
-    public ResponseEntity crearPedido (@Valid @RequestBody PedidoCrearReqDTO pedidoDTO)
-    {
-        pedidoService.crearPedido(pedidoDTO);
-        return ResponseEntity.ok("Se creo el pedido con exito.");
-    }
 
 }

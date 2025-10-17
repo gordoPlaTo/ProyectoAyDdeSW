@@ -1,11 +1,8 @@
-package com.proyecto.ecommerce.dto;
+package com.proyecto.ecommerce.dto.EmprendimientoDTO;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.proyecto.ecommerce.model.Contacto;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-
-import java.util.List;
 
 @JsonPropertyOrder
 public record InfoEmpRequestDTO(

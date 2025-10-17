@@ -1,19 +1,17 @@
 package com.proyecto.ecommerce.service;
 
-import com.proyecto.ecommerce.dto.ProductoPatchDTO;
-import com.proyecto.ecommerce.dto.ProductoReqDTO;
-import com.proyecto.ecommerce.dto.ProductoRespDTO;
+import com.proyecto.ecommerce.dto.ProductosDTO.ProductoPatchDTO;
+import com.proyecto.ecommerce.dto.ProductosDTO.ProductoReqDTO;
+import com.proyecto.ecommerce.dto.ProductosDTO.ProductoRespDTO;
 import com.proyecto.ecommerce.model.IVA;
 import com.proyecto.ecommerce.model.Producto;
 import com.proyecto.ecommerce.repository.IIvaRepository;
 import com.proyecto.ecommerce.repository.IProductoRepository;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,10 +20,11 @@ public class ProductoService implements IProductoService {
     private IProductoRepository productoRepository;
     @Autowired
     private IIvaRepository ivaRepository;
-
+    @Autowired
+    private CloudinaryService cloudinaryService;
 
     @Override
-    public Producto crearProducto(ProductoReqDTO prodDto) {
+    public void crearProducto(ProductoReqDTO prodDto) {
         Producto prod = new Producto();
         prod.setNombre(prodDto.nombre().toLowerCase());
         prod.setDescripcion(prodDto.descripcion().toLowerCase());
@@ -35,10 +34,16 @@ public class ProductoService implements IProductoService {
         IVA iva = ivaRepository.findById(prodDto.idIva())
                         .orElseThrow(() -> new EntityNotFoundException("No se encontro una categoria de IVA con el id " + prodDto.idIva()));
 
+        if (prodDto.imgProducto() == null || prodDto.imgProducto().isEmpty()) {
+            throw new IllegalArgumentException("Debe subir una imagen para el producto.");
+        }
+
+        prod.setUrl(cloudinaryService.subirImagen(prodDto.imgProducto(),"producto"));
+
         prod.setIva(iva);
         prod.setEnable(true);
 
-        return productoRepository.save(prod);
+        productoRepository.save(prod);
     }
 
     @Override

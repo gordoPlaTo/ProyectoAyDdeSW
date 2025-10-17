@@ -1,12 +1,11 @@
 package com.proyecto.ecommerce.controller;
 
 import com.proyecto.ecommerce.dto.*;
+import com.proyecto.ecommerce.dto.authDTO.AuthLoginRequestDTO;
+import com.proyecto.ecommerce.dto.authDTO.AuthResponseDTO;
+import com.proyecto.ecommerce.dto.authDTO.RegisterRequestDTO;
 import com.proyecto.ecommerce.model.Emprendimiento;
-import com.proyecto.ecommerce.model.Permission;
-import com.proyecto.ecommerce.model.Role;
 import com.proyecto.ecommerce.repository.IEmpRepository;
-import com.proyecto.ecommerce.repository.IPermissionRepository;
-import com.proyecto.ecommerce.repository.IRoleRepository;
 import com.proyecto.ecommerce.service.UserDetailsServiceImp;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +15,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.*;
 
 @RestController
 @RequestMapping("/api/auth")

@@ -1,16 +1,15 @@
 package com.proyecto.ecommerce.service;
 
-import com.proyecto.ecommerce.dto.ProductoPatchDTO;
-import com.proyecto.ecommerce.dto.ProductoReqDTO;
-import com.proyecto.ecommerce.dto.ProductoRespDTO;
+import com.proyecto.ecommerce.dto.ProductosDTO.ProductoPatchDTO;
+import com.proyecto.ecommerce.dto.ProductosDTO.ProductoReqDTO;
+import com.proyecto.ecommerce.dto.ProductosDTO.ProductoRespDTO;
 import com.proyecto.ecommerce.model.Producto;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface IProductoService {
     //Crear Producto
-    Producto crearProducto(ProductoReqDTO prod);
+    void crearProducto(ProductoReqDTO prod);
 
     //Obtener Producto
     Producto obtenerProductoById (Long id);

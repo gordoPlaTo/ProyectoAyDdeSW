@@ -1,7 +1,8 @@
-package com.proyecto.ecommerce.dto;
+package com.proyecto.ecommerce.dto.ProductosDTO;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import jakarta.validation.constraints.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 
@@ -31,6 +32,9 @@ public record ProductoReqDTO(
 
         @NotNull(message = "El ID del IVA es obligatorio")
         @Min(value = 1, message = "El ID del IVA debe ser un valor positivo válido")
-        Long idIva
+        Long idIva,
+
+        MultipartFile imgProducto
+
 ) {
 }

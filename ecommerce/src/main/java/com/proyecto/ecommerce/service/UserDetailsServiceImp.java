@@ -1,6 +1,9 @@
 package com.proyecto.ecommerce.service;
 
 import com.proyecto.ecommerce.dto.*;
+import com.proyecto.ecommerce.dto.authDTO.AuthLoginRequestDTO;
+import com.proyecto.ecommerce.dto.authDTO.AuthResponseDTO;
+import com.proyecto.ecommerce.dto.authDTO.RegisterRequestDTO;
 import com.proyecto.ecommerce.model.Role;
 import com.proyecto.ecommerce.model.Usuario;
 import com.proyecto.ecommerce.repository.IRoleRepository;

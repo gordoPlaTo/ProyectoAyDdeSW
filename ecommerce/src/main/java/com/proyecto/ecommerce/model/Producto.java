@@ -40,6 +40,9 @@ public class Producto {
     @Column(nullable = false)
     private int stock;
 
+    @Column(name = "imgPedido")
+    private String url;
+
     private boolean isEnable = true;
 
     @ManyToOne

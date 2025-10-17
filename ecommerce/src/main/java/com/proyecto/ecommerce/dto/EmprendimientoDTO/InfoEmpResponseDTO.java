@@ -1,4 +1,4 @@
-package com.proyecto.ecommerce.dto;
+package com.proyecto.ecommerce.dto.EmprendimientoDTO;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.proyecto.ecommerce.model.Contacto;

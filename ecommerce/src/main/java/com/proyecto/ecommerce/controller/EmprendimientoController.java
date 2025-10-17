@@ -1,7 +1,7 @@
 package com.proyecto.ecommerce.controller;
 
-import com.proyecto.ecommerce.dto.InfoEmpResponseDTO;
-import com.proyecto.ecommerce.dto.ProductoRespDTO;
+import com.proyecto.ecommerce.dto.EmprendimientoDTO.InfoEmpResponseDTO;
+import com.proyecto.ecommerce.dto.ProductosDTO.ProductoRespDTO;
 import com.proyecto.ecommerce.model.Contacto;
 import com.proyecto.ecommerce.service.ContactoService;
 import com.proyecto.ecommerce.service.EmprendimientoService;

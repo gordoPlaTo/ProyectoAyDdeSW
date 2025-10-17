@@ -26,6 +26,9 @@ public class Pedido {
     @Column(precision = 10, scale = 2)
     private BigDecimal totalCompra;
 
+    @Column(name = "urlComprobante", nullable = true)
+    private String  urlComprobante;
+
     //Esto representa en realidad una relacion N a M. Pero como la tabla intermedia resultante
     //requiere parametros adicionales se designa 1 a N con l a tabla intermedia
     @OneToMany(mappedBy = "pedido")

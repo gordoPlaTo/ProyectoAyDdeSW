@@ -1,4 +1,4 @@
-package com.proyecto.ecommerce.dto;
+package com.proyecto.ecommerce.dto.authDTO;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import jakarta.validation.constraints.*;

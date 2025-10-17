@@ -1,6 +1,6 @@
 package com.proyecto.ecommerce.repository;
 
-import com.proyecto.ecommerce.dto.ProductoVentaDTO;
+import com.proyecto.ecommerce.dto.ProductosDTO.ProductoVentaDTO;
 import com.proyecto.ecommerce.model.Pedido;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -15,7 +15,7 @@ public interface IPedidoRepository extends JpaRepository<Pedido,Long> {
 
 
     @Query("""
-        SELECT new com.proyecto.ecommerce.dto.ProductoVentaDTO(
+        SELECT new com.proyecto.ecommerce.dto.ProductosDTO.ProductoVentaDTO(
             p.nombre,
             SUM(dp.precioTotal),
             SUM(dp.cantidad),

@@ -1,7 +1,8 @@
 package com.proyecto.ecommerce.service;
 
-import com.proyecto.ecommerce.dto.PedidoCrearReqDTO;
-import com.proyecto.ecommerce.dto.ProductoVentaDTO;
+import com.proyecto.ecommerce.dto.PedidosDTO.ComprobanteReqDTO;
+import com.proyecto.ecommerce.dto.PedidosDTO.PedidoCrearReqDTO;
+import com.proyecto.ecommerce.dto.ProductosDTO.ProductoVentaDTO;
 import com.proyecto.ecommerce.model.Pedido;
 
 import java.util.List;
@@ -22,5 +23,7 @@ public interface IPedidoService {
 
 
     void crearPedido(PedidoCrearReqDTO pedido);
+
+    void adjuntarComprobante(ComprobanteReqDTO comprobante);
 
 }

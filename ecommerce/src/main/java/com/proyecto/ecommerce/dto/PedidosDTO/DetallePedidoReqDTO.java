@@ -1,4 +1,4 @@
-package com.proyecto.ecommerce.dto;
+package com.proyecto.ecommerce.dto.PedidosDTO;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 

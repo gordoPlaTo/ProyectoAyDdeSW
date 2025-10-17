@@ -1,7 +1,7 @@
 package com.proyecto.ecommerce.service;
 
-import com.proyecto.ecommerce.dto.InfoEmpRequestDTO;
-import com.proyecto.ecommerce.dto.InfoEmpResponseDTO;
+import com.proyecto.ecommerce.dto.EmprendimientoDTO.InfoEmpRequestDTO;
+import com.proyecto.ecommerce.dto.EmprendimientoDTO.InfoEmpResponseDTO;
 import com.proyecto.ecommerce.model.Emprendimiento;
 import com.proyecto.ecommerce.repository.IEmpRepository;
 import jakarta.persistence.EntityNotFoundException;
