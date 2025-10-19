@@ -25,10 +25,10 @@ public class DetallePedido {
     @Column(precision = 10, scale = 2, nullable = false)
     private BigDecimal precioNeto;
 
-    @Column(name = "montoIva", precision = 10, scale = 2, nullable = false)
+    @Column(precision = 10, scale = 2, nullable = false)
     private BigDecimal montoIva;
 
-    @Column( name = "precioIva", precision = 10, scale = 2, nullable = false)
+    @Column( name = "total", precision = 10, scale = 2, nullable = false)
     private BigDecimal precioTotal;
 
     @ManyToOne

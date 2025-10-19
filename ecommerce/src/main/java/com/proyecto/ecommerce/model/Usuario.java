@@ -12,10 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "Users")
@@ -78,7 +75,7 @@ public class Usuario {
     private Set<Role> rolesList = new HashSet<>();
 
     @OneToMany(mappedBy = "usuario")
-    private List<Pedido> listPedido;
+    private List<Pedido> listPedido = new ArrayList<>();
 
 
 }

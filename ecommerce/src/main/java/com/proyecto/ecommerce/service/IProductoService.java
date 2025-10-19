@@ -33,4 +33,6 @@ public interface IProductoService {
 
     //Habilitar o Deshabilitar Producto
     void habDesProducto (Long id);
+
+    boolean elProductoExiste (Long id);
 }

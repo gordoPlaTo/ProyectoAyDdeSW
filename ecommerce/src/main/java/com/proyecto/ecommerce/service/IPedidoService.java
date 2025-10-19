@@ -2,6 +2,7 @@ package com.proyecto.ecommerce.service;
 
 import com.proyecto.ecommerce.dto.PedidosDTO.ComprobanteReqDTO;
 import com.proyecto.ecommerce.dto.PedidosDTO.PedidoCrearReqDTO;
+import com.proyecto.ecommerce.dto.PedidosDTO.PedidosClienteDTO;
 import com.proyecto.ecommerce.dto.ProductosDTO.ProductoVentaDTO;
 import com.proyecto.ecommerce.model.Pedido;
 
@@ -19,11 +20,13 @@ public interface IPedidoService {
     Pedido obtenerPedidoByIdEmail(Long id, String email);
 
     //Obtiene los pedidos hechos por un cliente a traves de su email (claim token)
-    List<Pedido> obtenerPedidoByEmail();
+    List<PedidosClienteDTO> obtenerPedidoByEmail();
 
 
     void crearPedido(PedidoCrearReqDTO pedido);
 
     void adjuntarComprobante(ComprobanteReqDTO comprobante);
+
+    void cancelarPedido(Long id);
 
 }

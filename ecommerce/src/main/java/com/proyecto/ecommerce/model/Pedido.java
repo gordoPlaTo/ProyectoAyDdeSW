@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -31,8 +32,8 @@ public class Pedido {
 
     //Esto representa en realidad una relacion N a M. Pero como la tabla intermedia resultante
     //requiere parametros adicionales se designa 1 a N con l a tabla intermedia
-    @OneToMany(mappedBy = "pedido")
-    private List<DetallePedido> listDetallePedido;
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<DetallePedido> listDetallePedido = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "usuario_id")

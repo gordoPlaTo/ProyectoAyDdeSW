@@ -100,7 +100,12 @@ public class ProductoService implements IProductoService {
     @Override
     public Producto obtenerProductoById(Long id) {
         return productoRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException("Algo sucedio mal y no se encontro el producto con id " + id ));
+                () -> new EntityNotFoundException("Algo sucedio mal, no se encontro o no existe el producto con id " + id ));
+    }
+
+    @Override
+    public boolean elProductoExiste(Long id) {
+        return productoRepository.existsById(id);
     }
 
     @Override

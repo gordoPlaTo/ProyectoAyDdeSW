@@ -2,11 +2,13 @@ package com.proyecto.ecommerce.config.filter;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.proyecto.ecommerce.service.UserDetailsServiceImp;
 import com.proyecto.ecommerce.utils.JwtUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -14,6 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 
@@ -27,6 +30,7 @@ public class JwtTokenValidator extends OncePerRequestFilter {
         this.jwtUtils = jwtUtils;
     }
 
+
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,
                                     @NonNull HttpServletResponse response,
@@ -37,19 +41,19 @@ public class JwtTokenValidator extends OncePerRequestFilter {
         String jwtToken = cachedRequest.getHeader(HttpHeaders.AUTHORIZATION);
 
          try{
-            if (jwtToken!=null){
-                jwtToken = jwtToken.substring(7);
-                DecodedJWT decodedJWT = jwtUtils.validateToken(jwtToken);
+             if (jwtToken!=null){
+                 jwtToken = jwtToken.substring(7);
+                 DecodedJWT decodedJWT = jwtUtils.validateToken(jwtToken);
 
-                String username = jwtUtils.extractUsername(decodedJWT);
-                String authorities = jwtUtils.getSpecificClaim(decodedJWT,"authorities").asString();
+                 String email = jwtUtils.extractUsername(decodedJWT);
+                 String authorities = jwtUtils.getSpecificClaim(decodedJWT,"authorities").asString();
 
-                Collection authorityList = AuthorityUtils.commaSeparatedStringToAuthorityList(authorities);
-                SecurityContext context = SecurityContextHolder.getContext();
-                Authentication authentication = new UsernamePasswordAuthenticationToken(username,null,authorityList);
-                context.setAuthentication(authentication);
-                SecurityContextHolder.setContext(context);
-            }
+                 Collection authorityList = AuthorityUtils.commaSeparatedStringToAuthorityList(authorities);
+                 SecurityContext context = SecurityContextHolder.getContext();
+                 Authentication authentication = new UsernamePasswordAuthenticationToken(email,null,authorityList);
+                 context.setAuthentication(authentication);
+                 SecurityContextHolder.setContext(context);
+             }
 
                 filterChain.doFilter(cachedRequest,response);
          }catch (JWTVerificationException ex) {

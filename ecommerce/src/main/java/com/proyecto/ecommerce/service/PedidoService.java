@@ -1,25 +1,30 @@
 package com.proyecto.ecommerce.service;
 
 import com.proyecto.ecommerce.dto.PedidosDTO.ComprobanteReqDTO;
+import com.proyecto.ecommerce.dto.PedidosDTO.DetallePedidoRespDTO;
 import com.proyecto.ecommerce.dto.PedidosDTO.PedidoCrearReqDTO;
+import com.proyecto.ecommerce.dto.PedidosDTO.PedidosClienteDTO;
 import com.proyecto.ecommerce.dto.ProductosDTO.ProductoVentaDTO;
-import com.proyecto.ecommerce.model.DetallePedido;
-import com.proyecto.ecommerce.model.Pedido;
-import com.proyecto.ecommerce.model.Producto;
-import com.proyecto.ecommerce.model.Usuario;
+import com.proyecto.ecommerce.model.*;
 import com.proyecto.ecommerce.repository.IEstadoPedido;
 import com.proyecto.ecommerce.repository.IPedidoRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 public class PedidoService implements IPedidoService {
+
+
     @Autowired
     private IPedidoRepository pedidoRepository;
 
@@ -41,9 +46,32 @@ public class PedidoService implements IPedidoService {
     }
 
     @Override //obtenemos los pedidos del cliente
-    public List<Pedido> obtenerPedidoByEmail() { //Obtenemos el subject del token almacenado en el security context
+    public List<PedidosClienteDTO> obtenerPedidoByEmail() {
+        //Obtenemos el subject del token almacenado en el security context
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        return pedidoRepository.obtenerPedidosPorEmail(email);
+
+        return pedidoRepository.obtenerPedidosPorEmail(email).stream()
+                .map(ped -> new PedidosClienteDTO(
+                        ped.getIdPedido(),
+                        ped.getFechaCreacion(),
+                        ped.getTotalCompra(),
+                        ped.getUrlComprobante(),
+                        ped.getListDetallePedido().stream()
+                                .map(det -> new DetallePedidoRespDTO(
+                                        det.getIdDetalle(),
+                                        det.getCantidad(),
+                                        det.getPrecioNeto(),
+                                        det.getMontoIva(),
+                                        det.getPrecioTotal(),
+                                        det.getProducto().getNombre()
+                                ))
+                                .toList(),
+                        ped.getUsuario().getUsername(),
+                        ped.getUsuario().getApellido(),
+                        ped.getUsuario().getEmail(),
+                        ped.getEstadoPedido().getDescripcion()
+                ))
+                .toList();
     }
 
 
@@ -51,9 +79,18 @@ public class PedidoService implements IPedidoService {
     public void crearPedido(PedidoCrearReqDTO pedido) {
         Pedido ped = new Pedido();
         ped.setFechaCreacion(LocalDate.now());
+        //Validar si existe el producto
+
+
         List<DetallePedido> listDetalle = pedido.listProductos().stream()
                         .map(det ->{
                             Producto producto = productoService.obtenerProductoById(det.id());
+                            if(!productoService.elProductoExiste(det.id())){
+                                throw new NoSuchElementException("Uno de los producto que intentas comprar no existe. ID buscado: " + det.id() );
+                            }
+
+                            productoService.reducirStock(det.id(), det.cantidad());
+
                             BigDecimal iva = producto.getIva().getPorcentaje();
 
                             BigDecimal precioNeto = producto.getPrecio()
@@ -74,8 +111,9 @@ public class PedidoService implements IPedidoService {
 
         ped.setTotalCompra(totalCompra);
 
-        Usuario usu = usuarioService.obtenerUsuarioByEmail(
-                SecurityContextHolder.getContext().getAuthentication().getName());
+
+        String email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+        Usuario usu = usuarioService.obtenerUsuarioByEmail(email);
         ped.setUsuario(usu);
 
         ped.setEstadoPedido(estadoPedido.findById(1L)
@@ -101,14 +139,25 @@ public class PedidoService implements IPedidoService {
 
     @Override
     public Pedido obtenerPedidoByIdEmail(Long id,String email) { //Lo usa el admin para buscar el pedido del cliente
-
-
-
-
-
         return pedidoRepository.obtenerPedidoPorIdYEmail(id,email)
-                .orElseThrow(()-> new NoSuchElementException("No se encontro el pedido que estas buscando, puede ser" +
+                .orElseThrow(()-> new EntityNotFoundException("No se encontro el pedido que estas buscando, puede ser" +
                         " por un id o email incorrecto."));
+    }
+
+    @Override
+    public void cancelarPedido(Long id) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+
+        Pedido ped = pedidoRepository.obtenerPedidoPorIdYEmail(id,email)
+                .orElseThrow(()-> new EntityNotFoundException("No se encontro un pedido con esa Id en la cuenta del usuario."));
+
+
+        EstadoPedido estado = estadoPedido.findById(3L)
+                .orElseThrow(()-> new EntityNotFoundException("No se encontro el estado a asignar al pedido."));
+
+        ped.setEstadoPedido(estado);
+
+        pedidoRepository.save(ped);
     }
 
 }

@@ -7,19 +7,20 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.NoSuchElementException;
+
 @Service
 public class UsuarioService implements  IUsuarioService{
+    //Este seria el service del modelo con el CRUD basico
+
     @Autowired
     private IUserRepository userRepository;
 
     @Override
     public Usuario obtenerUsuarioByEmail(String email) {
-        String em = email; //Esto se hace, ya que si paso el parametro el userDetailsService devuelve la entidad
-        //completa que esta almacenada en el contexto. Grave porque puede mostrar las credenciales esperadas en el
-        // mensage de error.
 
-        return userRepository.findUserEntityByEmail(email.toLowerCase())
-                .orElseThrow(() -> new UsernameNotFoundException("El usuario "+ em + " no fue encontrado."));
+        return userRepository.findUserEntityByEmail(email)
+                .orElseThrow(() -> new NoSuchElementException("El usuario con el email especificado no fue encontrado."));
     }
 
     //Obtener la informacion de perfil

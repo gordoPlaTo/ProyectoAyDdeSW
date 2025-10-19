@@ -56,8 +56,7 @@ public class EmprendimientoController{
         return ResponseEntity.ok().body(false);
     }
 
-    @PostMapping("/productos/obtenerActivos")
-    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/productos/obtenerActivos")
     public ResponseEntity<List<ProductoRespDTO>> obtenerProductosActivos(){
         return ResponseEntity.ok(productoService.obtenerProductosActivos());
     }

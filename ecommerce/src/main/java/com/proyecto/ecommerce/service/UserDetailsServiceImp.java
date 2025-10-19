@@ -94,7 +94,7 @@ public class UserDetailsServiceImp implements UserDetailsService {
         }
 
         return new UsernamePasswordAuthenticationToken(
-                userDetails,
+                userDetails.getUsername(),
                 userDetails.getPassword(),
                 userDetails.getAuthorities());
     }

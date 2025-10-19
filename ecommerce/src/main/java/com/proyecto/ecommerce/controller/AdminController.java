@@ -5,9 +5,11 @@ import com.proyecto.ecommerce.dto.EmprendimientoDTO.InfoEmpRequestDTO;
 import com.proyecto.ecommerce.dto.MaterialesDTO.MaterialReqDTO;
 import com.proyecto.ecommerce.dto.MaterialesDTO.MaterialesPatchDTO;
 import com.proyecto.ecommerce.dto.PedidosDTO.PedidoCrearReqDTO;
+import com.proyecto.ecommerce.dto.PedidosDTO.PedidosClienteDTO;
 import com.proyecto.ecommerce.dto.ProductosDTO.ProductoPatchDTO;
 import com.proyecto.ecommerce.dto.ProductosDTO.ProductoReqDTO;
 import com.proyecto.ecommerce.dto.ProductosDTO.ProductoRespDTO;
+import com.proyecto.ecommerce.dto.ProductosDTO.ProductoVentaDTO;
 import com.proyecto.ecommerce.model.Material;
 import com.proyecto.ecommerce.model.Pedido;
 import com.proyecto.ecommerce.service.*;
@@ -66,15 +68,19 @@ public class AdminController {
 
     //Endpoinsts para:
      //Acceder a estadisticas (Ventas, Producto mas comprado)
-     //Obtener Listado de Pedidos Completados
-     //Obtener Listado de Pedidos en Proceso
-
-
-    @GetMapping("/pedido/ventasrealizadas")
+    @GetMapping("/pedido/ventasRealizadas")
     @PreAuthorize("hasRole('ADMIN')")
-    public List<Pedido> obtenerPedidoByEmail(){
-        return pedidoService.obtenerPedidoByEmail();
+    public List<ProductoVentaDTO> obtenerVentas(){
+        return pedidoService.ventasRealizadas();
     }
+     //Obtener Listado de Pedidos Completados
+
+     //Obtener Listado de Pedidos
+     @GetMapping("/pedido/obtenerPedidos")
+     @PreAuthorize("hasRole('ADMIN')")
+     public List<Pedido> obtenerPedidos(){
+         return pedidoService.obtenerPedidos();
+     }
 
 
     //-----------------------------------Productos--------------------------------------
