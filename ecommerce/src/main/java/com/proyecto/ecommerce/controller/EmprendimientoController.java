@@ -51,9 +51,8 @@ public class EmprendimientoController{
     //Método para validar que el cliente principal, cambie datos antes de seguir
     //con cualquier otra funcionalidad del sistema
     @GetMapping("/emp/valModAcces")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Boolean> datosEstanCargados(){
-        return ResponseEntity.ok().body(false);
+        return ResponseEntity.ok(emprendimientoService.ValModAcces());
     }
 
     @GetMapping("/productos/obtenerActivos")

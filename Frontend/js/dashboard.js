@@ -64,6 +64,9 @@ document.addEventListener("DOMContentLoaded", () => {
         <label>ID de IVA:</label>
         <input type="number" id="idIva" min="1" required>
 
+        <label>Imágen representativa</label>
+        <input type="file" id="image" name="image" accept="image/*" required></input>
+
         <button type="submit">Guardar producto</button>
       </form>
     `;
@@ -71,22 +74,29 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("productForm").addEventListener("submit", async (e) => {
       e.preventDefault();
 
-      const producto = {
-        nombre: document.getElementById("nombre").value,
-        descripcion: document.getElementById("descripcion").value,
-        precio: parseFloat(document.getElementById("precio").value),
-        stock: parseInt(document.getElementById("stock").value),
-        idIva: parseInt(document.getElementById("idIva").value)
-      };
+      const formData = new FormData();
+
+      const nombre = document.getElementById("nombre").value
+      const descripcion = document.getElementById("descripcion").value
+      const  precio = parseFloat(document.getElementById("precio").value)
+      const  stock = parseInt(document.getElementById("stock").value)
+      const idIva = parseInt(document.getElementById("idIva").value)
+      const imgProducto = document.getElementById("image").files[0]
+        
+        formData.append("nombre", nombre)
+        formData.append("descripcion", descripcion)
+        formData.append("precio", precio )
+        formData.append("stock", stock)
+        formData.append("idIva", idIva)
+        formData.append("imgProducto", imgProducto)
 
       try {
-        const res = await fetch(`${API_URL}/producto/crear`, {
+        const res = await fetch(`${API_URL}/admin/producto/crear`, {
           method: "POST",
           headers: {
-            "Content-Type": "application/json",
             "Authorization": `Bearer ${token}`
           },
-          body: JSON.stringify(producto)
+          body: formData
         });
 
         if (res.ok) {
@@ -124,7 +134,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    const res = await fetch(`${API_URL}/producto/obtenerTodos`, {
+    const res = await fetch(`${API_URL}/admin/producto/obtenerTodos`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

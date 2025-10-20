@@ -18,6 +18,8 @@ public class UsuarioController {
     @Autowired
     private UsuarioService usuarioService;
 
+    //Obtener Datos
+    
 
 
 }

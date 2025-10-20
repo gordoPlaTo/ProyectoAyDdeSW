@@ -76,7 +76,6 @@ public class MaterialService implements IMaterialService{
     }
 
     @Override
-    @Transactional
     public Material borrarMaterial(Long id) {
         Material mat = this.obtenerMaterialById(id);
         materialRepository.delete(mat);

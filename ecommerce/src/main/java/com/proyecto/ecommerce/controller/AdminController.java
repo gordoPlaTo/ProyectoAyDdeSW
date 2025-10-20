@@ -5,7 +5,6 @@ import com.proyecto.ecommerce.dto.EmprendimientoDTO.InfoEmpRequestDTO;
 import com.proyecto.ecommerce.dto.MaterialesDTO.MaterialReqDTO;
 import com.proyecto.ecommerce.dto.MaterialesDTO.MaterialesPatchDTO;
 import com.proyecto.ecommerce.dto.PedidosDTO.PedidoCrearReqDTO;
-import com.proyecto.ecommerce.dto.PedidosDTO.PedidosClienteDTO;
 import com.proyecto.ecommerce.dto.ProductosDTO.ProductoPatchDTO;
 import com.proyecto.ecommerce.dto.ProductosDTO.ProductoReqDTO;
 import com.proyecto.ecommerce.dto.ProductosDTO.ProductoRespDTO;
@@ -81,6 +80,8 @@ public class AdminController {
      public List<Pedido> obtenerPedidos(){
          return pedidoService.obtenerPedidos();
      }
+
+
 
 
     //-----------------------------------Productos--------------------------------------
@@ -162,4 +163,10 @@ public ResponseEntity<Material> crearMaterial (@Valid @RequestBody MaterialReqDT
         return ResponseEntity.ok("Se modifico correctamente el material seleccionado.");
     }
 
+    @DeleteMapping("/material/borrar/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity borrarMaterial (@PathVariable Long id){
+        materialService.borrarMaterial(id);
+        return ResponseEntity.ok("Se borro el material con exito.");
+    }
 }
