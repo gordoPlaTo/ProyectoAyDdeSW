@@ -27,7 +27,7 @@ public class Pedido {
     @Column(precision = 10, scale = 2)
     private BigDecimal totalCompra;
 
-    @Column(name = "urlComprobante", nullable = true)
+    @Column(name = "urlComprobante")
     private String  urlComprobante;
 
     //Esto representa en realidad una relacion N a M. Pero como la tabla intermedia resultante

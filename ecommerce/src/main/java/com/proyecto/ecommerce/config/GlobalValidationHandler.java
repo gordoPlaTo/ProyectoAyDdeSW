@@ -104,7 +104,6 @@ public class GlobalValidationHandler {
     @ExceptionHandler(AccessDeniedException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public Map<String, Object> handleAccessDenied(AccessDeniedException ex) {
-
         Map<String, Object> response = new LinkedHashMap<>();
         response.put("status", HttpStatus.FORBIDDEN.value());
         response.put("message", "No tiene permisos para acceder a este recurso. " + ex.getMessage());

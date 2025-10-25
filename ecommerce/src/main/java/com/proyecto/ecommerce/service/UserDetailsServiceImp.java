@@ -29,10 +29,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class UserDetailsServiceImp implements UserDetailsService {
@@ -46,13 +43,10 @@ public class UserDetailsServiceImp implements UserDetailsService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private UsuarioService usuarioService;
-
-
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Usuario usuario = usuarioService.obtenerUsuarioByEmail(email);
+        Usuario usuario = userRepository.findUserEntityByEmail(email)
+                .orElseThrow(() -> new NoSuchElementException("El usuario con el email especificado no fue encontrado."));
 
         List<GrantedAuthority> authorityList = new ArrayList<>();
 
@@ -145,7 +139,7 @@ public class UserDetailsServiceImp implements UserDetailsService {
         Set<Role> roleList = new HashSet<>();
 
         if (role != null){
-            Usuario usuario = new Usuario(username,apellido,password,email,dni,fechaNac,direccion,acceptTerms);
+            Usuario usuario = new Usuario(username,apellido,password,email,dni,fechaNac,direccion, true);
             roleList.add(role);
             usuario.setRolesList(roleList);
             userRepository.save(usuario);

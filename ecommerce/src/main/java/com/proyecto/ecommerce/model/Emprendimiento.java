@@ -13,14 +13,7 @@ import java.util.List;
 @Table(name = "Emprendimiento")
 public class Emprendimiento {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idEmprendimiento;
-
-    public Emprendimiento(List<Contacto> listContacto, String direccion, String titulo) {
-        this.listContacto = listContacto;
-        this.direccion = direccion;
-        this.titulo = titulo;
-    }
 
     @Column(length = 35)
     private String titulo;

@@ -1,5 +1,6 @@
 package com.proyecto.ecommerce.service;
 
+import com.proyecto.ecommerce.dto.ProductosDTO.ProductoActRespDTO;
 import com.proyecto.ecommerce.dto.ProductosDTO.ProductoPatchDTO;
 import com.proyecto.ecommerce.dto.ProductosDTO.ProductoReqDTO;
 import com.proyecto.ecommerce.dto.ProductosDTO.ProductoRespDTO;
@@ -76,23 +77,25 @@ public class ProductoService implements IProductoService {
                         p.getNombre(),
                         p.getDescripcion(),
                         p.getPrecio(),
-                        p.getIva()
+                        p.getStock(),
+                        p.getIva().getCategoria(),
+                        p.getIva().getPorcentaje(),
+                        p.getUrl()
                 ))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<ProductoRespDTO> obtenerProductosActivos() {
-        //Aca implementar que devuelva los que tienen stock > 1
+    public List<ProductoActRespDTO> obtenerProductosActivos() {
 
         return productoRepository.findAll().stream()
                 .filter(Producto::isEnable)
                 .filter(p -> p.getStock()>0)
-                .map(producto -> new ProductoRespDTO(
+                .map(producto -> new ProductoActRespDTO(
                         producto.getNombre(),
                         producto.getDescripcion(),
                         producto.getPrecio(),
-                        producto.getIva()
+                        producto.getUrl()
                 ))
                 .collect(Collectors.toList());
     }

@@ -42,7 +42,12 @@ public class SecurityConfig {
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session-> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(new JwtTokenValidator(jwtUtils), BasicAuthenticationFilter.class)
-                .build(); //Aca agregamos el filtro token mas adelante
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")   // Solo administradores
+                        .requestMatchers("/api/user/**").hasAnyRole("CLIENTE", "ADMIN") // Cliente o Admin
+                        .anyRequest().permitAll()
+                )
+                .build();
     }
 
 

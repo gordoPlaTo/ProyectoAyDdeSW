@@ -1,7 +1,7 @@
 package com.proyecto.ecommerce.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,6 +25,7 @@ public class Contacto {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "emprendimiento_id",nullable = false)
+    @JsonBackReference
     private Emprendimiento emprendimiento;
 
 

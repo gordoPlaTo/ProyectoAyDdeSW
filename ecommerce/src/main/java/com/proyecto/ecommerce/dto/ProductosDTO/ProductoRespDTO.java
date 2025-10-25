@@ -10,6 +10,9 @@ public record ProductoRespDTO(
         String nombre,
         String descripcion,
         BigDecimal precio,
-        IVA iva
+        int stock,
+        String iva,
+        BigDecimal porcentaje,
+        String url
 ) {
 }

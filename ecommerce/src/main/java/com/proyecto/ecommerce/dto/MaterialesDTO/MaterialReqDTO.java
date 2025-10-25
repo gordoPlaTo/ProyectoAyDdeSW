@@ -1,6 +1,7 @@
 package com.proyecto.ecommerce.dto.MaterialesDTO;
 
 import jakarta.validation.constraints.*;
+import org.springframework.web.multipart.MultipartFile;
 
 public record MaterialReqDTO (
         @NotBlank(message = "El nombre del material es obligatorio")
@@ -16,7 +17,9 @@ public record MaterialReqDTO (
         String descripcion,
 
         @Min(value = 0, message = "El stock no puede ser negativo")
-        int stock
+        int stock,
+
+        MultipartFile imgMaterial
 
 ) {
 }

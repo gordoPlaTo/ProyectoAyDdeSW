@@ -1,10 +1,12 @@
 package com.proyecto.ecommerce.service;
 
+import com.proyecto.ecommerce.dto.UsuariosDTO.UserModDirecDTO;
+import com.proyecto.ecommerce.dto.UsuariosDTO.UserModPassDTO;
+import com.proyecto.ecommerce.dto.UsuariosDTO.UsuarioDatosDTO;
 import com.proyecto.ecommerce.model.Usuario;
 import com.proyecto.ecommerce.repository.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;
@@ -14,24 +16,48 @@ public class UsuarioService implements  IUsuarioService{
     //Este seria el service del modelo con el CRUD basico
 
     @Autowired
+    private UserDetailsServiceImp userDetailsService;
+
+    @Autowired
     private IUserRepository userRepository;
 
     @Override
-    public Usuario obtenerUsuarioByEmail(String email) {
+    public Usuario obtenerUsuarioByEmail() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
 
         return userRepository.findUserEntityByEmail(email)
                 .orElseThrow(() -> new NoSuchElementException("El usuario con el email especificado no fue encontrado."));
     }
 
-    //Obtener la informacion de perfil
+    @Override
+    public UsuarioDatosDTO obtenerDatosPersonales() {
+        Usuario user = this.obtenerUsuarioByEmail();
 
-    //Modificar informacion de perfil
+        return new UsuarioDatosDTO(user.getUsername(),
+                user.getApellido(),
+                user.getDireccion());
+    }
 
-    //Obtener pedidos realizados
+    @Override
+    public void modificarDireccion(UserModDirecDTO direccion) {
+        Usuario usuario = obtenerUsuarioByEmail();
+        usuario.setDireccion(direccion.direccion());
+        userRepository.save(usuario);
+    }
 
+    @Override
+    public void modificarPassword(UserModPassDTO password) {
+        Usuario usuario = this.obtenerUsuarioByEmail();
+        usuario.setPassword(userDetailsService.encriptPassword(password.password()));
+        userRepository.save(usuario);
+    }
 
-
-
+    @Override
+    public void deshabilitarCuenta() {
+        Usuario usuario = this.obtenerUsuarioByEmail();
+        usuario.setEnabled(false);
+        userRepository.save(usuario);
+    }
 
 
 }

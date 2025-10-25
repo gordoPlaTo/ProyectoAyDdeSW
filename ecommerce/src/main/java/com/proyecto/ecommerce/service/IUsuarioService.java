@@ -1,19 +1,22 @@
 package com.proyecto.ecommerce.service;
 
+import com.proyecto.ecommerce.dto.UsuariosDTO.UserModDirecDTO;
+import com.proyecto.ecommerce.dto.UsuariosDTO.UserModPassDTO;
+import com.proyecto.ecommerce.dto.UsuariosDTO.UsuarioDatosDTO;
 import com.proyecto.ecommerce.model.Usuario;
 
 public interface IUsuarioService {
     //Modificar Datos personales
+    void modificarDireccion(UserModDirecDTO direccion);
 
-    //Cancelar Pedido
+    void modificarPassword(UserModPassDTO password);
 
-    //Crear Pedido
-
-    //Solicitar Lista de Pedidos Realizados
-
-    //Deshabilitar su cuenta
+    UsuarioDatosDTO obtenerDatosPersonales();
 
 
-    Usuario obtenerUsuarioByEmail(String email);
+    void deshabilitarCuenta();
+
+
+    Usuario obtenerUsuarioByEmail();
 
 }

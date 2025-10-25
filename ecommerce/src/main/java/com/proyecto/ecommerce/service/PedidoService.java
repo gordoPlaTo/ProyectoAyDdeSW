@@ -1,25 +1,19 @@
 package com.proyecto.ecommerce.service;
 
-import com.proyecto.ecommerce.dto.PedidosDTO.ComprobanteReqDTO;
-import com.proyecto.ecommerce.dto.PedidosDTO.DetallePedidoRespDTO;
-import com.proyecto.ecommerce.dto.PedidosDTO.PedidoCrearReqDTO;
-import com.proyecto.ecommerce.dto.PedidosDTO.PedidosClienteDTO;
+import com.proyecto.ecommerce.dto.PedidosDTO.*;
 import com.proyecto.ecommerce.dto.ProductosDTO.ProductoVentaDTO;
 import com.proyecto.ecommerce.model.*;
-import com.proyecto.ecommerce.repository.IEstadoPedido;
+import com.proyecto.ecommerce.repository.IEstadoPedidoRepository;
 import com.proyecto.ecommerce.repository.IPedidoRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 @Service
 public class PedidoService implements IPedidoService {
@@ -35,7 +29,7 @@ public class PedidoService implements IPedidoService {
     private IUsuarioService usuarioService;
 
     @Autowired
-    private IEstadoPedido estadoPedido;
+    private IEstadoPedidoRepository estadoPedido;
 
     @Autowired
     private CloudinaryService cloudinaryService;
@@ -112,8 +106,7 @@ public class PedidoService implements IPedidoService {
         ped.setTotalCompra(totalCompra);
 
 
-        String email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
-        Usuario usu = usuarioService.obtenerUsuarioByEmail(email);
+        Usuario usu = usuarioService.obtenerUsuarioByEmail();
         ped.setUsuario(usu);
 
         ped.setEstadoPedido(estadoPedido.findById(1L)
@@ -148,8 +141,7 @@ public class PedidoService implements IPedidoService {
     public void cancelarPedido(Long id) {
         String email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
 
-        Pedido ped = pedidoRepository.obtenerPedidoPorIdYEmail(id,email)
-                .orElseThrow(()-> new EntityNotFoundException("No se encontro un pedido con esa Id en la cuenta del usuario."));
+        Pedido ped = this.obtenerPedidoByIdEmail(id,email);
 
 
         EstadoPedido estado = estadoPedido.findById(3L)
@@ -157,7 +149,25 @@ public class PedidoService implements IPedidoService {
 
         ped.setEstadoPedido(estado);
 
+
+
+
         pedidoRepository.save(ped);
     }
 
+    @Override
+    public void completarPedido(PedidoCompletarDTO compDTO) {
+        Pedido ped = this.obtenerPedidoByIdEmail(compDTO.id(),compDTO.email());
+
+        if (ped.getUrlComprobante() == null || ped.getUrlComprobante().isBlank()){
+            throw new IllegalArgumentException("No puedes completar un pedido al que no se le adjuntó su correspondiente comprobante de pago.");
+        }
+
+        EstadoPedido estado = estadoPedido.findById(2L)
+                .orElseThrow(()-> new EntityNotFoundException("No se encontro el estado a asignar al pedido."));
+
+        ped.setEstadoPedido(estado);
+
+        pedidoRepository.save(ped);
+    }
 }

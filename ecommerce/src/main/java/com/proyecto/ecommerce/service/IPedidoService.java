@@ -1,6 +1,7 @@
 package com.proyecto.ecommerce.service;
 
 import com.proyecto.ecommerce.dto.PedidosDTO.ComprobanteReqDTO;
+import com.proyecto.ecommerce.dto.PedidosDTO.PedidoCompletarDTO;
 import com.proyecto.ecommerce.dto.PedidosDTO.PedidoCrearReqDTO;
 import com.proyecto.ecommerce.dto.PedidosDTO.PedidosClienteDTO;
 import com.proyecto.ecommerce.dto.ProductosDTO.ProductoVentaDTO;
@@ -28,5 +29,7 @@ public interface IPedidoService {
     void adjuntarComprobante(ComprobanteReqDTO comprobante);
 
     void cancelarPedido(Long id);
+
+    void completarPedido(PedidoCompletarDTO completarDTO);
 
 }

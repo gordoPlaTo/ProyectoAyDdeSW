@@ -1,6 +1,7 @@
 package com.proyecto.ecommerce.controller;
 
 import com.proyecto.ecommerce.dto.EmprendimientoDTO.InfoEmpResponseDTO;
+import com.proyecto.ecommerce.dto.ProductosDTO.ProductoActRespDTO;
 import com.proyecto.ecommerce.dto.ProductosDTO.ProductoRespDTO;
 import com.proyecto.ecommerce.model.Contacto;
 import com.proyecto.ecommerce.service.ContactoService;
@@ -56,7 +57,7 @@ public class EmprendimientoController{
     }
 
     @GetMapping("/productos/obtenerActivos")
-    public ResponseEntity<List<ProductoRespDTO>> obtenerProductosActivos(){
+    public ResponseEntity<List<ProductoActRespDTO>> obtenerProductosActivos(){
         return ResponseEntity.ok(productoService.obtenerProductosActivos());
     }
 }

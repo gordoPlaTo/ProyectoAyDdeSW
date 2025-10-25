@@ -1,6 +1,6 @@
 package com.proyecto.ecommerce.service;
 
-import com.proyecto.ecommerce.dto.ContactoRequestDTO;
+import com.proyecto.ecommerce.dto.EmprendimientoDTO.ContactoRequestDTO;
 import com.proyecto.ecommerce.dto.RespDTO;
 import com.proyecto.ecommerce.model.Contacto;
 

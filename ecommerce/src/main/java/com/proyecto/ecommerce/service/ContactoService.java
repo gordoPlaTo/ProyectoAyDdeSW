@@ -1,6 +1,6 @@
 package com.proyecto.ecommerce.service;
 
-import com.proyecto.ecommerce.dto.ContactoRequestDTO;
+import com.proyecto.ecommerce.dto.EmprendimientoDTO.ContactoRequestDTO;
 import com.proyecto.ecommerce.dto.RespDTO;
 import com.proyecto.ecommerce.model.Contacto;
 import com.proyecto.ecommerce.model.Emprendimiento;
@@ -40,6 +40,7 @@ public class ContactoService implements IContactoService {
         Contacto con = new Contacto(contacto.contacto());
         Emprendimiento emp = empRepository.findById(1L)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Emprendimiento no encontrado"));
+        con.setEmprendimiento(emp);
         emp.getListContacto().add(con);
         empRepository.save(emp);
         return con;

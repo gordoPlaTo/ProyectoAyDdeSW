@@ -41,7 +41,7 @@ public class Usuario {
         this.fechaNac = fechaNac;
         this.direccion = direccion;
         this.acceptedTerms = acceptedTerms;
-
+        this.setEnabled(true);
     }
 
     @Column(unique = true, length = 254, nullable = false)
@@ -58,18 +58,18 @@ public class Usuario {
 
     private boolean acceptedTerms;
 
-    private boolean enabled = true;
+    private boolean enabled;
 
     //Los Siguientes atributos son exigidos por el framework
     //No sea mapean en la Bd gracias a la siguiente anotacion
     @Transient
-    private boolean accountNotExpired = true;
+    private boolean accountNotExpired;
     @Transient
-    private boolean accountNotLocked = true;
+    private boolean accountNotLocked;
     @Transient
-    private boolean credentialNotExpired = true;
+    private boolean credentialNotExpired;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL) //Eager se encarga de cargar todos los roles
+    @ManyToMany(fetch = FetchType.EAGER) //Eager se encarga de cargar todos los roles
     @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "usuario_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> rolesList = new HashSet<>();

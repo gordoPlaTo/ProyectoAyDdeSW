@@ -30,9 +30,6 @@ public interface IPedidoRepository extends JpaRepository<Pedido,Long> {
     List<ProductoVentaDTO> ventasPedido();
 
 
-
-
-
     @Query("""
            SELECT ped
            FROM Pedido ped
@@ -59,5 +56,11 @@ public interface IPedidoRepository extends JpaRepository<Pedido,Long> {
     List<Pedido> obtenerPedidosPorEmail(@Param("email") String email);
 
 
+    @Query("""
+        SELECT DISTINCT ped
+        FROM Pedido ped
+        WHERE ped.estadoPedido.descripcion = 'Espera de Pago'
+    """)
+    List<Pedido> obtenerPendientesPago();
 
 }

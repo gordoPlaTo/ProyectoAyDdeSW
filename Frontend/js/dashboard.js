@@ -123,6 +123,8 @@ document.addEventListener("DOMContentLoaded", () => {
     <div id="productosContainer" class="productos-container">
       <p>Cargando productos...</p>
     </div>
+
+
   `;
 
   const productosContainer = document.getElementById("productosContainer");
@@ -171,6 +173,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <p><strong>Precio:</strong> $${formatPrice(prod.precio)}</p>
         <p><strong>Stock:</strong> ${prod.stock ?? "N/A"}</p>
         <p><strong>IVA:</strong> ${prod.iva ? escapeHtml(prod.iva.tipo ?? String(prod.iva)) : 'N/A'}</p>
+        <img src=${prod.url ? escapeHtml(prod.url ?? String(prod.url)) : 'N/A'}>
       </div>
     `).join("");
 

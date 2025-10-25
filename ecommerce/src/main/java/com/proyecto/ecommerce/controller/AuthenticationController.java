@@ -28,7 +28,7 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponseDTO> login (@Valid @RequestBody AuthLoginRequestDTO userRequest){
-        return new ResponseEntity<>(this.userDetailsService.loginUserEmail(userRequest), HttpStatus.OK);
+        return ResponseEntity.ok(this.userDetailsService.loginUserEmail(userRequest));
     }
 
     //Como tenemos que validar que el dueño del sistema sea el que primero se
@@ -44,14 +44,14 @@ public class AuthenticationController {
                     .body(new RespDTO("Para acceder a esta funcionalidad, el cliente principal" +
                             " debe actualizar la informacion del emprendimiento.",false, LocalDateTime.now()));
         }
-        return  new ResponseEntity<>(this.userDetailsService.register(register, 1L),HttpStatus.OK);
+        return ResponseEntity.ok(this.userDetailsService.register(register, 1L));
     }
 
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/registerAdmin")
     public ResponseEntity<RespDTO> registerAdmin (@Valid @RequestBody RegisterRequestDTO registerRequest){
-        return  new ResponseEntity<>(this.userDetailsService.register(registerRequest, 2L), HttpStatus.OK);
+        return ResponseEntity.ok(this.userDetailsService.register(registerRequest, 2L));
     }
 
 }

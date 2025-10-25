@@ -22,6 +22,10 @@ public class EstadoPedido {
     @Column(nullable = false)
     private String descripcion;
 
+    public EstadoPedido(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
     @OneToMany (mappedBy ="estadoPedido")
     private List<Pedido> listPedido;
 

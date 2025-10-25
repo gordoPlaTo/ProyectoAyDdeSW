@@ -1,5 +1,6 @@
 package com.proyecto.ecommerce.service;
 
+import com.proyecto.ecommerce.dto.ProductosDTO.ProductoActRespDTO;
 import com.proyecto.ecommerce.dto.ProductosDTO.ProductoPatchDTO;
 import com.proyecto.ecommerce.dto.ProductosDTO.ProductoReqDTO;
 import com.proyecto.ecommerce.dto.ProductosDTO.ProductoRespDTO;
@@ -15,7 +16,7 @@ public interface IProductoService {
     Producto obtenerProductoById (Long id);
 
     //Obtener Productos con stock y habilitados
-    List<ProductoRespDTO> obtenerProductosActivos();
+    List<ProductoActRespDTO> obtenerProductosActivos();
 
     //Obtener Productos
     List<ProductoRespDTO> obtenerProductos();
