@@ -10,7 +10,7 @@
 
 <body>
     <header>
-        <h1>Mi Tienda</h1>
+        <h1 id="nombre-emprendimiento">Mi Tienda</h1>
 
         <div class="user-actions">
             <a href="/Frontend/modules/profile.html">
@@ -55,63 +55,63 @@
                 <img src="https://via.placeholder.com/200" alt="Producto" />
                 <h2>Producto 1</h2>
                 <p>$19.99</p>
-                <button>Agregar al carrito</button>
+                <button class="btnAgregar" dataNombre="Empanada jyq" dataPrecio="18000">Agregar al carrito</button>
             </div>
 
             <div class="product-card">
                 <img src="https://via.placeholder.com/200" alt="Producto" />
                 <h2>Producto 2</h2>
                 <p>$29.99</p>
-                <button>Agregar al carrito</button>
+                <button class="btnAgregar" dataNombre="Empanada criolla" dataPrecio="18000">Agregar al carrito</button>
             </div>
 
             <div class="product-card">
                 <img src="https://via.placeholder.com/200" alt="Producto" />
                 <h2>Producto 3</h2>
                 <p>$39.99</p>
-                <button>Agregar al carrito</button>
+                <button class="btnAgregar" dataNombre="Empanada pollo" dataPrecio="18000">Agregar al carrito</button>
             </div>
 
             <div class="product-card">
                 <img src="https://via.placeholder.com/200" alt="Producto" />
                 <h2>Producto 4</h2>
                 <p>$49.99</p>
-                <button>Agregar al carrito</button>
+                <button class="btnAgregar" dataNombre="Empanada criolla" dataPrecio="18000">Agregar al carrito</button>
             </div>
 
             <div class="product-card">
                 <img src="https://via.placeholder.com/200" alt="Producto" />
                 <h2>Producto 4</h2>
                 <p>$49.99</p>
-                <button>Agregar al carrito</button>
+                <button class="btnAgregar" dataNombre="Empanada criolla" dataPrecio="18000">Agregar al carrito</button>
             </div>
 
             <div class="product-card">
                 <img src="https://via.placeholder.com/200" alt="Producto" />
                 <h2>Producto 4</h2>
                 <p>$49.99</p>
-                <button>Agregar al carrito</button>
+                <button class="btnAgregar" dataNombre="Empanada criolla" dataPrecio="18000">Agregar al carrito</button>
             </div>
 
             <div class="product-card">
                 <img src="https://via.placeholder.com/200" alt="Producto" />
                 <h2>Producto 4</h2>
                 <p>$49.99</p>
-                <button>Agregar al carrito</button>
+                <button class="btnAgregar" dataNombre="Empanada criolla" dataPrecio="18000">Agregar al carrito</button>
             </div>
 
             <div class="product-card">
                 <img src="https://via.placeholder.com/200" alt="Producto" />
                 <h2>Producto 4</h2>
                 <p>$49.99</p>
-                <button>Agregar al carrito</button>
+                <button class="btnAgregar" dataNombre="Empanada criolla" dataPrecio="18000">Agregar al carrito</button>
             </div>
 
             <div class="product-card">
                 <img src="https://via.placeholder.com/200" alt="Producto" />
                 <h2>Producto 4</h2>
                 <p>$49.99</p>
-                <button>Agregar al carrito</button>
+                <button class="btnAgregar" dataNombre="Empanada criolla" dataPrecio="18000">Agregar al carrito</button>
             </div>
         </div>
     </main>
@@ -122,6 +122,22 @@
 
     <script src="/Frontend/js/index.js"></script>
     <script src="/Frontend/js/theme.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            try {
+                const res = await fetch("http://localhost:8080/api/emprendimiento/obtener");
+                if (res.ok) {
+                    const data = await res.json();
+                    document.getElementById("nombre-emprendimiento").textContent = data.titulo;
+                    document.getElementById("descripcion-emprendimiento").textContent = data.descripcion;
+                    document.getElementById("direccion-emprendimiento").textContent = data.direccion;
+                }
+            } catch (err) {
+                console.warn("No se pudo obtener configuración del emprendimiento", err);
+            }
+        });
+    </script>
+
 </body>
 
 

@@ -78,17 +78,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const nombre = document.getElementById("nombre").value
       const descripcion = document.getElementById("descripcion").value
-      const  precio = parseFloat(document.getElementById("precio").value)
-      const  stock = parseInt(document.getElementById("stock").value)
+      const precio = parseFloat(document.getElementById("precio").value)
+      const stock = parseInt(document.getElementById("stock").value)
       const idIva = parseInt(document.getElementById("idIva").value)
       const imgProducto = document.getElementById("image").files[0]
-        
-        formData.append("nombre", nombre)
-        formData.append("descripcion", descripcion)
-        formData.append("precio", precio )
-        formData.append("stock", stock)
-        formData.append("idIva", idIva)
-        formData.append("imgProducto", imgProducto)
+
+      formData.append("nombre", nombre)
+      formData.append("descripcion", descripcion)
+      formData.append("precio", precio)
+      formData.append("stock", stock)
+      formData.append("idIva", idIva)
+      formData.append("imgProducto", imgProducto)
 
       try {
         const res = await fetch(`${API_URL}/admin/producto/crear`, {
@@ -117,8 +117,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // 🟡 LISTAR PRODUCTOS
   // ===========================
   async function loadProductList() {
-  // muestra carga mientras viene la respuesta
-  mainContent.innerHTML = `
+    // muestra carga mientras viene la respuesta
+    mainContent.innerHTML = `
     <h2>Mis productos</h2>
     <div id="productosContainer" class="productos-container">
       <p>Cargando productos...</p>
@@ -127,46 +127,46 @@ document.addEventListener("DOMContentLoaded", () => {
 
   `;
 
-  const productosContainer = document.getElementById("productosContainer");
+    const productosContainer = document.getElementById("productosContainer");
 
-  try {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      productosContainer.innerHTML = "<p style='color:red;'>No autenticado. Inicie sesión.</p>";
-      return;
-    }
-
-    const res = await fetch(`${API_URL}/admin/producto/obtenerTodos`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        productosContainer.innerHTML = "<p style='color:red;'>No autenticado. Inicie sesión.</p>";
+        return;
       }
-    });
 
-    // Si el servidor responde con error (4xx/5xx) lo manejamos
-    if (!res.ok) {
-      const text = await res.text().catch(() => "");
-      console.error("Respuesta no OK:", res.status, text);
-      productosContainer.innerHTML = `<p style="color:red;">Error al obtener productos (status ${res.status})</p>`;
-      return;
-    }
+      const res = await fetch(`${API_URL}/admin/producto/obtenerTodos`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        }
+      });
 
-    const productos = await res.json();
+      // Si el servidor responde con error (4xx/5xx) lo manejamos
+      if (!res.ok) {
+        const text = await res.text().catch(() => "");
+        console.error("Respuesta no OK:", res.status, text);
+        productosContainer.innerHTML = `<p style="color:red;">Error al obtener productos (status ${res.status})</p>`;
+        return;
+      }
 
-    if (!productos || productos.length === 0) {
-      productosContainer.innerHTML = "<p>No hay productos cargados aún.</p>";
-      return;
-    }
+      const productos = await res.json();
 
-    // formateo seguro del precio (puede venir string o number)
-    const formatPrice = (p) => {
-      if (p === null || p === undefined) return "N/A";
-      const n = typeof p === "string" ? parseFloat(p) : p;
-      return isNaN(n) ? "N/A" : n.toFixed(2);
-    };
+      if (!productos || productos.length === 0) {
+        productosContainer.innerHTML = "<p>No hay productos cargados aún.</p>";
+        return;
+      }
 
-    productosContainer.innerHTML = productos.map(prod => `
+      // formateo seguro del precio (puede venir string o number)
+      const formatPrice = (p) => {
+        if (p === null || p === undefined) return "N/A";
+        const n = typeof p === "string" ? parseFloat(p) : p;
+        return isNaN(n) ? "N/A" : n.toFixed(2);
+      };
+
+      productosContainer.innerHTML = productos.map(prod => `
       <div class="producto-card">
         <h3>${escapeHtml(prod.nombre)}</h3>
         <p class="descripcion">${escapeHtml(prod.descripcion)}</p>
@@ -177,22 +177,22 @@ document.addEventListener("DOMContentLoaded", () => {
       </div>
     `).join("");
 
-  } catch (error) {
-    console.error("Error al obtener productos:", error);
-    productosContainer.innerHTML = "<p style='color:red;'>Error al cargar los productos. Revisa consola o el backend.</p>";
+    } catch (error) {
+      console.error("Error al obtener productos:", error);
+      productosContainer.innerHTML = "<p style='color:red;'>Error al cargar los productos. Revisa consola o el backend.</p>";
+    }
   }
-}
 
-// pequeña utilidad para evitar inyección de HTML si los campos vienen sucios
-function escapeHtml(str) {
-  if (!str && str !== 0) return "";
-  return String(str)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-}
+  // pequeña utilidad para evitar inyección de HTML si los campos vienen sucios
+  function escapeHtml(str) {
+    if (!str && str !== 0) return "";
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
 
 
   // ===========================
@@ -210,8 +210,114 @@ function escapeHtml(str) {
   // ===========================
   function loadConfiguracion() {
     mainContent.innerHTML = `
-      <h2>Configuración del emprendimiento</h2>
-      <p>Aquí podrás actualizar tu información o cambiar el tema.</p>
-    `;
+    <h2>Configuración del emprendimiento</h2>
+    <form id="configForm" class="form-config">
+      <label for="titulo">Nombre del emprendimiento:</label>
+      <input type="text" id="titulo" required>
+
+      <label for="descripcion">Descripción:</label>
+      <textarea id="descripcion" rows="3"></textarea>
+
+      <label for="direccion">Dirección:</label>
+      <input type="text" id="direccion" required>
+
+      <label>Contactos:</label>
+      <ul id="listaContactos"></ul>
+      <div class="add-contacto">
+        <input type="text" id="nuevoContacto" placeholder="Teléfono, mail, red social">
+        <button type="button" id="btnAgregarContacto">Agregar</button>
+      </div>
+
+      <button type="submit">Guardar cambios</button>
+    </form>
+  `;
+
+    const listaContactos = document.getElementById("listaContactos");
+    const btnAgregar = document.getElementById("btnAgregarContacto");
+    const inputContacto = document.getElementById("nuevoContacto");
+    const token = localStorage.getItem("token");
+    let config = { titulo: "", descripcion: "", direccion: "", contactos: [] };
+
+    async function cargarConfigDesdeBackend() {
+      try {
+        const res = await fetch(`${API_URL}/emprendimiento/emp`, {
+          headers: { "Authorization": `Bearer ${token}` }
+        });
+        if (!res.ok) throw new Error("Error al obtener configuración");
+        config = await res.json();
+        renderConfig();
+      } catch (err) {
+        console.warn("Usando configuración local o vacía:", err);
+        config = JSON.parse(localStorage.getItem("configEmprendimiento")) || config;
+        renderConfig();
+      }
+    }
+
+    function renderConfig() {
+      document.getElementById("titulo").value = config.titulo || "";
+      document.getElementById("descripcion").value = config.descripcion || "";
+      document.getElementById("direccion").value = config.direccion || "";
+      renderContactos();
+    }
+
+    function renderContactos() {
+      listaContactos.innerHTML = "";
+      config.contactos.forEach((c, i) => {
+        const li = document.createElement("li");
+        li.innerHTML = `${c} <button class="btn-eliminar-contacto" data-index="${i}">x</button>`;
+        listaContactos.appendChild(li);
+      });
+      document.querySelectorAll(".btn-eliminar-contacto").forEach(btn => {
+        btn.addEventListener("click", e => {
+          const index = e.target.dataset.index;
+          config.contactos.splice(index, 1);
+          renderContactos();
+        });
+      });
+    }
+
+    btnAgregar.addEventListener("click", () => {
+      const valor = inputContacto.value.trim();
+      if (valor) {
+        config.contactos.push(valor);
+        inputContacto.value = "";
+        renderContactos();
+      }
+    });
+
+    document.getElementById("configForm").addEventListener("submit", async e => {
+      e.preventDefault();
+      config.titulo = document.getElementById("titulo").value;
+      config.descripcion = document.getElementById("descripcion").value;
+      config.direccion = document.getElementById("direccion").value;
+
+      try {
+        const res = await fetch(`${API_URL}/emprendimiento/contactos`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
+          body: JSON.stringify(config)
+        });
+
+        if (!res.ok) throw new Error("Error al guardar en backend");
+        alert("Configuración guardada correctamente ✅");
+
+        // Guarda copia local como respaldo
+        localStorage.setItem("configEmprendimiento", JSON.stringify(config));
+
+        // 🔄 Actualiza el título en el header
+        const headerTitle = document.querySelector(".header h1");
+        if (headerTitle) headerTitle.textContent = config.titulo;
+
+      } catch (err) {
+        console.error(err);
+        alert("Error al guardar en el servidor. Cambios solo locales.");
+        localStorage.setItem("configEmprendimiento", JSON.stringify(config));
+      }
+    });
+
+    cargarConfigDesdeBackend();
   }
 });
