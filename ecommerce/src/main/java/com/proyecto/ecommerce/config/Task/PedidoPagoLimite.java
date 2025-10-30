@@ -1,4 +1,4 @@
-package com.proyecto.ecommerce.config.Taks;
+package com.proyecto.ecommerce.config.Task;
 
 import com.proyecto.ecommerce.model.EstadoPedido;
 import com.proyecto.ecommerce.model.Pedido;
@@ -22,13 +22,13 @@ public class PedidoPagoLimite {
     @Autowired
     private IEstadoPedidoRepository estadoPedidoRepository;
 
-    //Esta tarea se ejecutara una vez por dia a media noche
-    @Scheduled(cron = "0 0 0 * * *", zone = "America/Argentina/Buenos_Aires")
+    //Esta tarea se ejecutara una vez por dia
+    @Scheduled(cron = "0 30 21 * * *", zone = "America/Argentina/Buenos_Aires")
     public void verificarPedido(){
         List<Pedido> listPedido = pedidoRepository.obtenerPendientesPago();
 
         listPedido.forEach(pedido -> {
-            LocalDate fechaLimite = pedido.getFechaCreacion().plusDays(3);
+            LocalDate fechaLimite = pedido.getFechaCreacion().plusDays(3);//tiempo limite respecto al abse
             if (LocalDate.now().isAfter(fechaLimite) && (pedido.getUrlComprobante() == null || pedido.getUrlComprobante().isBlank())){
                 EstadoPedido estado = estadoPedidoRepository.findById(3L).orElseThrow(
                         () -> new RuntimeException("No se encontro el estado 'Cancelado', para pedidos fuera del limite."));

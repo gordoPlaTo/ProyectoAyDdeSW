@@ -3,6 +3,7 @@ package com.proyecto.ecommerce.config;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.nio.file.AccessDeniedException;
 import java.util.*;
@@ -40,7 +42,6 @@ public class GlobalValidationHandler {
         return responseBody;
     }
 
-    //Captura todos los errores y mapea una respuesta mas estructurada
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Map<String, Object> handleAllExceptions(Exception ex) {
@@ -112,5 +113,13 @@ public class GlobalValidationHandler {
     }
 
 
+    @ExceptionHandler(ResponseStatusException.class)
+    public Map<String,Object> handleNoContent(ResponseStatusException ex){
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("status", ex.getStatusCode().value());
+        response.put("message", ex.getReason());
+        response.put("errors", Collections.emptyList());
+        return response;
 
+    }
 }

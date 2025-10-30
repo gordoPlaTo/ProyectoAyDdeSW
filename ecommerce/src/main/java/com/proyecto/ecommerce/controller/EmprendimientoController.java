@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -32,12 +33,10 @@ public class EmprendimientoController{
     @GetMapping("/contactos")
     public ResponseEntity<List<Contacto>> obtenerContactos(){
         List<Contacto> contactos = contactoService.findAll();
-
-        if (contactos.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-
-        return new ResponseEntity<>(contactos, HttpStatus.OK);
+            if (contactos.isEmpty()){
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND,"No se encontro ningun contacto almacenado");
+            }
+        return ResponseEntity.ok(contactos);
     }
 
     @Autowired
