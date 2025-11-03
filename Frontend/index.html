@@ -50,77 +50,18 @@
 
     <main>
         <div class="product-container">
-            <!-- Tarjetas de productos -->
-            <div class="product-card"> <!-- esto se eliminara ya que se generaran dinamicamente (peticiones)-->
-                <img src="https://via.placeholder.com/200" alt="Producto" />
-                <h2>Producto 1</h2>
-                <p>$19.99</p>
-                <button class="btnAgregar" dataNombre="Empanada jyq" dataPrecio="18000">Agregar al carrito</button>
-            </div>
+           <!-- Tarjetas de productos -->
 
-            <div class="product-card">
-                <img src="https://via.placeholder.com/200" alt="Producto" />
-                <h2>Producto 2</h2>
-                <p>$29.99</p>
-                <button class="btnAgregar" dataNombre="Empanada criolla" dataPrecio="18000">Agregar al carrito</button>
-            </div>
+              
 
-            <div class="product-card">
-                <img src="https://via.placeholder.com/200" alt="Producto" />
-                <h2>Producto 3</h2>
-                <p>$39.99</p>
-                <button class="btnAgregar" dataNombre="Empanada pollo" dataPrecio="18000">Agregar al carrito</button>
-            </div>
-
-            <div class="product-card">
-                <img src="https://via.placeholder.com/200" alt="Producto" />
-                <h2>Producto 4</h2>
-                <p>$49.99</p>
-                <button class="btnAgregar" dataNombre="Empanada criolla" dataPrecio="18000">Agregar al carrito</button>
-            </div>
-
-            <div class="product-card">
-                <img src="https://via.placeholder.com/200" alt="Producto" />
-                <h2>Producto 4</h2>
-                <p>$49.99</p>
-                <button class="btnAgregar" dataNombre="Empanada criolla" dataPrecio="18000">Agregar al carrito</button>
-            </div>
-
-            <div class="product-card">
-                <img src="https://via.placeholder.com/200" alt="Producto" />
-                <h2>Producto 4</h2>
-                <p>$49.99</p>
-                <button class="btnAgregar" dataNombre="Empanada criolla" dataPrecio="18000">Agregar al carrito</button>
-            </div>
-
-            <div class="product-card">
-                <img src="https://via.placeholder.com/200" alt="Producto" />
-                <h2>Producto 4</h2>
-                <p>$49.99</p>
-                <button class="btnAgregar" dataNombre="Empanada criolla" dataPrecio="18000">Agregar al carrito</button>
-            </div>
-
-            <div class="product-card">
-                <img src="https://via.placeholder.com/200" alt="Producto" />
-                <h2>Producto 4</h2>
-                <p>$49.99</p>
-                <button class="btnAgregar" dataNombre="Empanada criolla" dataPrecio="18000">Agregar al carrito</button>
-            </div>
-
-            <div class="product-card">
-                <img src="https://via.placeholder.com/200" alt="Producto" />
-                <h2>Producto 4</h2>
-                <p>$49.99</p>
-                <button class="btnAgregar" dataNombre="Empanada criolla" dataPrecio="18000">Agregar al carrito</button>
-            </div>
+           
         </div>
     </main>
 
-    <footer>
+    <footer id="contacto-container">
         <p>&copy; 2025 Mi Tienda</p>
     </footer>
 
-    <script src="/Frontend/js/index.js"></script>
     <script src="/Frontend/js/theme.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", async () => {
@@ -131,12 +72,30 @@
                     document.getElementById("nombre-emprendimiento").textContent = data.titulo;
                     document.getElementById("descripcion-emprendimiento").textContent = data.descripcion;
                     document.getElementById("direccion-emprendimiento").textContent = data.direccion;
+                
+                    const containerContactos = document.getElementById("contacto-container");
+                    containerContactos.innerHTML = "";
+
+                    if(Array.isArray(data.contactos)){
+                        data.contactos.array.forEach(element => {
+                            const label = document.createElement("label");
+                            label.classList.add("contacto");
+                            label.textContent = element.descripcion;
+                            containerContactos.appendChild = label;
+
+                        });
+
+                    } else {
+                        console.warn("El emprendimiento no contiene contactos");
+                    }
+
                 }
             } catch (err) {
                 console.warn("No se pudo obtener configuración del emprendimiento", err);
             }
         });
     </script>
+    <script src="/Frontend/js/index.js"></script>
 
 </body>
 

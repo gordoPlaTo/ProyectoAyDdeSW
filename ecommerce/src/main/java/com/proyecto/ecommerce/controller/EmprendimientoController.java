@@ -42,7 +42,7 @@ public class EmprendimientoController{
     @Autowired
     private EmprendimientoService emprendimientoService;
 
-    @GetMapping("/emp")
+    @GetMapping("/obtener")
     public ResponseEntity<InfoEmpResponseDTO> obtenerInfoEmprendimiento(){
         InfoEmpResponseDTO info = emprendimientoService.obtenerInfo();
         return ResponseEntity.ok(info);
