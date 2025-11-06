@@ -16,9 +16,36 @@ function parseJwt(token) {
 }
 
 
+// --- función de redirección inteligente ---
+async function smartRedirectToIndex() {
+  const origin = window.location.origin;
+
+  const candidates = [
+    new URL('../index.html', window.location.href).href,
+    `${origin}/Frontend/index.html`,
+    `${origin}/index.html`
+  ];
+
+  for (const url of candidates) {
+    try {
+      const resp = await fetch(url, { method: 'HEAD' });
+      if (resp.ok) {
+        window.location.href = url;
+        return;
+      }
+    } catch (err) {
+      // Ignoramos y probamos el siguiente
+    }
+  }
+
+  // Si nada funcionó, intenta al menos ../index.html
+  window.location.href = new URL('../index.html', window.location.href).href;
+}
 
 
 const API_URL = "http://localhost:8080/api/auth";
+const BASE_PATH = "/Frontend"; // carpeta raíz de tu proyecto
+
 
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -109,7 +136,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (authorities && authorities.includes("ADMIN")) {
                     window.location.href = "../modules/dashboard.html";
                 } else {
-                    window.location.href = "/index.html";
+                    await smartRedirectToIndex();
                 }
 
             } catch (err) {

@@ -34,7 +34,51 @@
             </div>
 
             <button class="changePassBtn"> Cambiar contraseña</button>
-            <button class="desactivateBtn">Desactivar cuenta</button>
+            <button class="changeDirBtn"> Cambiar dirección </button>
+            <button class="desactivateBtn"> Desactivar cuenta </button>
+        </div>
+
+        <div id="modalPass" class="modal">
+            <div class="modal-content">
+                <span class="close" data-close="modalPass">&times;</span>
+                <h3>Cambiar contraseña</h3>
+                <form id="formPass">
+                    <label for="oldPass">Contraseña actual:</label>
+                    <input type="password" id="oldPass" required>
+
+                    <label for="newPass">Nueva contraseña:</label>
+                    <input type="password" id="newPass" pattern="^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).*$"
+                        title="Debe tener al menos una mayúscula, una minúscula, un número y 8 caracteres." required>
+
+                    <button type="submit">Actualizar</button>
+                </form>
+            </div>
+        </div>
+
+        <div id="changeDirModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2>Cambiar dirección</h2>
+                <form id="changeDirForm">
+                    <label for="newAddress">Nueva dirección:</label>
+                    <input type="text" id="newAddress" name="newAddress" required placeholder="Ej: Calle 123, Ciudad">
+                    <button type="submit">Guardar cambios</button>
+                </form>
+            </div>
+        </div>
+
+
+
+        <div id="modalDesactivar" class="modal">
+            <div class="modal-content">
+                <span class="close" data-close="modalDesactivar">&times;</span>
+                <h3>Desactivar cuenta</h3>
+                <p>¿Estás seguro de que deseas desactivar tu cuenta?</p>
+                <div class="modal-buttons">
+                    <button id="btnConfirmarDesactivar">Sí, desactivar</button>
+                    <button class="cancelar" data-close="modalDesactivar">Cancelar</button>
+                </div>
+            </div>
         </div>
 
         <div class="profOrders">
