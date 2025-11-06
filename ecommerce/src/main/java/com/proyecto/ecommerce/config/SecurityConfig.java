@@ -46,6 +46,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")   // Solo administradores
                         .requestMatchers("/api/user/**").hasAnyRole("CLIENTE", "ADMIN") // Cliente o Admin
+                        .requestMatchers(    "/api/emprendimiento/productos/obtenerActivos").permitAll()
                         .anyRequest().permitAll()
                 )
                 .build();

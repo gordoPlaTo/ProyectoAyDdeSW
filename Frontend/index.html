@@ -60,6 +60,7 @@
 
     <footer id="contacto-container">
         <p>&copy; 2025 Mi Tienda</p>
+        <button id="btnSobreN">Sobre Nosotros</button>
     </footer>
 
     <script src="/Frontend/js/theme.js"></script>
@@ -77,11 +78,11 @@
                     containerContactos.innerHTML = "";
 
                     if(Array.isArray(data.contactos)){
-                        data.contactos.array.forEach(element => {
+                        data.contactos.forEach(element => {
                             const label = document.createElement("label");
                             label.classList.add("contacto");
                             label.textContent = element.descripcion;
-                            containerContactos.appendChild = label;
+                            containerContactos.appendChild(label);
 
                         });
 

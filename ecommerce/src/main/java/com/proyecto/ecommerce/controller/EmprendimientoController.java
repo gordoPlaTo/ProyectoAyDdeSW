@@ -2,7 +2,6 @@ package com.proyecto.ecommerce.controller;
 
 import com.proyecto.ecommerce.dto.EmprendimientoDTO.InfoEmpResponseDTO;
 import com.proyecto.ecommerce.dto.ProductosDTO.ProductoActRespDTO;
-import com.proyecto.ecommerce.dto.ProductosDTO.ProductoRespDTO;
 import com.proyecto.ecommerce.model.Contacto;
 import com.proyecto.ecommerce.service.ContactoService;
 import com.proyecto.ecommerce.service.EmprendimientoService;
@@ -10,9 +9,7 @@ import com.proyecto.ecommerce.service.ProductoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;

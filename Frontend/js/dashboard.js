@@ -39,6 +39,12 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+<<<<<<< HEAD
+  // =====================
+  // CARGAR PRODUCTO
+  // ===================
+=======
+>>>>>>> a272c079a3f1600ffc6aa98a8d4937a96cf05a94
   function loadProductForm() {
     mainContent.innerHTML = `
       <h2>Cargar producto</h2>
@@ -95,7 +101,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (res.ok) {
           alert("Producto creado correctamente");
+<<<<<<< HEAD
+          loadProductList(); // refresca la lista
+=======
           loadProductList(); 
+>>>>>>> a272c079a3f1600ffc6aa98a8d4937a96cf05a94
         } else {
           const error = await res.text();
           alert("Error al crear el producto:\n" + error);
@@ -107,6 +117,12 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+<<<<<<< HEAD
+  // =====================
+  // Obtener Productos
+  // ======================
+=======
+>>>>>>> a272c079a3f1600ffc6aa98a8d4937a96cf05a94
   async function loadProductList() {
     mainContent.innerHTML = `
     <h2>Mis productos</h2>
@@ -181,6 +197,12 @@ document.addEventListener("DOMContentLoaded", () => {
       .replace(/'/g, "&#039;");
   }
 
+<<<<<<< HEAD
+  // =========================
+  // Ventas
+  // ==================
+=======
+>>>>>>> a272c079a3f1600ffc6aa98a8d4937a96cf05a94
   function loadVentas() {
     mainContent.innerHTML = `
       <h2>Historial de ventas</h2>
@@ -188,8 +210,14 @@ document.addEventListener("DOMContentLoaded", () => {
     `;
   }
 
+<<<<<<< HEAD
+  // ======================
+  // Configuracion
+  // ========================
+=======
+>>>>>>> a272c079a3f1600ffc6aa98a8d4937a96cf05a94
   function loadConfiguracion() {
-    mainContent.innerHTML = `
+  mainContent.innerHTML = `
     <h2>Configuración del emprendimiento</h2>
     <form id="configForm" class="form-config">
       <label for="titulo">Nombre del emprendimiento:</label>
@@ -212,59 +240,134 @@ document.addEventListener("DOMContentLoaded", () => {
     </form>
   `;
 
-    const listaContactos = document.getElementById("listaContactos");
-    const btnAgregar = document.getElementById("btnAgregarContacto");
-    const inputContacto = document.getElementById("nuevoContacto");
-    const token = localStorage.getItem("token");
-    let config = { titulo: "", descripcion: "", direccion: "", contactos: [] };
+  const listaContactos = document.getElementById("listaContactos");
+  const btnAgregar = document.getElementById("btnAgregarContacto");
+  const inputContacto = document.getElementById("nuevoContacto");
+  const token = localStorage.getItem("token");
+  let config = { titulo: "", descripcion: "", direccion: "", contactos: [] };
 
-    async function cargarConfigDesdeBackend() {
-      try {
-        const res = await fetch(`${API_URL}/emprendimiento/emp`, {
-          headers: { "Authorization": `Bearer ${token}` }
-        });
-        if (!res.ok) throw new Error("Error al obtener configuración");
-        config = await res.json();
-        renderConfig();
-      } catch (err) {
-        console.warn("Usando configuración local o vacía:", err);
-        config = JSON.parse(localStorage.getItem("configEmprendimiento")) || config;
-        renderConfig();
-      }
-    }
-
-    function renderConfig() {
-      document.getElementById("titulo").value = config.titulo || "";
-      document.getElementById("descripcion").value = config.descripcion || "";
-      document.getElementById("direccion").value = config.direccion || "";
-      renderContactos();
-    }
-
-    function renderContactos() {
-      listaContactos.innerHTML = "";
-      config.contactos.forEach((c, i) => {
-        const li = document.createElement("li");
-        li.innerHTML = `${c} <button class="btn-eliminar-contacto" data-index="${i}">x</button>`;
-        listaContactos.appendChild(li);
+  // ==============================
+  // Obtener datos desde el backend
+  // ==============================
+  async function cargarConfigDesdeBackend() {
+    try {
+      const res = await fetch(`${API_URL}/emprendimiento/obtener`, {
+        method: 'GET',
+        headers: { "Content-Type": "application/json" }
       });
-      document.querySelectorAll(".btn-eliminar-contacto").forEach(btn => {
-        btn.addEventListener("click", e => {
-          const index = e.target.dataset.index;
-          config.contactos.splice(index, 1);
-          renderContactos();
-        });
-      });
+      if (!res.ok) throw new Error("Error al obtener configuración");
+      config = await res.json();
+      renderConfig();
+    } catch (err) {
+      console.warn("Usando configuración local o vacía:", err);
+      config = JSON.parse(localStorage.getItem("configEmprendimiento")) || config;
+      renderConfig();
     }
+  }
 
-    btnAgregar.addEventListener("click", () => {
-      const valor = inputContacto.value.trim();
-      if (valor) {
-        config.contactos.push(valor);
-        inputContacto.value = "";
-        renderContactos();
-      }
+  // ==============================
+  // Renderizar datos cargados
+  // ==============================
+  function renderConfig() {
+    document.getElementById("titulo").value = config.titulo || "";
+    document.getElementById("descripcion").value = config.descripcion || "";
+    document.getElementById("direccion").value = config.direccion || "";
+    renderContactos();
+  }
+
+  // =======================
+  // Renderizar contactos
+  // =============================
+  function renderContactos() {
+    listaContactos.innerHTML = "";
+
+    config.contactos.forEach((c, i) => {
+      const texto = typeof c === "string" ? c : c.descripcion;
+      const li = document.createElement("li");
+      li.innerHTML = `
+        ${texto} 
+        <button class="btn-eliminar-contacto" data-index="${i}">x</button>
+      `;
+      listaContactos.appendChild(li);
     });
 
+    // Eliminar un contacto
+    document.querySelectorAll(".btn-eliminar-contacto").forEach(btn => {
+      btn.addEventListener("click", e => {
+        const index = e.target.dataset.index;
+        config.contactos.splice(index, 1);
+        renderContactos();
+      });
+    });
+
+    
+    const footer = document.getElementById("contacto-container");
+    if (footer) {
+      footer.innerHTML = "";
+      config.contactos.forEach(c => {
+        const texto = typeof c === "string" ? c : c.descripcion;
+        const label = document.createElement("label");
+        label.classList.add("contacto");
+        label.textContent = texto;
+        footer.appendChild(label);
+      });
+    }
+  }
+
+  // =============================
+  // Agregar nuevo contacto
+  // ========================
+  btnAgregar.addEventListener("click", () => {
+    const valor = inputContacto.value.trim();
+    if (valor) {
+      config.contactos.push(valor);
+      inputContacto.value = "";
+      renderContactos();
+    }
+  });
+
+  // =====================
+  // Guardar cambios
+  // =======================
+  document.getElementById("configForm").addEventListener("submit", async e => {
+    e.preventDefault();
+    config.titulo = document.getElementById("titulo").value;
+    config.descripcion = document.getElementById("descripcion").value;
+    config.direccion = document.getElementById("direccion").value;
+
+    try {
+      const res = await fetch(`${API_URL}/emprendimiento/contactos`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify(config)
+      });
+
+      if (!res.ok) throw new Error("Error al guardar en el backend");
+      alert("Configuracion guardada correctamente");
+
+      // Guarda copia local
+      localStorage.setItem("configEmprendimiento", JSON.stringify(config));
+
+      // Actualiza el header
+      const headerTitle = document.querySelector(".header h1");
+      if (headerTitle) headerTitle.textContent = config.titulo;
+      renderContactos();
+
+    } catch (err) {
+      console.error(err);
+      alert("Error al guardar en el servidor. Cambios solo en local.");
+      localStorage.setItem("configEmprendimiento", JSON.stringify(config));
+    }
+  });
+
+  cargarConfigDesdeBackend();
+}
+
+<<<<<<< HEAD
+=======
     document.getElementById("configForm").addEventListener("submit", async e => {
       e.preventDefault();
       config.titulo = document.getElementById("titulo").value;
@@ -298,4 +401,5 @@ document.addEventListener("DOMContentLoaded", () => {
 
     cargarConfigDesdeBackend();
   }
+>>>>>>> a272c079a3f1600ffc6aa98a8d4937a96cf05a94
 });

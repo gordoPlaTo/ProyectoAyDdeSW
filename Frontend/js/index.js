@@ -3,20 +3,27 @@ function toggleSidebar() {
     document.querySelector('.overlay').classList.toggle('active');
 }
 
+  const productosContainer = document.querySelector(".product-container");
+
 document.addEventListener("DOMContentLoaded", () => {
   const botonesAgregar = document.querySelectorAll(".btnAgregar");
 
+<<<<<<< HEAD
+  // =================
+  // Obtener Productos
+  // ===================
+  async function loadProductList() {
+    // muestra carga mientras viene la respuesta
+    productosContainer.innerHTML = `
+=======
   async function loadProductList() {
     mainContent.innerHTML = `
+>>>>>>> a272c079a3f1600ffc6aa98a8d4937a96cf05a94
     <h2>Mis productos</h2>
     <div id="productosContainer" class="productos-container">
       <p>Cargando productos...</p>
     </div>
-
-
   `;
-
-    const productosContainer = document.getElementsByClassName("product-container");
 
     try {
       const token = localStorage.getItem("token");
@@ -28,14 +35,13 @@ document.addEventListener("DOMContentLoaded", () => {
       const res = await fetch(`http://localhost:8080/api/emprendimiento/productos/obtenerActivos`, {
         method: "GET",
         headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
+          "Content-Type": "application/json"
         }
       });
 
       if (!res.ok) {
         const text = await res.text().catch(() => "");
-        console.error("Respuesta no OK:", res.status, text);
+        console.error("Error al obtener:", res.status, text);
         productosContainer.innerHTML = `<p style="color:red;">Error al obtener productos (status ${res.status})</p>`;
         return;
       }
@@ -54,11 +60,12 @@ document.addEventListener("DOMContentLoaded", () => {
       };
 
       productosContainer.innerHTML = productos.map(prod => `
-      <div class="producto-card">
+      <div class="product-card">
         <h3>${escapeHtml(prod.nombre)}</h3>
+        <img src=${prod.url ? escapeHtml(prod.url ?? String(prod.url)) : 'N/A'}>
         <p class="descripcion">${escapeHtml(prod.descripcion)}</p>
         <p><strong>Precio:</strong> $${formatPrice(prod.precio)}</p>
-        <img src=${prod.url ? escapeHtml(prod.url ?? String(prod.url)) : 'N/A'}>
+        <button id="btnAgregar">Añadir al Carrito</button>
       </div>
     `).join("");
 
@@ -78,7 +85,7 @@ document.addEventListener("DOMContentLoaded", () => {
       .replace(/'/g, "&#039;");
   }
 
-  botonesAgregar.forEach(btn => {
+  botonesAgregar.forEach(btn => { //Aca agregar validacion, para saber si es login o no.
     btn.addEventListener("click", () => {
       const nombre = btn.dataset.nombre;
       const precio = parseFloat(btn.dataset.precio);
@@ -99,9 +106,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
       localStorage.setItem("carrito", JSON.stringify(carrito));
 
+<<<<<<< HEAD
+      alert(`${nombre} se agregó al carrito `);
+=======
       alert(`${nombre} se agregó al carrito`);
+>>>>>>> a272c079a3f1600ffc6aa98a8d4937a96cf05a94
     });
   });
 
+  loadProductList();
 
 });
