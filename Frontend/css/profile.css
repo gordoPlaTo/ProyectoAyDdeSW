@@ -84,13 +84,11 @@ button {
 }
 
 .changePassBtn {
-    /*background: #444; */
     background: #007bff;
     color: white;
 }
 
 .changePassBtn:hover {
-    /* background: #333; */
     background: #0056b3;
 }
 
@@ -217,7 +215,6 @@ input:checked+.slider:before {
     width: 100%;
 }
 
-/* modo oscuro */
 
 body.darkMode {
     background: #1e1e1e;

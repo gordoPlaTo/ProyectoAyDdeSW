@@ -1,4 +1,3 @@
-//decodificar token
 function parseJwt(token) {
     try {
         const base64Url = token.split('.')[1];
@@ -18,7 +17,6 @@ function parseJwt(token) {
 
 
 
-//login y //registro
 
 const API_URL = "http://localhost:8080/api/auth";
 
@@ -27,7 +25,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const registerForm = document.getElementById("registerForm");
     const loginForm = document.getElementById("loginForm");
 
-    //registro
     if (registerForm) {
         registerForm.addEventListener("submit", async (e) => {
             e.preventDefault();
@@ -40,8 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            const data = {//fijate que las variables de la izquierda aca abajo 
-                //deben tener el mismo nombre que los atributos del DTO correspondiente
+            const data = {
                 nombre: document.getElementById("name").value,
                 apellido: document.getElementById("surname").value,
                 dni: document.getElementById("dni").value,
@@ -75,7 +71,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    //login
     if (loginForm) {
         loginForm.addEventListener("submit", async (e) => {
             e.preventDefault();
@@ -101,19 +96,16 @@ document.addEventListener("DOMContentLoaded", () => {
                 const result = await res.json();
                 const token = result.token;
 
-                //guardamos token y datos en localstorage
                 localStorage.setItem("email", result.email);
                 localStorage.setItem("message", result.message)
                 localStorage.setItem("token", result.token);
 
-                //decodificamos el payload del jwt
                 const payload = JSON.parse(atob(token.split(".")[1]));
                 const authorities = payload.authorities;
 
                 console.log("Token payload:", payload);
                 console.log("Authorities:", authorities);
 
-                //verificamos el rol
                 if (authorities && authorities.includes("ADMIN")) {
                     window.location.href = "../modules/dashboard.html";
                 } else {

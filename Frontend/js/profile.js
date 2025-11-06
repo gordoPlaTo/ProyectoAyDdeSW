@@ -1,4 +1,3 @@
-//cambio foto perfil
 const uploadPhoto = document.getElementById("uploadPic");
 const userPhoto = document.getElementById("userPic");
 

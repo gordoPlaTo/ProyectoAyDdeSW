@@ -4,7 +4,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const logoutBtn = document.getElementById("logoutBtn");
   const API_URL = "http://localhost:8080/api";
 
-  // Verificar token
   const token = localStorage.getItem("token");
   if (!token) {
     alert("Debe iniciar sesión primero");
@@ -12,14 +11,12 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  // Cerrar sesión
   logoutBtn.addEventListener("click", () => {
     localStorage.clear();
     alert("Sesión cerrada correctamente");
     window.location.href = "../index.html";
   });
 
-  // Navegación entre secciones
   buttons.forEach((btn) => {
     btn.addEventListener("click", () => {
       const section = btn.dataset.section;
@@ -42,9 +39,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // ===========================
-  // 🟢 CARGAR PRODUCTO
-  // ===========================
   function loadProductForm() {
     mainContent.innerHTML = `
       <h2>Cargar producto</h2>
@@ -100,24 +94,20 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         if (res.ok) {
-          alert("✅ Producto creado correctamente");
-          loadProductList(); // refresca la lista
+          alert("Producto creado correctamente");
+          loadProductList(); 
         } else {
           const error = await res.text();
-          alert("❌ Error al crear el producto:\n" + error);
+          alert("Error al crear el producto:\n" + error);
         }
       } catch (err) {
         console.error(err);
-        alert("⚠️ Error al conectar con el servidor");
+        alert("Error al conectar con el servidor");
       }
     });
   }
 
-  // ===========================
-  // 🟡 LISTAR PRODUCTOS
-  // ===========================
   async function loadProductList() {
-    // muestra carga mientras viene la respuesta
     mainContent.innerHTML = `
     <h2>Mis productos</h2>
     <div id="productosContainer" class="productos-container">
@@ -144,7 +134,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       });
 
-      // Si el servidor responde con error (4xx/5xx) lo manejamos
       if (!res.ok) {
         const text = await res.text().catch(() => "");
         console.error("Respuesta no OK:", res.status, text);
@@ -159,7 +148,6 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // formateo seguro del precio (puede venir string o number)
       const formatPrice = (p) => {
         if (p === null || p === undefined) return "N/A";
         const n = typeof p === "string" ? parseFloat(p) : p;
@@ -183,7 +171,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // pequeña utilidad para evitar inyección de HTML si los campos vienen sucios
   function escapeHtml(str) {
     if (!str && str !== 0) return "";
     return String(str)
@@ -194,10 +181,6 @@ document.addEventListener("DOMContentLoaded", () => {
       .replace(/'/g, "&#039;");
   }
 
-
-  // ===========================
-  // 🔵 VENTAS
-  // ===========================
   function loadVentas() {
     mainContent.innerHTML = `
       <h2>Historial de ventas</h2>
@@ -205,9 +188,6 @@ document.addEventListener("DOMContentLoaded", () => {
     `;
   }
 
-  // ===========================
-  // ⚙️ CONFIGURACIÓN
-  // ===========================
   function loadConfiguracion() {
     mainContent.innerHTML = `
     <h2>Configuración del emprendimiento</h2>
@@ -302,12 +282,10 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         if (!res.ok) throw new Error("Error al guardar en backend");
-        alert("Configuración guardada correctamente ✅");
+        alert("Configuración guardada correctamente.");
 
-        // Guarda copia local como respaldo
         localStorage.setItem("configEmprendimiento", JSON.stringify(config));
 
-        // 🔄 Actualiza el título en el header
         const headerTitle = document.querySelector(".header h1");
         if (headerTitle) headerTitle.textContent = config.titulo;
 

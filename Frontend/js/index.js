@@ -6,11 +6,7 @@ function toggleSidebar() {
 document.addEventListener("DOMContentLoaded", () => {
   const botonesAgregar = document.querySelectorAll(".btnAgregar");
 
-    // ===========================
-  // 🟡 LISTAR PRODUCTOS
-  // ===========================
   async function loadProductList() {
-    // muestra carga mientras viene la respuesta
     mainContent.innerHTML = `
     <h2>Mis productos</h2>
     <div id="productosContainer" class="productos-container">
@@ -51,7 +47,6 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // formateo seguro del precio (puede venir string o number)
       const formatPrice = (p) => {
         if (p === null || p === undefined) return "N/A";
         const n = typeof p === "string" ? parseFloat(p) : p;
@@ -73,7 +68,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // pequeña utilidad para evitar inyección de HTML si los campos vienen sucios
   function escapeHtml(str) {
     if (!str && str !== 0) return "";
     return String(str)
@@ -89,10 +83,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const nombre = btn.dataset.nombre;
       const precio = parseFloat(btn.dataset.precio);
 
-      // Recuperar carrito existente o inicializarlo vacío
       let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
 
-      // Verificar si el producto ya está en el carrito
       const productoExistente = carrito.find(p => p.nombre === nombre);
 
       if (productoExistente) {
@@ -105,10 +97,9 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       }
 
-      // Guardar carrito actualizado
       localStorage.setItem("carrito", JSON.stringify(carrito));
 
-      alert(`${nombre} se agregó al carrito ✅`);
+      alert(`${nombre} se agregó al carrito`);
     });
   });
 

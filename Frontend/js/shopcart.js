@@ -20,6 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
       total += item.precio * item.cantidad;
     });
 
+    
     totalElement.textContent = total.toFixed(2);
 
     document.querySelectorAll(".btn-eliminar").forEach(btn => {
