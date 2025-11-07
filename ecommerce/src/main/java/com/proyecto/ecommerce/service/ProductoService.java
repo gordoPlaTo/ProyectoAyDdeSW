@@ -92,6 +92,7 @@ public class ProductoService implements IProductoService {
                 .filter(Producto::isEnable)
                 .filter(p -> p.getStock()>0)
                 .map(producto -> new ProductoActRespDTO(
+                        producto.getIdProducto(),
                         producto.getNombre(),
                         producto.getDescripcion(),
                         producto.getPrecio(),

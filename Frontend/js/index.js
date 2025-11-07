@@ -6,8 +6,35 @@ function toggleSidebar() {
   const productosContainer = document.querySelector(".product-container");
 
 document.addEventListener("DOMContentLoaded", () => {
-  const botonesAgregar = document.querySelectorAll(".btnAgregar");
 
+   document.querySelectorAll(".btnAgregar").forEach(btn => { //Aca agregar validacion, para saber si es login o no.
+    btn.addEventListener("click", () => {
+      const id = btn.dataset.id
+      const nombre = btn.dataset.nombre;
+      const precio = parseFloat(btn.dataset.precio);
+
+      let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+
+      //aca se busca si ya esta ese producto en el carrito
+      const productoExistente = carrito.find(p => p.nombre === nombre);
+
+      if (productoExistente) {
+        productoExistente.cantidad += 1;
+      } else {
+        carrito.push({
+          id,
+          nombre,
+          precio,
+          cantidad: 1
+        });
+      }
+
+      localStorage.setItem("carrito", JSON.stringify(carrito));
+
+      alert(`${nombre} se agregó al carrito `);
+    });
+  });
+  
   // =================
   // Obtener Productos
   // ===================
@@ -55,7 +82,11 @@ document.addEventListener("DOMContentLoaded", () => {
         <img src=${prod.url ? escapeHtml(prod.url ?? String(prod.url)) : 'N/A'}>
         <p class="descripcion">${escapeHtml(prod.descripcion)}</p>
         <p><strong>Precio:</strong> $${formatPrice(prod.precio)}</p>
-        <button id="btnAgregar">Añadir al Carrito</button>
+        <button class="btnAgregar"
+            data-id="${prod.idProducto}"
+            data-nombre="${escapeHtml(prod.nombre)}"
+            data-precio="${prod.precio}"
+        >Añadir al Carrito</button>
       </div>
     `).join("");
 
@@ -65,40 +96,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function escapeHtml(str) {
-    if (!str && str !== 0) return "";
-    return String(str)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
-  }
+ 
 
-  botonesAgregar.forEach(btn => { //Aca agregar validacion, para saber si es login o no.
-    btn.addEventListener("click", () => {
-      const nombre = btn.dataset.nombre;
-      const precio = parseFloat(btn.dataset.precio);
-
-      let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
-
-      const productoExistente = carrito.find(p => p.nombre === nombre);
-
-      if (productoExistente) {
-        productoExistente.cantidad += 1;
-      } else {
-        carrito.push({
-          nombre,
-          precio,
-          cantidad: 1
-        });
-      }
-
-      localStorage.setItem("carrito", JSON.stringify(carrito));
-
-      alert(`${nombre} se agregó al carrito `);
-    });
-  });
 
   async function loadContactos(){
     try {
@@ -122,13 +121,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   }
 
-
   async function loadInfoEmp(){
      try {
         const res = await fetch("http://localhost:8080/api/emprendimiento/obtener");
         if (res.ok) {
           const data = await res.json();
           document.getElementById("nombre-emprendimiento").textContent = data.titulo;
+          document.getElementById("derechosR").textContent = `© 2025 ${data.titulo}`;
                 
           const containerContactos = document.getElementById("contacto-container");
           containerContactos.innerHTML = "";
@@ -149,6 +148,15 @@ document.addEventListener("DOMContentLoaded", () => {
       }catch(err) {
         console.warn("No se pudo obtener configuración del emprendimiento", err);
       }
+  }
+   function escapeHtml(str) {
+    if (!str && str !== 0) return "";
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
   }
 
   loadInfoEmp();

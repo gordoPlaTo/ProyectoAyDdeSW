@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 
 @JsonPropertyOrder
 public record ProductoActRespDTO (
+    Long idProducto,
     String nombre,
     String descripcion,
     BigDecimal precio,
