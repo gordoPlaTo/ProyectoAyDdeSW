@@ -8,17 +8,12 @@ function toggleSidebar() {
 document.addEventListener("DOMContentLoaded", () => {
   const botonesAgregar = document.querySelectorAll(".btnAgregar");
 
-<<<<<<< HEAD
   // =================
   // Obtener Productos
   // ===================
   async function loadProductList() {
     // muestra carga mientras viene la respuesta
     productosContainer.innerHTML = `
-=======
-  async function loadProductList() {
-    mainContent.innerHTML = `
->>>>>>> a272c079a3f1600ffc6aa98a8d4937a96cf05a94
     <h2>Mis productos</h2>
     <div id="productosContainer" class="productos-container">
       <p>Cargando productos...</p>
@@ -26,11 +21,6 @@ document.addEventListener("DOMContentLoaded", () => {
   `;
 
     try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        productosContainer.innerHTML = "<p style='color:red;'>No autenticado. Inicie sesión.</p>";
-        return;
-      }
 
       const res = await fetch(`http://localhost:8080/api/emprendimiento/productos/obtenerActivos`, {
         method: "GET",
@@ -106,14 +96,62 @@ document.addEventListener("DOMContentLoaded", () => {
 
       localStorage.setItem("carrito", JSON.stringify(carrito));
 
-<<<<<<< HEAD
       alert(`${nombre} se agregó al carrito `);
-=======
-      alert(`${nombre} se agregó al carrito`);
->>>>>>> a272c079a3f1600ffc6aa98a8d4937a96cf05a94
     });
   });
 
-  loadProductList();
+  async function loadContactos(){
+    try {
 
+      const res = await fetch(`http://localhost:8080/api/emprendimiento/contactos`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+
+      if (!res.ok) {
+        const text = await res.text().catch(() => "");
+        console.error("Error al obtener:", res.status, text);
+        return;
+      }
+
+    } catch (error) {
+      console.error("Error al obtener contactos:", error);
+    }
+
+  }
+
+
+  async function loadInfoEmp(){
+     try {
+        const res = await fetch("http://localhost:8080/api/emprendimiento/obtener");
+        if (res.ok) {
+          const data = await res.json();
+          document.getElementById("nombre-emprendimiento").textContent = data.titulo;
+                
+          const containerContactos = document.getElementById("contacto-container");
+          containerContactos.innerHTML = "";
+
+          if(Array.isArray(data.contactos)){
+            data.contactos.forEach(element => {
+                const div = document.createElement("div");
+                div.classList.add("contacto");
+                div.textContent = element.descripcion;
+                containerContactos.appendChild(div);
+              });
+
+          }else {
+            console.warn("El emprendimiento no contiene contactos");
+          
+          }
+       }
+      }catch(err) {
+        console.warn("No se pudo obtener configuración del emprendimiento", err);
+      }
+  }
+
+  loadInfoEmp();
+  loadContactos();
+  loadProductList();
 });

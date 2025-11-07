@@ -53,7 +53,7 @@ public class AdminController {
         return ResponseEntity.ok(ivaService.obtenerIva());
     }
 
-    @PatchMapping("/emp/info/mod")
+    @PatchMapping("/emprendimiento/info/mod")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> modInfoEmprendimiento(@Valid @RequestBody InfoEmpRequestDTO infoReq){
         emprendimientoService.modInfoEmprendimiento(infoReq);

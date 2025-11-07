@@ -6,6 +6,7 @@ import com.proyecto.ecommerce.model.Contacto;
 import com.proyecto.ecommerce.model.Emprendimiento;
 import com.proyecto.ecommerce.repository.IContactoRepository;
 import com.proyecto.ecommerce.repository.IEmpRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,11 +31,11 @@ public class ContactoService implements IContactoService {
 
     @Override
     public RespDTO deleteContacto(Long id) {
-        if(contactoRepository.existsById(id)){
-            contactoRepository.deleteById(id);
-            return new RespDTO("Se elimino correctamente",true, LocalDateTime.now());
+        if(!contactoRepository.existsById(id)){
+            throw new EntityNotFoundException("No se encontro el contacto que deseas eliminar");
         }
-        return new RespDTO("No se encontro el contacto que deseas eliminar",false,LocalDateTime.now());
+        contactoRepository.deleteById(id);
+        return new RespDTO("Se elimino correctamente",true, LocalDateTime.now());
     }
 
     @Override

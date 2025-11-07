@@ -6,6 +6,7 @@ import com.proyecto.ecommerce.dto.UsuariosDTO.UsuarioDatosDTO;
 import com.proyecto.ecommerce.service.UsuarioService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -36,6 +37,12 @@ public class UsuarioController {
         usuarioService.modificarDireccion(direcDTO);
         return ResponseEntity.ok("Se cambio la direccion del usuario exitosamente.");
     }
+
+    //Cambiar Nombre
+
+
+    //Cambiar DNI
+
 
 
     @PatchMapping("/modificar/deshabilitarCuenta")

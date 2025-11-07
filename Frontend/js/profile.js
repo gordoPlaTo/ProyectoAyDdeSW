@@ -56,8 +56,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     "Authorization": `Bearer ${token}`,
                 },
                 body: JSON.stringify({
-                    oldPassword: oldPass,
-                    newPassword: newPass,
+                    passwordOld: oldPass,
+                    passwordNew: newPass
                 }),
             });
 

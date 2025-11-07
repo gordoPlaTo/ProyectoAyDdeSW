@@ -39,12 +39,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-<<<<<<< HEAD
   // =====================
   // CARGAR PRODUCTO
   // ===================
-=======
->>>>>>> a272c079a3f1600ffc6aa98a8d4937a96cf05a94
   function loadProductForm() {
     mainContent.innerHTML = `
       <h2>Cargar producto</h2>
@@ -101,11 +98,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (res.ok) {
           alert("Producto creado correctamente");
-<<<<<<< HEAD
           loadProductList(); // refresca la lista
-=======
-          loadProductList(); 
->>>>>>> a272c079a3f1600ffc6aa98a8d4937a96cf05a94
         } else {
           const error = await res.text();
           alert("Error al crear el producto:\n" + error);
@@ -117,12 +110,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-<<<<<<< HEAD
   // =====================
   // Obtener Productos
   // ======================
-=======
->>>>>>> a272c079a3f1600ffc6aa98a8d4937a96cf05a94
   async function loadProductList() {
     mainContent.innerHTML = `
     <h2>Mis productos</h2>
@@ -197,12 +187,9 @@ document.addEventListener("DOMContentLoaded", () => {
       .replace(/'/g, "&#039;");
   }
 
-<<<<<<< HEAD
   // =========================
   // Ventas
   // ==================
-=======
->>>>>>> a272c079a3f1600ffc6aa98a8d4937a96cf05a94
   function loadVentas() {
     mainContent.innerHTML = `
       <h2>Historial de ventas</h2>
@@ -210,12 +197,9 @@ document.addEventListener("DOMContentLoaded", () => {
     `;
   }
 
-<<<<<<< HEAD
   // ======================
   // Configuracion
   // ========================
-=======
->>>>>>> a272c079a3f1600ffc6aa98a8d4937a96cf05a94
   function loadConfiguracion() {
   mainContent.innerHTML = `
     <h2>Configuración del emprendimiento</h2>
@@ -282,19 +266,35 @@ document.addEventListener("DOMContentLoaded", () => {
     listaContactos.innerHTML = "";
 
     config.contactos.forEach((c, i) => {
-      const texto = typeof c === "string" ? c : c.descripcion;
       const li = document.createElement("li");
       li.innerHTML = `
-        ${texto} 
-        <button class="btn-eliminar-contacto" data-index="${i}">x</button>
-      `;
-      listaContactos.appendChild(li);
+        ${c.descripcion}
+        <button type="button" class="btn-eliminar-contacto" data-id="${c.idContacto}" data-index="${i}">x</button>
+        `;
+       listaContactos.appendChild(li);
     });
 
     // Eliminar un contacto
     document.querySelectorAll(".btn-eliminar-contacto").forEach(btn => {
-      btn.addEventListener("click", e => {
+      btn.addEventListener("click", async e => {
+        e.preventDefault();
+        e.stopPropagation();
         const index = e.target.dataset.index;
+        const id = e.target.dataset.id;
+        try{
+          const resp = await fetch(`${API_URL}/admin/contacto/delete/${id}`, {
+          method: 'DELETE',
+          headers: { 
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`
+            }
+         });
+          if (!resp.ok) throw new Error("Error al eliminar el contacto.");
+
+        }catch(err){
+          console.warn("Error al intentar eliminar el contacto")
+        }
+
         config.contactos.splice(index, 1);
         renderContactos();
       });
@@ -317,10 +317,25 @@ document.addEventListener("DOMContentLoaded", () => {
   // =============================
   // Agregar nuevo contacto
   // ========================
-  btnAgregar.addEventListener("click", () => {
+  btnAgregar.addEventListener("click", async () => {
     const valor = inputContacto.value.trim();
     if (valor) {
       config.contactos.push(valor);
+
+      try{
+        const resp = await fetch(`${API_URL}/contacto/new`, {
+        method: "POST",
+        headers: {
+        "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify(valor)
+      });
+        if(!resp) throw new Error("Error al guardar el nuevo contacto");
+      }catch(error){
+        console.warn(error);
+      }
+
       inputContacto.value = "";
       renderContactos();
     }
@@ -335,14 +350,19 @@ document.addEventListener("DOMContentLoaded", () => {
     config.descripcion = document.getElementById("descripcion").value;
     config.direccion = document.getElementById("direccion").value;
 
+    const bodyReq = {
+      titulo: config.titulo,
+      descripcion: config.descripcion,
+      direccion: config.direccion
+    };
     try {
-      const res = await fetch(`${API_URL}/emprendimiento/contactos`, {
-        method: "POST",
+      const res = await fetch(`${API_URL}/emprendimiento/info/mod`, {
+        method: "PATCH",
         headers: {
-          "Content-Type": "application/json",
+        "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`
         },
-        body: JSON.stringify(config)
+        body: JSON.stringify(bodyReq)
       });
 
       if (!res.ok) throw new Error("Error al guardar en el backend");
@@ -366,40 +386,4 @@ document.addEventListener("DOMContentLoaded", () => {
   cargarConfigDesdeBackend();
 }
 
-<<<<<<< HEAD
-=======
-    document.getElementById("configForm").addEventListener("submit", async e => {
-      e.preventDefault();
-      config.titulo = document.getElementById("titulo").value;
-      config.descripcion = document.getElementById("descripcion").value;
-      config.direccion = document.getElementById("direccion").value;
-
-      try {
-        const res = await fetch(`${API_URL}/emprendimiento/contactos`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-          },
-          body: JSON.stringify(config)
-        });
-
-        if (!res.ok) throw new Error("Error al guardar en backend");
-        alert("Configuración guardada correctamente.");
-
-        localStorage.setItem("configEmprendimiento", JSON.stringify(config));
-
-        const headerTitle = document.querySelector(".header h1");
-        if (headerTitle) headerTitle.textContent = config.titulo;
-
-      } catch (err) {
-        console.error(err);
-        alert("Error al guardar en el servidor. Cambios solo locales.");
-        localStorage.setItem("configEmprendimiento", JSON.stringify(config));
-      }
-    });
-
-    cargarConfigDesdeBackend();
-  }
->>>>>>> a272c079a3f1600ffc6aa98a8d4937a96cf05a94
 });

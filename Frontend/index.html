@@ -11,7 +11,6 @@
 <body>
     <header>
         <h1 id="nombre-emprendimiento">Mi Tienda</h1>
-
         <div class="user-actions">
             <a href="/Frontend/modules/profile.html">
                 <img src="/Frontend/img/userdefault.jpg" alt="Usuario" class="user-icon" />
@@ -51,51 +50,18 @@
     <main>
         <div class="product-container">
            
-
-              
-
-           
         </div>
     </main>
 
-    <footer id="contacto-container">
-        <p>&copy; 2025 Mi Tienda</p>
-        <button id="btnSobreN">Sobre Nosotros</button>
+    <footer id="footer">
+        <div id="contacto-container"></div>
+        <div class="footer-info">
+            <p>&copy; 2025 Mi Tienda</p>
+            <button id="btnSobreN">Sobre Nosotros</button>
+        </div>
     </footer>
 
     <script src="/Frontend/js/theme.js"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", async () => {
-            try {
-                const res = await fetch("http://localhost:8080/api/emprendimiento/obtener");
-                if (res.ok) {
-                    const data = await res.json();
-                    document.getElementById("nombre-emprendimiento").textContent = data.titulo;
-                    document.getElementById("descripcion-emprendimiento").textContent = data.descripcion;
-                    document.getElementById("direccion-emprendimiento").textContent = data.direccion;
-                
-                    const containerContactos = document.getElementById("contacto-container");
-                    containerContactos.innerHTML = "";
-
-                    if(Array.isArray(data.contactos)){
-                        data.contactos.forEach(element => {
-                            const label = document.createElement("label");
-                            label.classList.add("contacto");
-                            label.textContent = element.descripcion;
-                            containerContactos.appendChild(label);
-
-                        });
-
-                    } else {
-                        console.warn("El emprendimiento no contiene contactos");
-                    }
-
-                }
-            } catch (err) {
-                console.warn("No se pudo obtener configuración del emprendimiento", err);
-            }
-        });
-    </script>
     <script src="/Frontend/js/index.js"></script>
 
 </body>
