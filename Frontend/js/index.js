@@ -1,13 +1,13 @@
 function toggleSidebar() {
-    document.querySelector('.sidebar').classList.toggle('open');
-    document.querySelector('.overlay').classList.toggle('active');
+  document.querySelector('.sidebar').classList.toggle('open');
+  document.querySelector('.overlay').classList.toggle('active');
 }
 
-  const productosContainer = document.querySelector(".product-container");
+const productosContainer = document.querySelector(".product-container");
 
 document.addEventListener("DOMContentLoaded", () => {
 
-   document.querySelectorAll(".btnAgregar").forEach(btn => { //Aca agregar validacion, para saber si es login o no.
+  document.querySelectorAll(".btnAgregar").forEach(btn => { //Aca agregar validacion, para saber si es login o no.
     btn.addEventListener("click", () => {
       const id = btn.dataset.id
       const nombre = btn.dataset.nombre;
@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
       alert(`${nombre} se agregó al carrito `);
     });
   });
-  
+
   // =================
   // Obtener Productos
   // ===================
@@ -95,11 +95,70 @@ document.addEventListener("DOMContentLoaded", () => {
       productosContainer.innerHTML = "<p style='color:red;'>Error al cargar los productos. Revisa consola o el backend.</p>";
     }
   }
+  // ================================
+  // 🧮 ORDENAR PRODUCTOS POR PRECIO
+  // ================================
+  const ascCheckbox = document.querySelector('input[value="asc"]');
+  const descCheckbox = document.querySelector('input[value="desc"]');
 
- 
+  ascCheckbox.addEventListener("change", () => {
+    if (ascCheckbox.checked) {
+      descCheckbox.checked = false;
+      ordenarProductos("asc");
+    } else {
+      loadProductList(); // vuelve al orden original
+    }
+  });
+
+  descCheckbox.addEventListener("change", () => {
+    if (descCheckbox.checked) {
+      ascCheckbox.checked = false;
+      ordenarProductos("desc");
+    } else {
+      loadProductList();
+    }
+  });
+
+  // ================================
+  // 🔍 BÚSQUEDA DE PRODUCTOS
+  // ================================
+  const searchInput = document.querySelector(".search-bar");
+
+  searchInput.addEventListener("input", () => {
+    const term = searchInput.value.toLowerCase().trim();
+    const productos = document.querySelectorAll(".product-card");
+
+    productos.forEach(prod => {
+      const nombre = prod.querySelector("h3").textContent.toLowerCase();
+      const descripcion = prod.querySelector(".descripcion").textContent.toLowerCase();
+
+      if (nombre.includes(term) || descripcion.includes(term)) {
+        prod.style.display = "block";
+      } else {
+        prod.style.display = "none";
+      }
+    });
+  });
 
 
-  async function loadContactos(){
+  function ordenarProductos(direccion) {
+    const cards = Array.from(document.querySelectorAll(".product-card"));
+    if (!cards.length) return;
+
+    const productosOrdenados = cards.sort((a, b) => {
+      const precioA = parseFloat(a.querySelector("p strong").nextSibling.textContent.replace("$", "")) || 0;
+      const precioB = parseFloat(b.querySelector("p strong").nextSibling.textContent.replace("$", "")) || 0;
+      return direccion === "asc" ? precioA - precioB : precioB - precioA;
+    });
+
+    const contenedor = document.querySelector(".product-container");
+    contenedor.innerHTML = "";
+    productosOrdenados.forEach(card => contenedor.appendChild(card));
+  }
+
+
+
+  async function loadContactos() {
     try {
 
       const res = await fetch(`http://localhost:8080/api/emprendimiento/contactos`, {
@@ -121,35 +180,35 @@ document.addEventListener("DOMContentLoaded", () => {
 
   }
 
-  async function loadInfoEmp(){
-     try {
-        const res = await fetch("http://localhost:8080/api/emprendimiento/obtener");
-        if (res.ok) {
-          const data = await res.json();
-          document.getElementById("nombre-emprendimiento").textContent = data.titulo;
-          document.getElementById("derechosR").textContent = `© 2025 ${data.titulo}`;
-                
-          const containerContactos = document.getElementById("contacto-container");
-          containerContactos.innerHTML = "";
+  async function loadInfoEmp() {
+    try {
+      const res = await fetch("http://localhost:8080/api/emprendimiento/obtener");
+      if (res.ok) {
+        const data = await res.json();
+        document.getElementById("nombre-emprendimiento").textContent = data.titulo;
+        document.getElementById("derechosR").textContent = `© 2025 ${data.titulo}`;
 
-          if(Array.isArray(data.contactos)){
-            data.contactos.forEach(element => {
-                const div = document.createElement("div");
-                div.classList.add("contacto");
-                div.textContent = element.descripcion;
-                containerContactos.appendChild(div);
-              });
+        const containerContactos = document.getElementById("contacto-container");
+        containerContactos.innerHTML = "";
 
-          }else {
-            console.warn("El emprendimiento no contiene contactos");
-          
-          }
-       }
-      }catch(err) {
-        console.warn("No se pudo obtener configuración del emprendimiento", err);
+        if (Array.isArray(data.contactos)) {
+          data.contactos.forEach(element => {
+            const div = document.createElement("div");
+            div.classList.add("contacto");
+            div.textContent = element.descripcion;
+            containerContactos.appendChild(div);
+          });
+
+        } else {
+          console.warn("El emprendimiento no contiene contactos");
+
+        }
       }
+    } catch (err) {
+      console.warn("No se pudo obtener configuración del emprendimiento", err);
+    }
   }
-   function escapeHtml(str) {
+  function escapeHtml(str) {
     if (!str && str !== 0) return "";
     return String(str)
       .replace(/&/g, "&amp;")

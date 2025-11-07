@@ -26,6 +26,21 @@ main {
   padding: 40px 20px;
 }
 
+.search-bar {
+  width: 100%;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  transition: 0.3s;
+}
+
+.search-bar:focus {
+  outline: none;
+  border-color: #28a745; /* tu verde característico */
+  box-shadow: 0 0 5px rgba(40, 167, 69, 0.3);
+}
+
+
 .product-container {
   width: 1000px;
   display: grid;
