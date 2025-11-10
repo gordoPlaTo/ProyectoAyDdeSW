@@ -2,20 +2,53 @@ const uploadPhoto = document.getElementById("uploadPic");
 const userPhoto = document.getElementById("userPic");
 
 if (uploadPhoto && userPhoto) {
-  uploadPhoto.addEventListener("change", (e) => {
+  uploadPhoto.addEventListener("change", async (e) => {
     const file = e.target.files[0];
-    if (file && file.type.startsWith("image/")) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        userPhoto.src = event.target.result;
-      };
-      reader.readAsDataURL(file);
-    } else {
-      alert("Por favor, selecciona un formato de imagen válido.");
-    }
-  })
+    if (!file) return;
 
+    if (!file.type.startsWith("image/")) {
+      alert("Por favor, selecciona un formato de imagen válido.");
+      return;
+    }
+
+    const token = localStorage.getItem("token");
+    const API_URL = "http://localhost:8080/api";
+
+    const formData = new FormData();
+    formData.append("imagenPerfil", file);
+
+    try {
+      const res = await fetch(`${API_URL}/user/modificar/imgPerfil`, {
+        method: "PATCH",
+        headers: { "Authorization": `Bearer ${token}` },
+        body: formData
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        alert("Foto de perfil actualizada correctamente.");
+
+        // Actualizamos la imagen (si el backend devuelve la URL)
+        if (data && data.url) {
+          userPhoto.src = data.url;
+          localStorage.setItem("userProfilePic", data.url);
+        }
+
+      } else {
+        alert("Error al actualizar la foto de perfil: " + (data.message || "Error desconocido"));
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error al conectar con el servidor.");
+    }
+  });
+
+  // 🔁 Mantener la imagen al recargar
+  const savedPic = localStorage.getItem("userProfilePic");
+  if (savedPic) userPhoto.src = savedPic;
 }
+
 
 document.addEventListener("DOMContentLoaded", async () => {
   const API_URL = "http://localhost:8080/api";
@@ -152,52 +185,77 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
       });
 
-      document.querySelectorAll(".btn-comprobante").forEach(btn => {
-        btn.addEventListener("click", async () => {
-          alert("Sorpresaaaa, no hace nada")
-          const id = btn.dataset.id;
+document.querySelectorAll(".btn-comprobante").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const id = btn.dataset.id;
 
-          //Aca tiene que popear una ventanita para que diga 
-          //"seleccione una imagen"
-          // usa esta id
-          // <input type="file" id="imageComprobante" name="image" accept="image/*" required></input>
-          //y luego que se envie. Acordate el formato es formData no JSON
+    // Crear modal dinámico
+    const modal = document.createElement("div");
+    modal.classList.add("modal");
+    modal.style.display = "flex";
+    modal.innerHTML = `
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3>Subir comprobante de pago</h3>
+        <form id="formComprobante">
+          <input type="file" id="imageComprobante" name="comprobante" accept="image/*" required>
+          <button type="submit">Enviar</button>
+        </form>
+      </div>
+    `;
 
+    document.body.appendChild(modal);
 
+    // Cerrar modal
+    modal.querySelector(".close").addEventListener("click", () => modal.remove());
+    window.addEventListener("click", e => { if (e.target === modal) modal.remove(); });
 
-          const imgComprobante = document.getElementById("imageComprobante").files[0]
+    const form = modal.querySelector("#formComprobante");
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
 
-          const formData = new FormData();
+      const file = document.getElementById("imageComprobante").files[0];
+      if (!file) {
+        alert("Debe seleccionar una imagen.");
+        return;
+      }
+      if (!file.type.startsWith("image/")) {
+        alert("El archivo debe ser una imagen válida.");
+        return;
+      }
+      if (file.size > 5_000_000) {
+        alert("La imagen no puede superar los 5 MB.");
+        return;
+      }
 
-          formData.append("idPedido",id);
-          formData.append("comprobante", imgComprobante);
+      const formData = new FormData();
+      formData.append("idPedido", id);
+      formData.append("comprobante", file);
 
-        
-          try {
-            const res = await fetch(`${API_URL}/compras/pedido/comprobante/cargar`, {
-              method: "PATCH",
-              headers: {
-                "Authorization": `Bearer ${token}`
-              },
-              body: formData
-          });
+      try {
+        const res = await fetch(`${API_URL}/compras/pedido/comprobante/cargar`, {
+          method: "PATCH",
+          headers: { "Authorization": `Bearer ${token}` },
+          body: formData
+        });
 
-            if (res.ok) {
-              const respuesta = await res.text();
-              alert(respuesta);
-            } else {
-              const error = await res.text();
-              alert(error);
-            }
+        if (res.ok) {
+          const data = await res.json();
+          alert(data.mensaje || "Comprobante cargado correctamente.");
+          modal.remove();
+          cargarPedidos(); // refresca la lista
+        } else {
+          const msg = await res.text();
+          alert("Error al subir comprobante:\n" + msg);
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Error al conectar con el servidor.");
+      }
+    });
+  });
+});
 
-          } catch (err) {
-            console.error(err);
-            alert("Error al conectar con el servidor");
-          }
-
-          })
-
-      })
 
     } catch (error) {
       console.error(error);

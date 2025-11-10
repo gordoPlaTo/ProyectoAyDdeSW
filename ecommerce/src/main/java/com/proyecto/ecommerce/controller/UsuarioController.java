@@ -82,7 +82,7 @@ public class UsuarioController {
     @PatchMapping("/modificar/imgPerfil")
     @PreAuthorize("hasRole('CLIENTE') || hasRole('ADMIN')")
     public ResponseEntity<RespDTO> modificarFotoPerfil(@NotNull(message = "Debes incluir una imagen para asignarla al perfil")
-                                                       @RequestBody MultipartFile imagenPerfil){
+                                                       @RequestPart MultipartFile imagenPerfil){
 
         if (imagenPerfil.getSize() > 5_000_000){//asi se indica el tamaño aca 5mb maximo
             throw new IllegalArgumentException("El tamaño de la imagen excede las 5mb permitidos");
