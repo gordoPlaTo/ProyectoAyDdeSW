@@ -27,6 +27,9 @@ document.addEventListener("DOMContentLoaded", () => {
         case "verProductos":
           loadProductList();
           break;
+        case "materiales":
+          loadMateriales();
+          break;
         case "ventas":
           loadVentas();
           break;
@@ -171,11 +174,287 @@ document.addEventListener("DOMContentLoaded", () => {
       </div>
     `).join("");
 
+      // Activar clic sobre los productos para abrir el modal
+      document.querySelectorAll(".producto-card").forEach((card, i) => {
+        card.addEventListener("click", () => openEditModal(productos[i]));
+      });
+
+
     } catch (error) {
       console.error("Error al obtener productos:", error);
       productosContainer.innerHTML = "<p style='color:red;'>Error al cargar los productos. Revisa consola o el backend.</p>";
     }
   }
+
+  // ======================================================
+  // Modal para editar productos
+  // ======================================================
+  function openEditModal(producto) {
+    const modalOverlay = document.createElement("div");
+    modalOverlay.classList.add("modal-overlay");
+    modalOverlay.innerHTML = `
+    <div class="modal">
+      <h3>Editar producto: ${escapeHtml(producto.nombre)}</h3>
+      <label>Precio:</label>
+      <input type="number" id="editPrecio" value="${producto.precio}" step="0.01">
+
+      <label>Stock:</label>
+      <input type="number" id="editStock" value="${producto.stock}" min="0">
+
+      <div class="btns">
+        <button class="btn-save">Guardar</button>
+        <button class="btn-disable">${producto.enable ? "Habilitar" : "Deshabilitar"}</button>
+        <button class="btn-close">Cerrar</button>
+      </div>
+    </div>
+  `;
+    document.body.appendChild(modalOverlay);
+
+    const btnGuardar = modalOverlay.querySelector(".btn-save");
+    const btnCerrar = modalOverlay.querySelector(".btn-close");
+    const btnDeshabilitar = modalOverlay.querySelector(".btn-disable");
+
+    // Cerrar modal
+    btnCerrar.addEventListener("click", () => modalOverlay.remove());
+
+    // Guardar cambios
+    btnGuardar.addEventListener("click", async () => {
+      const nuevoPrecio = parseFloat(document.getElementById("editPrecio").value);
+      const nuevoStock = parseInt(document.getElementById("editStock").value);
+
+      try {
+        const res = await fetch(`${API_URL}/admin/producto/mod/${producto.idProducto}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
+          body: JSON.stringify({ precio: nuevoPrecio })
+        });
+
+        if (!res.ok) throw new Error("Error al modificar precio");
+
+        const resStock = await fetch(`${API_URL}/admin/producto/aumentar/${producto.idProducto}/stock?stock=${nuevoStock}`, {
+          method: "PATCH",
+          headers: {
+            "Authorization": `Bearer ${token}`
+          }
+        });
+        if (!resStock.ok) throw new Error("Error al actualizar stock");
+
+        alert("Producto actualizado correctamente");
+        modalOverlay.remove();
+        loadProductList();
+      } catch (err) {
+        console.error(err);
+        alert("No se pudo guardar los cambios");
+      }
+    });
+
+    // Habilitar / Deshabilitar
+    btnDeshabilitar.addEventListener("click", async () => {
+      try {
+        const res = await fetch(`${API_URL}/admin/producto/estado/${producto.idProducto}`, {
+          method: "PATCH",
+          headers: {
+            "Authorization": `Bearer ${token}`
+          }
+        });
+        if (!res.ok) throw new Error("Error al cambiar estado");
+        alert("Estado del producto actualizado");
+        modalOverlay.remove();
+        loadProductList();
+      } catch (err) {
+        console.error(err);
+        alert("No se pudo cambiar el estado del producto");
+      }
+    });
+  }
+  // =====================
+  // MATERIALES (ver + agregar)
+  // =====================
+  async function loadMateriales() {
+    mainContent.innerHTML = `
+    <h2>Gestión de Materiales</h2>
+
+    <section class="material-form">
+      <h3>Agregar nuevo material</h3>
+      <form id="materialForm" class="form-material" enctype="multipart/form-data">
+        <label>Nombre:</label>
+        <input type="text" id="nombreMat" required>
+
+        <label>Descripción:</label>
+        <textarea id="descripcionMat" rows="2" required></textarea>
+
+        <label>Stock:</label>
+        <input type="number" id="stockMat" min="0" required>
+
+        <label>Imagen del material:</label>
+        <input type="file" id="imgMat" accept="image/*" required>
+
+        <button type="submit">Guardar material</button>
+      </form>
+    </section>
+
+    <section class="material-list">
+      <h3>Materiales cargados</h3>
+      <div id="materialesContainer" class="materiales-container">
+        <p>Cargando materiales...</p>
+      </div>
+    </section>
+  `;
+
+    const materialesContainer = document.getElementById("materialesContainer");
+
+    // =====================
+    // CARGAR LISTA
+    // =====================
+    async function loadMaterialList() {
+      try {
+        const res = await fetch(`${API_URL}/admin/material/obtenerTodos`, {
+          headers: { "Authorization": `Bearer ${token}` }
+        });
+
+        if (!res.ok) {
+          materialesContainer.innerHTML = `<p style="color:red;">Error al obtener materiales.</p>`;
+          return;
+        }
+
+        const materiales = await res.json();
+
+        if (!materiales || materiales.length === 0) {
+          materialesContainer.innerHTML = "<p>No hay materiales cargados aún.</p>";
+          return;
+        }
+
+        materialesContainer.innerHTML = materiales.map(mat => `
+        <div class="material-card" data-id="${mat.idMaterial}">
+          <h4>${mat.nombre}</h4>
+          <p>${mat.descripcion}</p>
+          <p><strong>Stock:</strong> ${mat.stock}</p>
+          ${mat.url ? `<img src="${mat.url}" alt="${mat.nombre}" class="material-img">` : ""}
+          <div class="acciones">
+            <button class="btn-stock" data-id="${mat.idMaterial}">Modificar stock</button>
+            <button class="btn-borrar" data-id="${mat.idMaterial}">Eliminar</button>
+          </div>
+        </div>
+      `).join("");
+
+        // === Eventos ===
+        document.querySelectorAll(".btn-stock").forEach(btn => {
+          btn.addEventListener("click", () => modificarStock(btn.dataset.id));
+        });
+
+        document.querySelectorAll(".btn-borrar").forEach(btn => {
+          btn.addEventListener("click", () => eliminarMaterial(btn.dataset.id));
+        });
+
+      } catch (error) {
+        console.error(error);
+        materialesContainer.innerHTML = "<p>Error al cargar materiales.</p>";
+      }
+    }
+
+    // =====================
+    // AGREGAR MATERIAL
+    // =====================
+    const materialForm = document.getElementById("materialForm");
+
+    if (materialForm) {
+      materialForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const nombreInput = document.getElementById("nombreMat");
+        const descInput = document.getElementById("descripcionMat");
+        const stockInput = document.getElementById("stockMat");
+        const imgInput = document.getElementById("imgMat");
+
+        if (!nombreInput || !descInput || !stockInput || !imgInput.files.length) {
+          alert("Por favor complete todos los campos, incluyendo la imagen.");
+          return;
+        }
+
+        const formData = new FormData();
+        formData.append("nombre", nombreInput.value.trim());
+        formData.append("descripcion", descInput.value.trim());
+        formData.append("stock", parseInt(stockInput.value));
+        formData.append("imgMaterial", imgInput.files[0]); // ✅ obligatorio
+
+        try {
+          const res = await fetch(`${API_URL}/admin/material/crear`, {
+            method: "POST",
+            headers: { "Authorization": `Bearer ${token}` },
+            body: formData
+          });
+
+          if (!res.ok) {
+            const msg = await res.text();
+            alert("Error al crear material: " + msg);
+            return;
+          }
+
+          alert("✅ Material agregado correctamente");
+          materialForm.reset();
+          loadMaterialList();
+
+        } catch (error) {
+          console.error("Error al crear material:", error);
+          alert("No se pudo conectar al servidor");
+        }
+      });
+    }
+
+    // =====================
+    // FUNCIONES AUXILIARES
+    // =====================
+    async function modificarStock(id) {
+      const cantidad = prompt("Ingrese cantidad (use signo - para reducir):");
+      if (!cantidad) return;
+
+      const endpoint = cantidad.startsWith("-")
+        ? `${API_URL}/admin/material/reducir/${id}?stock=${Math.abs(cantidad)}`
+        : `${API_URL}/admin/material/aumentar/${id}?stock=${cantidad}`;
+
+      try {
+        const res = await fetch(endpoint, {
+          method: "PATCH",
+          headers: { "Authorization": `Bearer ${token}` }
+        });
+        if (res.ok) {
+          alert("Stock modificado correctamente");
+          loadMaterialList();
+        } else {
+          alert("Error al modificar stock");
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    async function eliminarMaterial(id) {
+      if (!confirm("¿Seguro que deseas eliminar este material?")) return;
+      try {
+        const res = await fetch(`${API_URL}/admin/material/borrar/${id}`, {
+          method: "DELETE",
+          headers: { "Authorization": `Bearer ${token}` }
+        });
+        if (res.ok) {
+          alert("Material eliminado correctamente");
+          loadMaterialList();
+        } else {
+          alert("Error al eliminar material");
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    // =====================
+    // CARGA INICIAL
+    // =====================
+    loadMaterialList();
+  }
+
 
   function escapeHtml(str) {
     if (!str && str !== 0) return "";
@@ -201,7 +480,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Configuracion
   // ========================
   function loadConfiguracion() {
-  mainContent.innerHTML = `
+    mainContent.innerHTML = `
     <h2>Configuración del emprendimiento</h2>
     <form id="configForm" class="form-config">
       <label for="titulo">Nombre del emprendimiento:</label>
@@ -224,166 +503,166 @@ document.addEventListener("DOMContentLoaded", () => {
     </form>
   `;
 
-  const listaContactos = document.getElementById("listaContactos");
-  const btnAgregar = document.getElementById("btnAgregarContacto");
-  const inputContacto = document.getElementById("nuevoContacto");
-  const token = localStorage.getItem("token");
-  let config = { titulo: "", descripcion: "", direccion: "", contactos: [] };
+    const listaContactos = document.getElementById("listaContactos");
+    const btnAgregar = document.getElementById("btnAgregarContacto");
+    const inputContacto = document.getElementById("nuevoContacto");
+    const token = localStorage.getItem("token");
+    let config = { titulo: "", descripcion: "", direccion: "", contactos: [] };
 
-  // ==============================
-  // Obtener datos desde el backend
-  // ==============================
-  async function cargarConfigDesdeBackend() {
-    try {
-      const res = await fetch(`${API_URL}/emprendimiento/obtener`, {
-        method: 'GET',
-        headers: { "Content-Type": "application/json" }
-      });
-      if (!res.ok) throw new Error("Error al obtener configuración");
-      config = await res.json();
-      renderConfig();
-    } catch (err) {
-      console.warn("Usando configuración local o vacía:", err);
-      config = JSON.parse(localStorage.getItem("configEmprendimiento")) || config;
-      renderConfig();
+    // ==============================
+    // Obtener datos desde el backend
+    // ==============================
+    async function cargarConfigDesdeBackend() {
+      try {
+        const res = await fetch(`${API_URL}/emprendimiento/obtener`, {
+          method: 'GET',
+          headers: { "Content-Type": "application/json" }
+        });
+        if (!res.ok) throw new Error("Error al obtener configuración");
+        config = await res.json();
+        renderConfig();
+      } catch (err) {
+        console.warn("Usando configuración local o vacía:", err);
+        config = JSON.parse(localStorage.getItem("configEmprendimiento")) || config;
+        renderConfig();
+      }
     }
-  }
 
-  // ==============================
-  // Renderizar datos cargados
-  // ==============================
-  function renderConfig() {
-    document.getElementById("titulo").value = config.titulo || "";
-    document.getElementById("descripcion").value = config.descripcion || "";
-    document.getElementById("direccion").value = config.direccion || "";
-    renderContactos();
-  }
+    // ==============================
+    // Renderizar datos cargados
+    // ==============================
+    function renderConfig() {
+      document.getElementById("titulo").value = config.titulo || "";
+      document.getElementById("descripcion").value = config.descripcion || "";
+      document.getElementById("direccion").value = config.direccion || "";
+      renderContactos();
+    }
 
-  // =======================
-  // Renderizar contactos
-  // =============================
-  function renderContactos() {
-    listaContactos.innerHTML = "";
+    // =======================
+    // Renderizar contactos
+    // =============================
+    function renderContactos() {
+      listaContactos.innerHTML = "";
 
-    config.contactos.forEach((c, i) => {
-      const li = document.createElement("li");
-      li.innerHTML = `
+      config.contactos.forEach((c, i) => {
+        const li = document.createElement("li");
+        li.innerHTML = `
         ${c.descripcion}
         <button type="button" class="btn-eliminar-contacto" data-id="${c.idContacto}" data-index="${i}">x</button>
         `;
-       listaContactos.appendChild(li);
-    });
+        listaContactos.appendChild(li);
+      });
 
-    // Eliminar un contacto
-    document.querySelectorAll(".btn-eliminar-contacto").forEach(btn => {
-      btn.addEventListener("click", async e => {
-        e.preventDefault();
-        e.stopPropagation();
-        const index = e.target.dataset.index;
-        const id = e.target.dataset.id;
-        try{
-          const resp = await fetch(`${API_URL}/admin/contacto/delete/${id}`, {
-          method: 'DELETE',
-          headers: { 
+      // Eliminar un contacto
+      document.querySelectorAll(".btn-eliminar-contacto").forEach(btn => {
+        btn.addEventListener("click", async e => {
+          e.preventDefault();
+          e.stopPropagation();
+          const index = e.target.dataset.index;
+          const id = e.target.dataset.id;
+          try {
+            const resp = await fetch(`${API_URL}/admin/contacto/delete/${id}`, {
+              method: 'DELETE',
+              headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+              }
+            });
+            if (!resp.ok) throw new Error("Error al eliminar el contacto.");
+
+          } catch (err) {
+            console.warn("Error al intentar eliminar el contacto")
+          }
+
+          config.contactos.splice(index, 1);
+          renderContactos();
+        });
+      });
+
+
+      const footer = document.getElementById("contacto-container");
+      if (footer) {
+        footer.innerHTML = "";
+        config.contactos.forEach(c => {
+          const texto = typeof c === "string" ? c : c.descripcion;
+          const label = document.createElement("label");
+          label.classList.add("contacto");
+          label.textContent = texto;
+          footer.appendChild(label);
+        });
+      }
+    }
+
+    // =============================
+    // Agregar nuevo contacto
+    // ========================
+    btnAgregar.addEventListener("click", async () => {
+      const valor = inputContacto.value.trim();
+      if (valor) {
+        config.contactos.push(valor);
+
+        try {
+          const resp = await fetch(`${API_URL}/contacto/new`, {
+            method: "POST",
+            headers: {
               "Content-Type": "application/json",
               "Authorization": `Bearer ${token}`
-            }
-         });
-          if (!resp.ok) throw new Error("Error al eliminar el contacto.");
-
-        }catch(err){
-          console.warn("Error al intentar eliminar el contacto")
+            },
+            body: JSON.stringify(valor)
+          });
+          if (!resp) throw new Error("Error al guardar el nuevo contacto");
+        } catch (error) {
+          console.warn(error);
         }
 
-        config.contactos.splice(index, 1);
+        inputContacto.value = "";
         renderContactos();
-      });
+      }
     });
 
-    
-    const footer = document.getElementById("contacto-container");
-    if (footer) {
-      footer.innerHTML = "";
-      config.contactos.forEach(c => {
-        const texto = typeof c === "string" ? c : c.descripcion;
-        const label = document.createElement("label");
-        label.classList.add("contacto");
-        label.textContent = texto;
-        footer.appendChild(label);
-      });
-    }
-  }
+    // =====================
+    // Guardar cambios
+    // =======================
+    document.getElementById("configForm").addEventListener("submit", async e => {
+      e.preventDefault();
+      config.titulo = document.getElementById("titulo").value;
+      config.descripcion = document.getElementById("descripcion").value;
+      config.direccion = document.getElementById("direccion").value;
 
-  // =============================
-  // Agregar nuevo contacto
-  // ========================
-  btnAgregar.addEventListener("click", async () => {
-    const valor = inputContacto.value.trim();
-    if (valor) {
-      config.contactos.push(valor);
+      const bodyReq = {
+        titulo: config.titulo,
+        descripcion: config.descripcion,
+        direccion: config.direccion
+      };
+      try {
+        const res = await fetch(`${API_URL}/emprendimiento/info/mod`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
+          body: JSON.stringify(bodyReq)
+        });
 
-      try{
-        const resp = await fetch(`${API_URL}/contacto/new`, {
-        method: "POST",
-        headers: {
-        "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
-        },
-        body: JSON.stringify(valor)
-      });
-        if(!resp) throw new Error("Error al guardar el nuevo contacto");
-      }catch(error){
-        console.warn(error);
+        if (!res.ok) throw new Error("Error al guardar en el backend");
+        alert("Configuracion guardada correctamente");
+
+        // Guarda copia local
+        localStorage.setItem("configEmprendimiento", JSON.stringify(config));
+
+        // Actualiza el header
+        const headerTitle = document.querySelector(".header h1");
+        if (headerTitle) headerTitle.textContent = config.titulo;
+        renderContactos();
+
+      } catch (err) {
+        console.error(err);
+        alert("Error al guardar en el servidor. Cambios solo en local.");
+        localStorage.setItem("configEmprendimiento", JSON.stringify(config));
       }
+    });
 
-      inputContacto.value = "";
-      renderContactos();
-    }
-  });
-
-  // =====================
-  // Guardar cambios
-  // =======================
-  document.getElementById("configForm").addEventListener("submit", async e => {
-    e.preventDefault();
-    config.titulo = document.getElementById("titulo").value;
-    config.descripcion = document.getElementById("descripcion").value;
-    config.direccion = document.getElementById("direccion").value;
-
-    const bodyReq = {
-      titulo: config.titulo,
-      descripcion: config.descripcion,
-      direccion: config.direccion
-    };
-    try {
-      const res = await fetch(`${API_URL}/emprendimiento/info/mod`, {
-        method: "PATCH",
-        headers: {
-        "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
-        },
-        body: JSON.stringify(bodyReq)
-      });
-
-      if (!res.ok) throw new Error("Error al guardar en el backend");
-      alert("Configuracion guardada correctamente");
-
-      // Guarda copia local
-      localStorage.setItem("configEmprendimiento", JSON.stringify(config));
-
-      // Actualiza el header
-      const headerTitle = document.querySelector(".header h1");
-      if (headerTitle) headerTitle.textContent = config.titulo;
-      renderContactos();
-
-    } catch (err) {
-      console.error(err);
-      alert("Error al guardar en el servidor. Cambios solo en local.");
-      localStorage.setItem("configEmprendimiento", JSON.stringify(config));
-    }
-  });
-
-  cargarConfigDesdeBackend();
-}
+    cargarConfigDesdeBackend();
+  }
 
 });

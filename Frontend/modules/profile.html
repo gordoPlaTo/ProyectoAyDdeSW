@@ -36,6 +36,7 @@
             <button class="changePassBtn"> Cambiar contraseña</button>
             <button class="changeDirBtn"> Cambiar dirección </button>
             <button class="desactivateBtn"> Desactivar cuenta </button>
+            <button id="logoutBtn" class="logoutBtn">Cerrar sesión</button>
         </div>
 
         <div id="modalPass" class="modal">
@@ -81,23 +82,13 @@
             </div>
         </div>
 
-        <div class="profOrders">
-            <h3>Mis pedidos</h3>
-            <ul class="ordersList">
-                <li>
-                    <span>Pedido #001</span>
-                    <span>Fecha: 12/09/2025</span>
-                    <span>Total: $1200</span>
-                    <button class="detailBtn">Ver detalle</button>
-                </li>
-                <li>
-                    <span>Pedido #002</span>
-                    <span>Fecha: 12/10/2025</span>
-                    <span>Total: $1500</span>
-                    <button class="detailBtn">Ver detalle</button>
-                </li>
-            </ul>
-        </div>
+        <section class="pedidos-section">
+            <h2>Mis pedidos</h2>
+            <div id="pedidosContainer" class="pedidos-container">
+                <p>Cargando tus pedidos...</p>
+            </div>
+        </section>
+
 
     </main>
 

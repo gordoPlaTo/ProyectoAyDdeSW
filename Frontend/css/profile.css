@@ -83,6 +83,32 @@ button {
     transition: background 0.3s ease;
 }
 
+.logoutBtn {
+  background: #6c757d;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  width: 80%;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.logoutBtn:hover {
+  background: #5a6268;
+}
+
+body.darkMode .logoutBtn {
+  background: #444;
+}
+
+body.darkMode .logoutBtn:hover {
+  background: #666;
+}
+
+
+
 .changePassBtn {
     background: #007bff;
     color: white;
@@ -179,49 +205,234 @@ input:checked+.slider:before {
     color: #333;
 }
 
-.profOrders {
-    margin-top: 30px;
-    text-align: left;
+.pedidos-section {
+  margin-top: 30px;
+  padding: 20px;
+  background-color: var(--bg-secondary, #f5f5f5);
+  border-radius: 12px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
 }
 
-.profOrders h3 {
-    margin-top: 15px;
-    font-size: 18px;
-    border-bottom: 2px solid #28a745;
-    display: inline-block;
-    padding-bottom: 5px;
+.pedidos-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 
-.ordersList {
-    padding-top: 20px;
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+.pedido-card {
+  background-color: white;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
-.ordersList li {
-    background: #f9f9f9;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 15px;
-    flex-wrap: wrap;
+.pedido-card h3 {
+  margin-bottom: 10px;
+  color: #28a745;
 }
 
-.ordersList li span {
-    font-size: 14px;
-    color: #333;
+.pedido-card .detalle-pedido {
+  margin-top: 10px;
 }
 
-.detailBtn {
-    padding: 6px 10px;
-    font-size: 14px;
-    border-radius: 6px;
-    width: 100%;
+.pedido-card ul {
+  list-style-type: none;
+  padding-left: 10px;
+}
+
+.pedido-card .estado {
+  font-weight: bold;
+  padding: 2px 8px;
+  border-radius: 6px;
+  color: white;
+}
+
+.estado.pendiente {
+  background-color: #ffc107;
+}
+
+.estado.completado {
+  background-color: #28a745;
+}
+
+.estado.cancelado {
+  background-color: #dc3545;
+}
+
+.btn-cancelar {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.btn-cancelar:hover {
+  background-color: #b02a37;
+}
+
+.pedidos-section {
+  margin-top: 30px;
+  padding: 20px;
+  background-color: var(--bg-secondary, #f5f5f5);
+  border-radius: 12px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.pedidos-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.pedido-card {
+  background-color: white;
+  color: #222;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
+}
+
+.pedido-card h3 {
+  margin-bottom: 10px;
+  color: #28a745;
+}
+
+.pedido-card .detalle-pedido {
+  margin-top: 10px;
+}
+
+.pedido-card ul {
+  list-style-type: none;
+  padding-left: 10px;
+}
+
+.pedido-card .estado {
+  font-weight: bold;
+  padding: 2px 8px;
+  border-radius: 6px;
+  color: white;
+}
+
+.estado.pendiente {
+  background-color: #ffc107;
+}
+
+.estado.completado {
+  background-color: #28a745;
+}
+
+.estado.cancelado {
+  background-color: #dc3545;
+}
+
+.btn-cancelar {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  margin-top: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-cancelar:hover {
+  background-color: #b02a37;
+}
+
+
+body.darkMode {
+  background-color: #121212;
+  color: #e0e0e0;
+}
+
+body.darkMode .profileContainer {
+  background-color: #1f1f1f;
+  color: #f0f0f0;
+  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.05);
+}
+
+body.darkMode button {
+  color: #fff;
+}
+
+body.darkMode .changePassBtn {
+  background-color: #2e8bff;
+}
+
+body.darkMode .changeDirBtn {
+  background-color: #e06c00;
+}
+
+body.darkMode .desactivateBtn {
+  background-color: #c0392b;
+}
+
+body.darkMode button:hover {
+  filter: brightness(1.15);
+}
+
+body.darkMode .pedidos-section {
+  background-color: #222;
+  color: #e0e0e0;
+}
+
+body.darkMode .pedido-card {
+  background-color: #2a2a2a;
+  color: #f0f0f0;
+  box-shadow: 0 2px 5px rgba(255, 255, 255, 0.05);
+}
+
+body.darkMode .pedido-card h3 {
+  color: #4caf50;
+}
+
+body.darkMode .pedido-card a {
+  color: #66b2ff;
+}
+
+body.darkMode .btn-cancelar {
+  background-color: #b02a37;
+}
+
+body.darkMode .estado.pendiente {
+  background-color: #d4b106;
+}
+
+body.darkMode .estado.completado {
+  background-color: #4caf50;
+}
+
+body.darkMode .estado.cancelado {
+  background-color: #c0392b;
+}
+
+body.darkMode .modal-content {
+  background-color: #2c2c2c;
+  color: #f1f1f1;
+}
+
+body.darkMode .modal-content input {
+  background-color: #3a3a3a;
+  color: #f1f1f1;
+  border: 1px solid #555;
+}
+
+body.darkMode .modal-content button {
+  background-color: #28a745;
+}
+
+body.darkMode .modal-content button:hover {
+  background-color: #2ecc71;
+}
+
+body, .profileContainer, .pedido-card, .modal-content {
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 
