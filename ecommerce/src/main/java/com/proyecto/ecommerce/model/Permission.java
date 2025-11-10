@@ -15,7 +15,8 @@ public class Permission {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column (unique = true, nullable = false)
+
+    @Column (length = 60,unique = true, nullable = false)
     private String permissionName;
 
     public Permission(String permissionName) {

@@ -19,7 +19,7 @@ public class EstadoPedido {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idEstadoPedido;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true, length = 35)
     private String descripcion;
 
     public EstadoPedido(String descripcion) {

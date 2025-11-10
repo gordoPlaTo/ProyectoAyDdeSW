@@ -20,7 +20,7 @@ public class Emprendimiento {
     @Column(length = 35)
     private String titulo;
 
-    @Column(length = 120)
+    @Column(length = 800)
     private String descripcion;
 
     @Column(length = 120)

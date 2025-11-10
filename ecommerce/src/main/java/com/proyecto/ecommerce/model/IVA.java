@@ -16,7 +16,7 @@ public class IVA {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idIVA;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 255)
     private String categoria;
 
 
