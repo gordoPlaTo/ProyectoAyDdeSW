@@ -51,9 +51,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     nombreElem.textContent = `${userData.nombre} ${userData.apellido}`;
     emailElem.textContent = `Email: ${userData.email || "No disponible"}`;
     direccionElem.textContent = `Dirección: ${userData.direccion || "No registrada"}`;
-
-    // Si querés mostrar DNI, pero no está en el DTO
-    dniElem.style.display = "none"; // lo ocultamos por ahora
+    dniElem.textContent =  `DNI: ${userData.dni || "No registrado"}`;
+ 
 
   } catch (err) {
     console.error("Error de conexión:", err);
@@ -106,14 +105,24 @@ document.addEventListener("DOMContentLoaded", async () => {
             <h4>Detalles:</h4>
             <ul>
               ${p.detallePedido.map(d => `
-                <li>${d.nombreProducto} — Cant: ${d.cantidad} — $${d.precioUnitario}</li>
+                <br>
+                <li>${d.producto}</li>
+                <li>Cantidad: ${d.cantidad}</li>
+                <li>Neto:$${d.precioNeto}</li>
+                <li>Monto IVA: $${d.montoIva}</li>
+                <li>Total: $${d.precioTotal}</li>
+                <br>
+                <hr>
               `).join("")}
             </ul>
-          </div>
-
-          ${p.estadoPedido === "PENDIENTE" ? `
+            ${p.estadoPedido === "Espera de Pago" ? `
+            <button class="btn-comprobante" data-id="${p.id}">Adjuntar Comprobante</button>
+          ` : ""}
+            ${p.estadoPedido === "Espera de Pago" ? `
             <button class="btn-cancelar" data-id="${p.id}">Cancelar pedido</button>
           ` : ""}
+          </div>
+          
         </div>
       `).join("");
 
@@ -142,6 +151,53 @@ document.addEventListener("DOMContentLoaded", async () => {
           }
         });
       });
+
+      document.querySelectorAll(".btn-comprobante").forEach(btn => {
+        btn.addEventListener("click", async () => {
+          alert("Sorpresaaaa, no hace nada")
+          const id = btn.dataset.id;
+
+          //Aca tiene que popear una ventanita para que diga 
+          //"seleccione una imagen"
+          // usa esta id
+          // <input type="file" id="imageComprobante" name="image" accept="image/*" required></input>
+          //y luego que se envie. Acordate el formato es formData no JSON
+
+
+
+          const imgComprobante = document.getElementById("imageComprobante").files[0]
+
+          const formData = new FormData();
+
+          formData.append("idPedido",id);
+          formData.append("comprobante", imgComprobante);
+
+        
+          try {
+            const res = await fetch(`${API_URL}/compras/pedido/comprobante/cargar`, {
+              method: "PATCH",
+              headers: {
+                "Authorization": `Bearer ${token}`
+              },
+              body: formData
+          });
+
+            if (res.ok) {
+              const respuesta = await res.text();
+              alert(respuesta);
+            } else {
+              const error = await res.text();
+              alert(error);
+            }
+
+          } catch (err) {
+            console.error(err);
+            alert("Error al conectar con el servidor");
+          }
+
+          })
+
+      })
 
     } catch (error) {
       console.error(error);
@@ -205,6 +261,9 @@ document.addEventListener("DOMContentLoaded", () => {
       alert("Contraseña actualizada correctamente.");
       modalPass.style.display = "none";
       formPass.reset();
+
+      location.reload();
+
     } catch (err) {
       console.error(err);
       alert("No se pudo cambiar la contraseña.");
@@ -291,6 +350,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       alert("Dirección actualizada correctamente");
       changeDirModal.style.display = "none";
+      location.reload();
 
     } catch (err) {
       console.error("Error al actualizar dirección:", err);

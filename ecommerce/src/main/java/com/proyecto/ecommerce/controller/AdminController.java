@@ -21,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -55,17 +56,25 @@ public class AdminController {
 
     @PatchMapping("/emprendimiento/info/mod")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<String> modInfoEmprendimiento(@Valid @RequestBody InfoEmpRequestDTO infoReq){
+    public ResponseEntity<RespDTO> modInfoEmprendimiento(@Valid @RequestBody InfoEmpRequestDTO infoReq){
         emprendimientoService.modInfoEmprendimiento(infoReq);
-        return ResponseEntity.ok("Se completo correctamente la Modificacion de los datos de la empresa.");
-    }
+        RespDTO response = new RespDTO(
+                "Se completó correctamente la modificación de los datos de la empresa.",
+                true,
+                LocalDateTime.now()
+        );
+        return ResponseEntity.ok(response);    }
     //-----------------------------------Contactos--------------------------------------
     @PostMapping("/contacto/new")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<String> crearContacto(@RequestBody @Valid ContactoRequestDTO contacto){
+    public ResponseEntity<RespDTO> crearContacto(@RequestBody @Valid ContactoRequestDTO contacto){
         contactoService.save(contacto);
-        return new ResponseEntity<>("Se creo el contacto con exito.", HttpStatus.OK);
-
+        RespDTO response = new RespDTO(
+                "Se creó el contacto con éxito.",
+                true,
+                LocalDateTime.now()
+        );
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/contacto/delete/{id}")
@@ -82,35 +91,70 @@ public class AdminController {
 
     @PostMapping(value = "/producto/crear", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<String> crearProducto (@Valid @ModelAttribute ProductoReqDTO prod){
+    public ResponseEntity<RespDTO> crearProducto (@Valid @ModelAttribute ProductoReqDTO prod){
+        if (prod.imgProducto().getSize() > 5_000_000){//asi se indica el tamaño aca 5mb maximo
+            throw new IllegalArgumentException("El tamaño de la imagen excede las 5mb permitidos");
+        }
+
+        String tipoArchivo = prod.imgProducto().getContentType();
+        if (tipoArchivo == null || !tipoArchivo.startsWith("image/")){
+            //aca validamos el tipo de archivo para que sea una imagen
+            throw  new IllegalArgumentException("El archivo ingresado debe ser una imagen valida");
+        }
+
         productoService.crearProducto(prod);
-        return ResponseEntity.ok("Se completo la carga del producto correctamente.");
-    }
+
+        RespDTO response = new RespDTO(
+                "Se completó la carga del producto correctamente.",
+                true,
+                LocalDateTime.now()
+        );
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);    }
 
     @PatchMapping("/producto/reducir/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<String> reducirStockProd(@NotNull(message = "El id del producto es obligatorio")
+    public ResponseEntity<RespDTO> reducirStockProd(@NotNull(message = "El id del producto es obligatorio")
                                                        @Positive(message = "El id debe ser un número positivo")
                                                        @PathVariable Long id,
                                            @RequestParam int stock){
         productoService.reducirStock(id,stock);
-        return ResponseEntity.ok("Se redujo el stock en " + stock + " unidades correctamente.");
-    }
+
+        RespDTO response = new RespDTO(
+                "Se redujo el stock en " + stock + " unidades correctamente.",
+                true,
+                LocalDateTime.now()
+        );
+        return ResponseEntity.ok(response);    }
+
+
     @PatchMapping("/producto/aumentar/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<String> aumentarStockProd(@NotNull(message = "El id del producto es obligatorio")
+    public ResponseEntity<RespDTO> aumentarStockProd(@NotNull(message = "El id del producto es obligatorio")
                                                         @Positive(message = "El id debe ser un número positivo") @PathVariable Long id,
                                            @RequestParam int stock){
         productoService.aumentarStock(id,stock);
-        return ResponseEntity.ok("Se aumento el stock en " + stock + " unidades correctamente.");
+
+        RespDTO response = new RespDTO(
+                "Se aumentó el stock en " + stock + " unidades correctamente.",
+                true,
+                LocalDateTime.now()
+        );
+        return ResponseEntity.ok(response);
     }
 
     @PatchMapping("/producto/estado/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<String> habilitarDeshabilitarProducto (@NotNull(message = "El id del producto es obligatorio")
+    public ResponseEntity<RespDTO> habilitarDeshabilitarProducto (@NotNull(message = "El id del producto es obligatorio")
                                                                      @Positive(message = "El id debe ser un número positivo") @PathVariable Long id){
         productoService.habDesProducto(id);
-        return ResponseEntity.ok("Se cambio el estado del producto correctamente.");
+
+        RespDTO response = new RespDTO(
+                "Se cambió el estado del producto correctamente.",
+                true,
+                LocalDateTime.now()
+        );
+        return ResponseEntity.ok(response);
+
     }
 
     @GetMapping("/producto/obtenerTodos")
@@ -121,10 +165,15 @@ public class AdminController {
 
     @PatchMapping("/producto/mod/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<String> modificarProd(@PathVariable Long id,
+    public ResponseEntity<RespDTO> modificarProd(@PathVariable Long id,
                                         @Valid @RequestBody ProductoPatchDTO prodDTO){
         productoService.modificarProducto(id,prodDTO);
-        return ResponseEntity.ok("Se modifico correctamente el producto seleccionado.");
+        RespDTO response = new RespDTO(
+                "Se modificó correctamente el producto seleccionado.",
+                true,
+                LocalDateTime.now()
+        );
+        return ResponseEntity.ok(response);
     }
 //-----------------------------------Materiales--------------------------------------
     @PostMapping("/material/crear")
@@ -135,17 +184,29 @@ public class AdminController {
 
     @PatchMapping("/material/reducir/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<String> reducirStockMat(@PathVariable Long id,
+    public ResponseEntity<RespDTO> reducirStockMat(@PathVariable Long id,
                                            @RequestParam int stock){
         materialService.reducirStock(id,stock);
-        return ResponseEntity.ok("Se redujo el stock en " + stock + " unidades correctamente.");
+
+        RespDTO response = new RespDTO(
+                "Se redujo el stock en " + stock + " unidades correctamente.",
+                true,
+                LocalDateTime.now()
+        );
+        return ResponseEntity.ok(response);
     }
     @PatchMapping("/material/aumentar/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<String> aumentarStockMat(@PathVariable Long id,
+    public ResponseEntity<RespDTO> aumentarStockMat(@PathVariable Long id,
                                             @RequestParam int stock){
         materialService.aumentarStock(id,stock);
-        return ResponseEntity.ok("Se aumento el stock en " + stock + " unidades correctamente.");
+
+        RespDTO response = new RespDTO(
+                "Se aumentó el stock en " + stock + " unidades correctamente.",
+                true,
+                LocalDateTime.now()
+        );
+        return ResponseEntity.ok(response);
     }
 
 
@@ -157,16 +218,26 @@ public class AdminController {
 
     @PatchMapping("/material/mod/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<String> modificarMat(@PathVariable Long id,
+    public ResponseEntity<RespDTO> modificarMat(@PathVariable Long id,
                                         @Valid @RequestBody MaterialesPatchDTO matDTO){
         materialService.modificarMaterial(id,matDTO);
-        return ResponseEntity.ok("Se modifico correctamente el material seleccionado.");
-    }
+
+        RespDTO response = new RespDTO(
+                "Se modificó correctamente el material seleccionado.",
+                true,
+                LocalDateTime.now()
+        );
+        return ResponseEntity.ok(response);    }
 
     @DeleteMapping("/material/borrar/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<String> borrarMaterial (@PathVariable Long id){
+    public ResponseEntity<RespDTO> borrarMaterial (@PathVariable Long id){
         materialService.borrarMaterial(id);
-        return ResponseEntity.ok("Se borro el material con exito.");
-    }
+
+        RespDTO response = new RespDTO(
+                "Se borró el material con éxito.",
+                true,
+                LocalDateTime.now()
+        );
+        return ResponseEntity.ok(response);    }
 }

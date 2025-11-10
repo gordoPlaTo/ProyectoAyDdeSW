@@ -35,10 +35,24 @@ public class EmprendimientoService implements IEmprendimientoService{
         }
         if(InfoReq.descripcion()!=null && !InfoReq.descripcion().isBlank()){
             emp.setDescripcion(InfoReq.descripcion());
+            fueModificado = true;
 
         }
         if(InfoReq.direccion()!=null && !InfoReq.direccion().isBlank()){
             emp.setDireccion(InfoReq.direccion());
+            fueModificado = true;
+        }
+        if (InfoReq.cuit()!=null && !InfoReq.cuit().isBlank()){
+            emp.setCuit(InfoReq.cuit());
+            fueModificado = true;
+        }
+        if (InfoReq.email()!=null && !InfoReq.email().isBlank()){
+            emp.setEmail(InfoReq.email());
+            fueModificado = true;
+        }
+
+        if (!fueModificado){
+            throw new RuntimeException("No se han introducido nuevos cambios, por lo que se cancela la ejecucion.");
         }
         emp.setMod(true);
         empRepository.save(emp);
@@ -51,6 +65,8 @@ public class EmprendimientoService implements IEmprendimientoService{
                         emp.getTitulo(),
                         emp.getDescripcion(),
                         emp.getDireccion(),
+                        emp.getCuit(),
+                        emp.getEmail(),
                         emp.getListContacto()
                 )).orElseThrow(()-> new EntityNotFoundException("Algo ah sucedido mal, y no se encontro el emprendimiento."));
     }

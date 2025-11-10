@@ -36,18 +36,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.querySelectorAll(".btn-eliminar").forEach(btn => {
       btn.addEventListener("click", (e) => {
-        const i = e.target.dataset.id;
+        const id = e.target.dataset.id;
         carrito = carrito.filter(item => item.id !==id);
         localStorage.setItem("carrito", JSON.stringify(carrito));
         renderCarrito();
       });
     });
   }
-
   renderCarrito();
-});
 
-document.getElementById("btnComprar").addEventListener("click", async() => {
+  document.getElementById("btnComprar").addEventListener("click", async() => {
     const token = localStorage.getItem("token");
     const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
 
@@ -63,7 +61,7 @@ document.getElementById("btnComprar").addEventListener("click", async() => {
     }
 
     const pedido = carrito.map(item => ({
-      id: parseInt(item.id),
+      id: Number(item.id),
       cantidad: item.cantidad
     }));
 
@@ -74,7 +72,7 @@ document.getElementById("btnComprar").addEventListener("click", async() => {
 
     try{
       const res = await fetch(`http://localhost:8080/api/compras/pedido/cliente/crear`, {
-         method: "POST",
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`
@@ -88,12 +86,19 @@ document.getElementById("btnComprar").addEventListener("click", async() => {
         return;
       }
       const resp = await res.json();
-      console.log(data);
-      localStorage.removeItem("carrito");
+      alert(resp.message);
+      
+      localStorage.setItem("carrito", JSON.stringify([]));
       renderCarrito();
+      location.reload();
     }catch(error){
       console.warn("Error al tratar de enviar el pedido",error);
     }
       
 })
 
+});
+
+
+
+  

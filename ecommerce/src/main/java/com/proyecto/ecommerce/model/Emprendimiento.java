@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -24,10 +26,16 @@ public class Emprendimiento {
     @Column(length = 120)
     private String direccion;
 
+    @Column(length = 11)
+    private String cuit;
+
+    @Column(unique = true, length = 254, nullable = false)
+    private String email;
+
     @Column(nullable = false)
     private boolean isMod;
     
     @OneToMany(mappedBy = "emprendimiento",cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Contacto> listContacto;
+    private List<Contacto> listContacto = new ArrayList<>();
 
 }

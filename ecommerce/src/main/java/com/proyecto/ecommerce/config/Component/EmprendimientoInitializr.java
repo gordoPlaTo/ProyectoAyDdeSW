@@ -24,6 +24,8 @@ public class EmprendimientoInitializr implements CommandLineRunner {
             emp.setTitulo("Titulo por Defecto");
             emp.setDescripcion("Descripcion por Defecto");
             emp.setDireccion("Direccion por Defecto");
+            emp.setCuit("00000000000");
+            emp.setEmail("MiEmprendimiento@Gmail.com");
             emp.setMod(false);
 
             empRepository.save(emp);

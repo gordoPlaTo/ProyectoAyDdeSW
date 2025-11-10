@@ -10,6 +10,8 @@ public record InfoEmpResponseDTO(
         String titulo,
         String descripcion,
         String direccion,
+        String cuit,
+        String email,
         List<Contacto> contactos
 ) {
 }

@@ -186,9 +186,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // ======================================================
+  // ====================================
   // Modal para editar productos
-  // ======================================================
+  // =======================================
   function openEditModal(producto) {
     const modalOverlay = document.createElement("div");
     modalOverlay.classList.add("modal-overlay");
@@ -306,7 +306,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const materialesContainer = document.getElementById("materialesContainer");
 
-    // =====================
+    // ==================
     // CARGAR LISTA
     // =====================
     async function loadMaterialList() {
@@ -357,7 +357,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // =====================
     // AGREGAR MATERIAL
-    // =====================
+    // ====================
     const materialForm = document.getElementById("materialForm");
 
     if (materialForm) {
@@ -378,7 +378,7 @@ document.addEventListener("DOMContentLoaded", () => {
         formData.append("nombre", nombreInput.value.trim());
         formData.append("descripcion", descInput.value.trim());
         formData.append("stock", parseInt(stockInput.value));
-        formData.append("imgMaterial", imgInput.files[0]); // ✅ obligatorio
+        formData.append("imgMaterial", imgInput.files[0]); // obligatorio
 
         try {
           const res = await fetch(`${API_URL}/admin/material/crear`, {
@@ -393,7 +393,7 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
           }
 
-          alert("✅ Material agregado correctamente");
+          alert("Material agregado correctamente");
           materialForm.reset();
           loadMaterialList();
 
@@ -404,7 +404,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
-    // =====================
+    // =================
     // FUNCIONES AUXILIARES
     // =====================
     async function modificarStock(id) {
@@ -451,7 +451,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // =====================
     // CARGA INICIAL
-    // =====================
+    // ====================
     loadMaterialList();
   }
 
@@ -476,7 +476,7 @@ document.addEventListener("DOMContentLoaded", () => {
     `;
   }
 
-  // ======================
+  // =====================
   // Configuracion
   // ========================
   function loadConfiguracion() {
@@ -499,6 +499,12 @@ document.addEventListener("DOMContentLoaded", () => {
         <button type="button" id="btnAgregarContacto">Agregar</button>
       </div>
 
+      <label>CUIT:</label>
+      <input type="text" id="cuit" required>
+
+      <label>Email:</label>
+      <input type="text" id="email" required>
+
       <button type="submit">Guardar cambios</button>
     </form>
   `;
@@ -507,7 +513,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const btnAgregar = document.getElementById("btnAgregarContacto");
     const inputContacto = document.getElementById("nuevoContacto");
     const token = localStorage.getItem("token");
-    let config = { titulo: "", descripcion: "", direccion: "", contactos: [] };
+    let config = { titulo: "", descripcion: "", direccion: "", cuit: "", email: "", contactos: [] };
 
     // ==============================
     // Obtener datos desde el backend
@@ -530,11 +536,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // ==============================
     // Renderizar datos cargados
-    // ==============================
+    // ============================
     function renderConfig() {
       document.getElementById("titulo").value = config.titulo || "";
       document.getElementById("descripcion").value = config.descripcion || "";
       document.getElementById("direccion").value = config.direccion || "";
+      document.getElementById("cuit").value = config.cuit || "";
+      document.getElementById("email").value = config.email || "";
       renderContactos();
     }
 
@@ -602,15 +610,19 @@ document.addEventListener("DOMContentLoaded", () => {
         config.contactos.push(valor);
 
         try {
-          const resp = await fetch(`${API_URL}/contacto/new`, {
+          const resp = await fetch(`${API_URL}/admin/contacto/new`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
               "Authorization": `Bearer ${token}`
             },
-            body: JSON.stringify(valor)
+            body: JSON.stringify({ contacto: valor }) 
           });
-          if (!resp) throw new Error("Error al guardar el nuevo contacto");
+          if (!resp.ok) throw new Error("Error al guardar el nuevo contacto");
+          alert("Se completo la carga");
+
+          const text = await resp.text();
+          alert(text.message);
         } catch (error) {
           console.warn(error);
         }
@@ -628,11 +640,14 @@ document.addEventListener("DOMContentLoaded", () => {
       config.titulo = document.getElementById("titulo").value;
       config.descripcion = document.getElementById("descripcion").value;
       config.direccion = document.getElementById("direccion").value;
-
+      config.cuit = document.getElementById("cuit").value;
+      config.email = document.getElementById("email").value;
       const bodyReq = {
         titulo: config.titulo,
         descripcion: config.descripcion,
-        direccion: config.direccion
+        direccion: config.direccion,
+        cuit: config.cuit,
+        email: config.email
       };
       try {
         const res = await fetch(`${API_URL}/emprendimiento/info/mod`, {

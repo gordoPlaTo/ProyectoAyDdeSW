@@ -16,11 +16,11 @@
     <main>
         <form id="registerForm" class="auth-form">
             <label for="name">Nombre completo</label>
-            <input type="text" id="name" required minlength="5" maxlength="35"
+            <input type="text" id="name" required minlength="3" maxlength="35"
                 pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s'\-]+$" placeholder="Nombre completo"> <br>
 
             <label for="surname">Apellido</label>
-            <input type="text" id="surname" required minlength="5" maxlength="35"
+            <input type="text" id="surname" required minlength="3" maxlength="35"
                 pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s'\-]+$" placeholder="Apellido"> <br>
 
             <label for="dni">DNI (sin puntos)</label>
@@ -45,7 +45,7 @@
                     title="Debe contener al menos una mayúscula, una minúscula, un número y un carácter especial.">
 
                 <button type="button" class="toggle-pswrd" onclick="togglePassword('password', this)">👁️</button>
-            </div>
+            </div>          
             <br>
             <div>
                 <label for="confirmPassword">Confirmar contraseña</label>
@@ -55,6 +55,13 @@
                 <button type="button" class="toggle-pswrd"
                     onclick="togglePassword('confirmPassword', this)">👁️</button>
             </div>
+
+            <div class="terms-container">
+            <input type="checkbox" id="terms" name="terms" required>
+            <label for="terms">
+                Acepto los <a href="terminos.html" target="_blank">Términos de Uso</a> y la <a href="privacidad.html" target="_blank">Política de Privacidad</a>.
+            </label>
+            </div>  
 
             <button type="submit">Registrarse</button>
         </form>

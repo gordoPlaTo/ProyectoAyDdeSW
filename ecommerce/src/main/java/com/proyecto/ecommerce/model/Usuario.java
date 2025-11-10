@@ -56,6 +56,9 @@ public class Usuario {
     @Column(nullable = false, length = 120 )
     private String direccion;
 
+    @Column(name = "imgPerfil")
+    private String urlPerfil;
+
     private boolean acceptedTerms;
 
     private boolean enabled;

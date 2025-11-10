@@ -7,34 +7,6 @@ const productosContainer = document.querySelector(".product-container");
 
 document.addEventListener("DOMContentLoaded", () => {
 
-  document.querySelectorAll(".btnAgregar").forEach(btn => { //Aca agregar validacion, para saber si es login o no.
-    btn.addEventListener("click", () => {
-      const id = btn.dataset.id
-      const nombre = btn.dataset.nombre;
-      const precio = parseFloat(btn.dataset.precio);
-
-      let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
-
-      //aca se busca si ya esta ese producto en el carrito
-      const productoExistente = carrito.find(p => p.nombre === nombre);
-
-      if (productoExistente) {
-        productoExistente.cantidad += 1;
-      } else {
-        carrito.push({
-          id,
-          nombre,
-          precio,
-          cantidad: 1
-        });
-      }
-
-      localStorage.setItem("carrito", JSON.stringify(carrito));
-
-      alert(`${nombre} se agregó al carrito `);
-    });
-  });
-
   // =================
   // Obtener Productos
   // ===================
@@ -90,14 +62,51 @@ document.addEventListener("DOMContentLoaded", () => {
       </div>
     `).join("");
 
+    document.querySelectorAll(".btnAgregar").forEach(btn => { //Aca agregar validacion, para saber si es login o no.
+    btn.addEventListener("click", () => {
+      const id = btn.dataset.id
+      const nombre = btn.dataset.nombre;
+      const precio = parseFloat(btn.dataset.precio);
+      const token = localStorage.getItem("token");
+
+      let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+
+
+
+      if (!token) {
+      alert("Debes iniciar sesion para realizar una compra.");
+      window.location.href = "/Frontend/modules/login.html";
+      return;
+    }
+
+      //aca se busca si ya esta ese producto en el carrito
+      const productoExistente = carrito.find(p => p.nombre === nombre);
+
+      if (productoExistente) {
+        productoExistente.cantidad += 1;
+      } else {
+        carrito.push({
+          id,
+          nombre,
+          precio,
+          cantidad: 1
+        });
+      }
+
+      localStorage.setItem("carrito", JSON.stringify(carrito));
+
+      alert(`${nombre} se agregó al carrito `);
+     });
+    });
+
     } catch (error) {
       console.error("Error al obtener productos:", error);
       productosContainer.innerHTML = "<p style='color:red;'>Error al cargar los productos. Revisa consola o el backend.</p>";
     }
   }
-  // ================================
-  // 🧮 ORDENAR PRODUCTOS POR PRECIO
-  // ================================
+  // ============================
+  // Ordenar por precio
+  // ==============================
   const ascCheckbox = document.querySelector('input[value="asc"]');
   const descCheckbox = document.querySelector('input[value="desc"]');
 
@@ -119,9 +128,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // ================================
-  // 🔍 BÚSQUEDA DE PRODUCTOS
-  // ================================
+  // =====================
+  // busqueda de productos
+  // =======================
   const searchInput = document.querySelector(".search-bar");
 
   searchInput.addEventListener("input", () => {

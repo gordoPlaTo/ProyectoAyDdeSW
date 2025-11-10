@@ -63,7 +63,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 alert("Las contraseñas no coinciden!");
                 return;
             }
-
+            const ATerms = document.getElementById("terms");
             const data = {
                 nombre: document.getElementById("name").value,
                 apellido: document.getElementById("surname").value,
@@ -71,7 +71,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 fechaNac: document.getElementById("date").value,
                 direccion: document.getElementById("direction").value,
                 email: document.getElementById("email").value,
-                password: password
+                password: password,
+                acceptTerms: ATerms.checked
 
             };
             try {

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -26,6 +27,9 @@ public class UsuarioService implements  IUsuarioService{
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private CloudinaryService cloudinaryService;
+
     @Override
     public Usuario obtenerUsuarioByEmail() {
         String email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
@@ -40,6 +44,8 @@ public class UsuarioService implements  IUsuarioService{
 
         return new UsuarioDatosDTO(user.getUsername(),
                 user.getApellido(),
+                user.getEmail(),
+                user.getDni(),
                 user.getDireccion());
     }
 
@@ -72,5 +78,11 @@ public class UsuarioService implements  IUsuarioService{
         userRepository.save(usuario);
     }
 
+    @Override
+    public void modificarImagenPefil(MultipartFile img) {
+        Usuario user = obtenerUsuarioByEmail();
 
+        user.setUrlPerfil(cloudinaryService.subirImagen(img,"foto-Perfil"));
+
+    }
 }

@@ -4,6 +4,7 @@ import com.proyecto.ecommerce.dto.UsuariosDTO.UserModDirecDTO;
 import com.proyecto.ecommerce.dto.UsuariosDTO.UserModPassDTO;
 import com.proyecto.ecommerce.dto.UsuariosDTO.UsuarioDatosDTO;
 import com.proyecto.ecommerce.model.Usuario;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface IUsuarioService {
     //Modificar Datos personales
@@ -19,4 +20,5 @@ public interface IUsuarioService {
 
     Usuario obtenerUsuarioByEmail();
 
+    void modificarImagenPefil(MultipartFile img);
 }

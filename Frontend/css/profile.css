@@ -267,10 +267,28 @@ input:checked+.slider:before {
   border-radius: 6px;
   margin-top: 10px;
   cursor: pointer;
+  
 }
 
 .btn-cancelar:hover {
   background-color: #b02a37;
+}
+
+.btn-comprobante{
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+
+.btn-comprobante:hover{
+    background-color: #0c8a2a;
+;
+
 }
 
 .pedidos-section {
@@ -581,4 +599,12 @@ body.darkMode .modal-content input {
 
 body.darkMode .modal-content button {
   background-color: #28a745;
+}
+
+.detalle-pedido{
+  text-align: center;
+  
+}
+.detalle-pedido ul{
+  padding: 10px;
 }

@@ -5,6 +5,7 @@ import com.proyecto.ecommerce.dto.ProductosDTO.ProductoVentaDTO;
 import com.proyecto.ecommerce.model.*;
 import com.proyecto.ecommerce.repository.IEstadoPedidoRepository;
 import com.proyecto.ecommerce.repository.IPedidoRepository;
+import com.proyecto.ecommerce.utils.ConvText;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -57,7 +58,7 @@ public class PedidoService implements IPedidoService {
                                         det.getPrecioNeto(),
                                         det.getMontoIva(),
                                         det.getPrecioTotal(),
-                                        det.getProducto().getNombre()
+                                        ConvText.toUpperWords(det.getProducto().getNombre())
                                 ))
                                 .toList(),
                         ped.getUsuario().getUsername(),
@@ -73,8 +74,6 @@ public class PedidoService implements IPedidoService {
     public void crearPedido(PedidoCrearReqDTO pedido) {
         Pedido ped = new Pedido();
         ped.setFechaCreacion(LocalDate.now());
-        //Validar si existe el producto
-
 
         List<DetallePedido> listDetalle = pedido.listProductos().stream()
                         .map(det ->{
