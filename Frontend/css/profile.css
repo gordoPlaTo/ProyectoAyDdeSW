@@ -336,8 +336,12 @@ input:checked+.slider:before {
   color: white;
 }
 
-.estado.pendiente {
+.estado.en.tramite {
   background-color: #ffc107;
+}
+
+.estado.espera.de.pago {
+  background-color: #22a9f7;
 }
 
 .estado.completado {

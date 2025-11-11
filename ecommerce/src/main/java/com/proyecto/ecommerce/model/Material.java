@@ -19,9 +19,14 @@ public class Material {
 
     @Column(nullable = false,length = 35)
     private String nombre;
+
     @Column(nullable = false,length = 450)
     private String descripcion;
+
     @Column(nullable = false)
     private int stock;
+
+    @Column(name = "imgMat")
+    private String urlfoto;
 
 }

@@ -3,11 +3,14 @@ package com.proyecto.ecommerce.service;
 import com.proyecto.ecommerce.dto.MaterialesDTO.MaterialReqDTO;
 import com.proyecto.ecommerce.dto.MaterialesDTO.MaterialesPatchDTO;
 import com.proyecto.ecommerce.model.Material;
+import com.proyecto.ecommerce.model.Usuario;
 import com.proyecto.ecommerce.repository.IMaterialRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
 
 @Service
@@ -15,6 +18,8 @@ public class MaterialService implements IMaterialService{
     @Autowired
     private IMaterialRepository materialRepository;
 
+    @Autowired
+    private CloudinaryService cloudinaryService;
 
     @Override
     public Material crearMaterial(MaterialReqDTO matDTO) {
@@ -22,6 +27,7 @@ public class MaterialService implements IMaterialService{
         mat.setNombre(mat.getNombre().toLowerCase());
         mat.setDescripcion(matDTO.descripcion().toLowerCase());
         mat.setStock(matDTO.stock());
+        mat.setUrlfoto(cloudinaryService.subirImagen(matDTO.imgMaterial(),"foto-Material"));
 
         return materialRepository.save(mat);
     }
@@ -80,5 +86,12 @@ public class MaterialService implements IMaterialService{
         Material mat = this.obtenerMaterialById(id);
         materialRepository.delete(mat);
         return mat;
+    }
+
+    @Override
+    public void modificarImagen(Long id, MultipartFile img) {
+        Material mat = obtenerMaterialById(id);
+        mat.setUrlfoto(cloudinaryService.subirImagen(img,"foto-Material"));
+
     }
 }

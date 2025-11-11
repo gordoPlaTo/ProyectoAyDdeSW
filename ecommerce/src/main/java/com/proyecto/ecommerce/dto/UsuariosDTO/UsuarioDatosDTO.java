@@ -5,6 +5,7 @@ public record UsuarioDatosDTO (
         String apellido,
         String email,
         String dni,
-        String direccion
+        String direccion,
+        String urlImg
 ){
 }

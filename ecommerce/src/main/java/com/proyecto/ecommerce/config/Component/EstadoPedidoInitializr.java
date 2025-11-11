@@ -23,7 +23,8 @@ public class EstadoPedidoInitializr implements CommandLineRunner {
             List<EstadoPedido> listEstados =  Arrays.asList(
                     new EstadoPedido("Espera de Pago"),
                     new EstadoPedido("Completado"),
-                    new EstadoPedido("Cancelado")
+                    new EstadoPedido("Cancelado"),
+                    new EstadoPedido("En Tramite")
             );
 
             listEstados.forEach(estado -> {

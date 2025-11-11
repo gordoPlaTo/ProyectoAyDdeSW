@@ -15,8 +15,17 @@
             <a href="/Frontend/modules/profile.html">
                 <img src="/Frontend/img/userdefault.jpg" alt="Usuario" class="user-icon" />
             </a>
-            <a href="/Frontend/modules/register.html" class="user-link">Registrarse</a>
-            <a href="/Frontend/modules/login.html" class="user-link">Iniciar sesión</a>
+            <script>
+                const token = localStorage.getItem("token");
+                const userAct = document.querySelector(".user-actions");
+                if(!token){       
+                    userAct.innerHTML = `
+                    <a href="/Frontend/modules/register.html" class="user-link">Registrarse</a>
+                    <a href="/Frontend/modules/login.html" class="user-link">Iniciar sesión</a>`     
+                }
+
+            </script>
+            
         </div>
     </header>
 

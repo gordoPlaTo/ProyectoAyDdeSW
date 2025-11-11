@@ -179,6 +179,16 @@ public class AdminController {
     @PostMapping("/material/crear")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Material> crearMaterial (@Valid @ModelAttribute MaterialReqDTO matDTO){
+
+        if (matDTO.imgMaterial().getSize() > 5_000_000){//asi se indica el tamaño aca 5mb maximo
+            throw new IllegalArgumentException("El tamaño de la imagen excede las 5mb permitidos");
+        }
+        String tipoArchivo = matDTO.imgMaterial().getContentType();
+        if (tipoArchivo == null || !tipoArchivo.startsWith("image/")){
+            //aca validamos el tipo de archivo para que sea una imagen
+            throw  new IllegalArgumentException("El archivo ingresado debe ser una imagen valida");
+        }
+
         return ResponseEntity.ok(materialService.crearMaterial(matDTO));
     }
 

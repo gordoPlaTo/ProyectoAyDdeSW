@@ -93,6 +93,7 @@ public class UsuarioController {
             throw  new IllegalArgumentException("El archivo ingresado debe ser una imagen valida");
         }
 
+        usuarioService.modificarImagenPefil(imagenPerfil);
 
 
         RespDTO response = new RespDTO(

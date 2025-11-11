@@ -46,7 +46,8 @@ public class UsuarioService implements  IUsuarioService{
                 user.getApellido(),
                 user.getEmail(),
                 user.getDni(),
-                user.getDireccion());
+                user.getDireccion(),
+                user.getUrlPerfil());
     }
 
     @Override
@@ -81,7 +82,6 @@ public class UsuarioService implements  IUsuarioService{
     @Override
     public void modificarImagenPefil(MultipartFile img) {
         Usuario user = obtenerUsuarioByEmail();
-
         user.setUrlPerfil(cloudinaryService.subirImagen(img,"foto-Perfil"));
 
     }

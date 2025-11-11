@@ -121,6 +121,9 @@ public class PedidoService implements IPedidoService {
 
         ped.setUrlComprobante(cloudinaryService.subirImagen(comprobante.comprobante(),"comprobante"));
 
+        EstadoPedido est = estadoPedido.findById(4L)
+                .orElseThrow(() -> new RuntimeException("No se encontro ese Estado del pedido."));
+        ped.setEstadoPedido(est);
         pedidoRepository.save(ped);
     }
 

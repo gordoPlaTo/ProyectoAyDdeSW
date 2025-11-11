@@ -44,7 +44,7 @@ if (uploadPhoto && userPhoto) {
     }
   });
 
-  // 🔁 Mantener la imagen al recargar
+  // Mantener la imagen al recargar
   const savedPic = localStorage.getItem("userProfilePic");
   if (savedPic) userPhoto.src = savedPic;
 }
@@ -54,6 +54,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const API_URL = "http://localhost:8080/api";
   const token = localStorage.getItem("token");
 
+  const fperfil = document.querySelector(".profPic");
   const nombreElem = document.querySelector(".profInfo h2");
   const emailElem = document.querySelector(".profInfo p:nth-of-type(1)");
   const direccionElem = document.querySelector(".profInfo p:nth-of-type(2)");
@@ -81,6 +82,18 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const userData = await res.json();
 
+    if(!userData.urlImg){
+      fperfil.innerHTML =  `
+            <img src="/Frontend/img/userdefault.jpg" alt="Foto de perfil" id="userPic">
+            <label for="uploadPic" class="uploadBtn">Cambiar foto</label>
+            <input type="file" id="uploadPic" accept="image/*" hidden></input>
+    `;
+    }else{fperfil.innerHTML  =  `
+            <img src="${userData.urlImg}" alt="Foto de perfil" id="userPic">
+            <label for="uploadPic" class="uploadBtn">Cambiar foto</label>
+            <input type="file" id="uploadPic" accept="image/*" hidden></input>
+    `;}
+    
     nombreElem.textContent = `${userData.nombre} ${userData.apellido}`;
     emailElem.textContent = `Email: ${userData.email || "No disponible"}`;
     direccionElem.textContent = `Dirección: ${userData.direccion || "No registrada"}`;
