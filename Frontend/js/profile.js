@@ -29,7 +29,6 @@ if (uploadPhoto && userPhoto) {
       if (res.ok) {
         alert("Foto de perfil actualizada correctamente.");
 
-        // Actualizamos la imagen (si el backend devuelve la URL)
         if (data && data.url) {
           userPhoto.src = data.url;
           localStorage.setItem("userProfilePic", data.url);
@@ -44,7 +43,6 @@ if (uploadPhoto && userPhoto) {
     }
   });
 
-  // Mantener la imagen al recargar
   const savedPic = localStorage.getItem("userProfilePic");
   if (savedPic) userPhoto.src = savedPic;
 }
@@ -172,7 +170,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         </div>
       `).join("");
 
-      // Eventos para cancelar pedido
       document.querySelectorAll(".btn-cancelar").forEach(btn => {
         btn.addEventListener("click", async () => {
           const id = btn.dataset.id;
@@ -186,7 +183,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             if (cancelRes.ok) {
               alert("Pedido cancelado correctamente");
-              cargarPedidos(); // refresca
+              cargarPedidos();
             } else {
               const msg = await cancelRes.text();
               alert("Error al cancelar pedido:\n" + msg);
@@ -202,7 +199,6 @@ document.querySelectorAll(".btn-comprobante").forEach(btn => {
   btn.addEventListener("click", () => {
     const id = btn.dataset.id;
 
-    // Crear modal dinámico
     const modal = document.createElement("div");
     modal.classList.add("modal");
     modal.style.display = "flex";
@@ -219,7 +215,6 @@ document.querySelectorAll(".btn-comprobante").forEach(btn => {
 
     document.body.appendChild(modal);
 
-    // Cerrar modal
     modal.querySelector(".close").addEventListener("click", () => modal.remove());
     window.addEventListener("click", e => { if (e.target === modal) modal.remove(); });
 
@@ -256,7 +251,7 @@ document.querySelectorAll(".btn-comprobante").forEach(btn => {
           const data = await res.json();
           alert(data.mensaje || "Comprobante cargado correctamente.");
           modal.remove();
-          cargarPedidos(); // refresca la lista
+          cargarPedidos();
         } else {
           const msg = await res.text();
           alert("Error al subir comprobante:\n" + msg);

@@ -231,3 +231,45 @@ document.addEventListener("DOMContentLoaded", () => {
   loadContactos();
   loadProductList();
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+  const botonesAgregar = document.querySelectorAll(".btn-agregar");
+
+  botonesAgregar.forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      const id = e.target.dataset.id;
+      const nombre = e.target.dataset.nombre;
+      const precio = parseFloat(e.target.dataset.precio);
+
+      let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+
+      // Verifica si el producto ya está en el carrito
+      const productoExistente = carrito.find((item) => item.id === id);
+
+      if (productoExistente) {
+        // Si ya existe, solo suma 1 a la cantidad
+        productoExistente.cantidad += 1;
+      } else {
+        // Si no existe, lo agrega nuevo
+        carrito.push({ id, nombre, precio, cantidad: 1 });
+      }
+
+      // Guarda el carrito actualizado
+      localStorage.setItem("carrito", JSON.stringify(carrito));
+
+      // (Opcional) pequeño feedback visual
+      alert(`✅ ${nombre} agregado al carrito`);
+
+      // Si querés actualizar algún contador de carrito en pantalla, lo podés hacer acá
+      // updateCartBadge();
+    });
+  });
+});
+
+function updateCartBadge() {
+  const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+  const totalItems = carrito.reduce((acc, item) => acc + item.cantidad, 0);
+  document.getElementById("cart-count").textContent = totalItems;
+}
+
+document.addEventListener("DOMContentLoaded", updateCartBadge);
