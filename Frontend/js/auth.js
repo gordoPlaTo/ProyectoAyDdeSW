@@ -16,7 +16,6 @@ function parseJwt(token) {
 }
 
 
-// --- función de redirección inteligente ---
 async function smartRedirectToIndex() {
     const origin = window.location.origin;
 
@@ -34,17 +33,15 @@ async function smartRedirectToIndex() {
                 return;
             }
         } catch (err) {
-            // Ignoramos y probamos el siguiente
         }
     }
 
-    // Si nada funcionó, intenta al menos ../index.html
     window.location.href = new URL('../index.html', window.location.href).href;
 }
 
 
 const API_URL = "http://localhost:8080/api/auth";
-const BASE_PATH = "/Frontend"; // carpeta raíz de tu proyecto
+const BASE_PATH = "/Frontend"; 
 
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -54,7 +51,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (registerForm) {
 
-        // STEP 4: Obtener id del emprendimiento desde la URL
         const params = new URLSearchParams(window.location.search);
         const idEmprendimiento = params.get("id");
 

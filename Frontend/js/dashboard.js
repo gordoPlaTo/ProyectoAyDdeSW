@@ -45,9 +45,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // =====================
-  // CARGAR PRODUCTO
-  // ===================
   function loadProductForm() {
     mainContent.innerHTML = `
       <h2>Cargar producto</h2>
@@ -112,7 +109,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (res.ok) {
           alert("Producto creado correctamente");
-          loadProductList(); // refresca la lista
+          loadProductList();
         } else {
           const error = await res.text();
           alert("Error al crear el producto:\n" + error);
@@ -124,9 +121,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // =====================
-  // Obtener Productos
-  // ======================
   async function loadProductList() {
     mainContent.innerHTML = `
     <h2>Mis productos</h2>
@@ -200,7 +194,6 @@ document.addEventListener("DOMContentLoaded", () => {
       </div>
     `).join("");
 
-      // Activar clic sobre los productos para abrir el modal
       document.querySelectorAll(".producto-card").forEach((card, i) => {
         card.addEventListener("click", () => openEditModal(productos[i]));
       });
@@ -212,16 +205,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // ====================================
-  // Modal para editar productos
-  // =======================================
 
   function openEditModal(producto) {
     const modalOverlay = document.createElement("div");
     modalOverlay.classList.add("modal-overlay");
 
-    // Ajusta el nombre del campo de estado si en tu DTO se llama distinto:
-    //const estaHabilitado = producto.habilitado ?? producto.enable ?? producto.estado ?? false;
     const estaHabilitado = producto.Enable;
 
 
@@ -263,10 +251,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const btnDism = modalOverlay.querySelector(".btn-dism");
 
 
-    // Cerrar modal
     btnCerrar.addEventListener("click", () => modalOverlay.remove());
 
-    // Guardar Cambios Producto
     btnGuardar.addEventListener("click", async () => {
       const nuevoPrecio = parseFloat(document.getElementById("editPrecio").value);
       const nuevoNombre = document.getElementById("editNombre").value;
@@ -310,7 +296,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 
-//Aumentar Stock
 btnAum.addEventListener("click", async () => {
   const cantidad = parseInt(document.getElementById("editStock").value);
 
@@ -333,7 +318,6 @@ btnAum.addEventListener("click", async () => {
   }
 });
 
-//Disminuir Stock
 btnDism.addEventListener("click", async () => {
   const cantidad = parseInt(document.getElementById("editStock").value);
 
@@ -390,7 +374,6 @@ btnDism.addEventListener("click", async () => {
     });
   }
 
-  // MATERIALES (ver lista y apartado para agregar)
 
   async function loadMateriales() {
     mainContent.innerHTML = `
@@ -425,9 +408,6 @@ btnDism.addEventListener("click", async () => {
 
     const materialesContainer = document.getElementById("materialesContainer");
 
-    // ==================
-    // CARGAR LISTA
-    // =====================
     async function loadMaterialList() {
       try {
         const res = await fetch(`${API_URL}/admin/material/obtenerTodos`, {
@@ -480,7 +460,6 @@ btnDism.addEventListener("click", async () => {
         </div>
       `).join("");
 
-        // === Eventos ===
         document.querySelectorAll(".btn-stock").forEach(btn => {
           btn.addEventListener("click", () => modificarStock(btn.dataset.id));
         });
@@ -495,7 +474,6 @@ btnDism.addEventListener("click", async () => {
       }
     }
 
-    // Agregar un nuevo Material
     const materialForm = document.getElementById("materialForm");
 
     if (materialForm) {
@@ -549,7 +527,6 @@ btnDism.addEventListener("click", async () => {
       });
     }
 
-    // Funciones auxiliares
     async function modificarStock(id) {
       const cantidad = prompt("Ingrese cantidad (use signo - para reducir):");
       if (!cantidad) return;
@@ -612,9 +589,6 @@ btnDism.addEventListener("click", async () => {
       }
     }
 
-    // =====================
-    // CARGA INICIAL
-    // ====================
     loadMaterialList();
   }
 
@@ -629,14 +603,10 @@ btnDism.addEventListener("click", async () => {
       .replace(/'/g, "&#039;");
   }
 
-// =========================
-// Ventas (Estadísticas con CSS puro) - FIX DE BUGS
-// =========================
 async function loadVentas() {
     const mainContent = document.getElementById("mainContent");
     const token = localStorage.getItem("token");
 
-    // 1. Estructura base con estilos incrustados
     mainContent.innerHTML = `
     <style>
       /* Estilos simples para el gráfico CSS */
@@ -691,15 +661,12 @@ async function loadVentas() {
             return;
         }
 
-        // 2. Cálculos matemáticos (FIX: Usamos || 0 en todas las reducciones)
         const totalIngresos = ventas.reduce((acc, v) => acc + (v.total || 0), 0);
         const totalUnidades = ventas.reduce((acc, v) => acc + (v.cantidad || 0), 0);
         
-        // Buscamos el valor máximo (FIX: Usamos || 0 al mapear)
         const maxVenta = Math.max(...ventas.map(v => v.total || 0));
 
-        // 3. Generar HTML
-        // Tarjetas de resumen
+
         let html = `
         <div class="stats-cards">
           <div class="stat-card">
@@ -716,11 +683,9 @@ async function loadVentas() {
           <h3>Top Ventas (por Ingresos)</h3>
     `;
 
-        // Generar barras
         const ventasOrdenadas = ventas.sort((a, b) => (b.total || 0) - (a.total || 0));
 
         ventasOrdenadas.forEach(v => {
-            // FIX: Usamos || 0 antes de calcular el porcentaje y antes de toFixed
             const ingreso = v.total || 0;
             const porcentaje = maxVenta === 0 ? 0 : (ingreso / maxVenta) * 100;
             
@@ -735,9 +700,8 @@ async function loadVentas() {
             `;
         });
 
-        html += `</div>`; // Cerrar chart-container
+        html += `</div>`; 
 
-        // Tabla detallada
         html += `
           <h3>Detalle Completo</h3>
           <table class="tabla-ventas" style="width:100%; border-collapse:collapse; margin-top:10px;">
@@ -770,9 +734,7 @@ async function loadVentas() {
     }
 }
 
-  // =====================
-// GESTIONAR VENTAS (ADMIN)
-// =====================
+
 async function loadGestionVentas() {
   mainContent.innerHTML = `
     <h2>Gestionar Ventas</h2>
@@ -834,9 +796,7 @@ async function loadGestionVentas() {
       </div>
     `).join("");
 
-    // ==================
-    // COMPLETAR PEDIDO
-    // ==================
+
     document.querySelectorAll(".btn-completar").forEach(btn => {
       btn.addEventListener("click", async () => {
         const id = btn.dataset.id;
@@ -873,9 +833,7 @@ async function loadGestionVentas() {
       });
     });
 
-    // ==================
-    // VER DETALLE EN MODAL
-    // ==================
+
     document.querySelectorAll(".btn-detalle").forEach(btn => {
       btn.addEventListener("click", () => {
         const id = btn.dataset.id;
@@ -916,10 +874,6 @@ async function loadGestionVentas() {
 }
 
 
-
-  // =====================
-  // Configuracion
-  // ========================
   function loadConfiguracion() {
     mainContent.innerHTML = `
     <h2>Configuración del emprendimiento</h2>
@@ -958,9 +912,6 @@ async function loadGestionVentas() {
     const token = localStorage.getItem("token");
     let config = { titulo: "", descripcion: "", direccion: "", cuit: "", email: "", contactos: [] };
 
-    // ==============================
-    // Obtener datos desde el backend
-    // ==============================
     async function cargarConfigDesdeBackend() {
       try {
         const res = await fetch(`${API_URL}/emprendimiento/obtener`, {
@@ -985,9 +936,6 @@ async function loadGestionVentas() {
       }
     }
 
-    // ==============================
-    // Renderizar datos cargados
-    // ============================
     function renderConfig() {
       document.getElementById("titulo").value = config.titulo || "";
       document.getElementById("descripcion").value = config.descripcion || "";
@@ -997,9 +945,6 @@ async function loadGestionVentas() {
       renderContactos();
     }
 
-    // =======================
-    // Renderizar contactos
-    // =============================
     function renderContactos() {
       listaContactos.innerHTML = "";
 
@@ -1012,7 +957,6 @@ async function loadGestionVentas() {
         listaContactos.appendChild(li);
       });
 
-      // Eliminar un contacto
       document.querySelectorAll(".btn-eliminar-contacto").forEach(btn => {
         btn.addEventListener("click", async e => {
           e.preventDefault();
@@ -1060,13 +1004,9 @@ async function loadGestionVentas() {
       }
     }
 
-    // =============================
-    // Agregar nuevo contacto
-    // ========================
     btnAgregar.addEventListener("click", async () => {
       const valor = inputContacto.value.trim();
       if (valor) {
-        //config.contactos.push(valor);
 
         try {
           const resp = await fetch(`${API_URL}/admin/contacto/new`, {
@@ -1102,9 +1042,7 @@ async function loadGestionVentas() {
     });
 
 
-    // =====================
-    // Guardar cambios
-    // =======================
+
     document.getElementById("configForm").addEventListener("submit", async e => {
       e.preventDefault();
       config.titulo = document.getElementById("titulo").value;
@@ -1145,10 +1083,8 @@ async function loadGestionVentas() {
         }
         alert("Configuracion guardada correctamente");
 
-        // Guarda copia local
         localStorage.setItem("configEmprendimiento", JSON.stringify(config));
 
-        // Actualiza el header
         const headerTitle = document.querySelector(".header h1");
         if (headerTitle) headerTitle.textContent = config.titulo;
         renderContactos();

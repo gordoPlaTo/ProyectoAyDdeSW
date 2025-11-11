@@ -20,7 +20,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     carrito.forEach((item) => {
-      // Aseguramos que id es string para la comparación con el dataset
       const itemId = String(item.id);
 
       const fila = document.createElement("tr");
@@ -40,16 +39,13 @@ document.addEventListener("DOMContentLoaded", () => {
             <td>$${(item.precio * item.cantidad).toFixed(2)}</td>
         `;
       carritoBody.appendChild(fila);
-      // El total se calcula usando el precio unitario multiplicado por la cantidad actual
       total += item.precio * item.cantidad;
     });
 
 
     totalElement.textContent = total.toFixed(2);
 
-    // --- MANEJO DE EVENTOS ---
 
-    // 1. Eliminar Producto
     document.querySelectorAll(".btn-eliminar").forEach(btn => {
       btn.addEventListener("click", (e) => {
         const id = e.target.dataset.id;
@@ -59,25 +55,21 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
 
-    // 2. CAMBIAR CANTIDAD (NUEVO)
     document.querySelectorAll(".input-cantidad").forEach(input => {
       input.addEventListener("change", (e) => {
         const id = e.target.dataset.id;
         let nuevaCantidad = parseInt(e.target.value);
 
-        // Validar que la cantidad sea positiva
         if (nuevaCantidad < 1 || isNaN(nuevaCantidad)) {
           nuevaCantidad = 1;
-          e.target.value = 1; // Corregir el valor mostrado
+          e.target.value = 1;
         }
 
-        // Buscar y actualizar el item en el carrito
         const itemIndex = carrito.findIndex(item => String(item.id) === id);
 
         if (itemIndex !== -1) {
           carrito[itemIndex].cantidad = nuevaCantidad;
 
-          // Actualizar localStorage y refrescar la vista
           localStorage.setItem("carrito", JSON.stringify(carrito));
           renderCarrito();
         }

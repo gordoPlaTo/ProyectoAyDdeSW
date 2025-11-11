@@ -8,11 +8,7 @@ const productosContainer = document.querySelector(".product-container");
 document.addEventListener("DOMContentLoaded", () => {
   const urlperfil = localStorage.getItem("urlPerfil");
 
-  // =================
-  // Obtener Productos
-  // ===================
   async function loadProductList() {
-    // muestra carga mientras viene la respuesta
     productosContainer.innerHTML = `
     <h2>Mis productos</h2>
     <div id="productosContainer" class="productos-container">
@@ -72,42 +68,34 @@ document.addEventListener("DOMContentLoaded", () => {
       </div>
     `).join("");
 
-    // ... dentro de loadProductList, después de: productosContainer.innerHTML = productos.map(...)
 
 document.querySelectorAll(".btnAgregar").forEach(btn => { 
-    // CORRECCIÓN 1: No necesitas agregar una nueva validación aquí, la que tienes
-    // en el evento 'click' ya funciona.
 
     btn.addEventListener("click", () => {
         const id = btn.dataset.id
         const nombre = btn.dataset.nombre;
         const precio = parseFloat(btn.dataset.precio);
-        const token = localStorage.getItem("token"); // Correcto: Trae el token
+        const token = localStorage.getItem("token"); 
         
-        // CORRECCIÓN 2: Asegúrate de que el ID del carrito sea un String para ser consistente
-        // ya que el dataset siempre devuelve strings.
         const idString = String(id); 
 
         let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
 
 
-        // VALIDACIÓN DE TOKEN (Correcto)
         if (!token) {
             alert("Debes iniciar sesion para realizar una compra.");
             window.location.href = "/Frontend/modules/login.html";
             return;
         }
 
-        // Se busca si ya está ese producto en el carrito
-        // CORRECCIÓN 3: La búsqueda debe ser por ID, no por nombre, para evitar duplicados
-        // si dos productos tienen el mismo nombre pero diferente ID.
+
         const productoExistente = carrito.find(p => String(p.id) === idString); 
 
         if (productoExistente) {
             productoExistente.cantidad += 1;
         } else {
             carrito.push({
-                id: idString, // Usar el ID como string
+                id: idString, 
                 nombre,
                 precio,
                 cantidad: 1
@@ -119,7 +107,6 @@ document.querySelectorAll(".btnAgregar").forEach(btn => {
         alert(`${nombre} se agregó al carrito`);
     });
 });
-// ... fin de loadProductList
 
     } catch (error) {
       console.error("Error al obtener productos:", error);
@@ -135,9 +122,7 @@ document.querySelectorAll(".btnAgregar").forEach(btn => {
     
     }
   }
-  // ============================
-  // Ordenar por precio
-  // ==============================
+
   const ascCheckbox = document.querySelector('input[value="asc"]');
   const descCheckbox = document.querySelector('input[value="desc"]');
 
@@ -146,7 +131,7 @@ document.querySelectorAll(".btnAgregar").forEach(btn => {
       descCheckbox.checked = false;
       ordenarProductos("asc");
     } else {
-      loadProductList(); // vuelve al orden original
+      loadProductList();
     }
   });
 
@@ -159,9 +144,7 @@ document.querySelectorAll(".btnAgregar").forEach(btn => {
     }
   });
 
-  // =====================
-  // busqueda de productos
-  // =======================
+
   const searchInput = document.querySelector(".search-bar");
 
   searchInput.addEventListener("input", () => {
@@ -262,34 +245,4 @@ document.querySelectorAll(".btnAgregar").forEach(btn => {
   loadContactos();
   loadProductList();
 });
-
-/*document.addEventListener("DOMContentLoaded", () => {
-  const botonesAgregar = document.querySelectorAll(".btn-agregar");
-
-  botonesAgregar.forEach((btn) => {
-    btn.addEventListener("click", (e) => {
-      const id = e.target.dataset.id;
-      const nombre = e.target.dataset.nombre;
-      const precio = parseFloat(e.target.dataset.precio);
-
-      let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
-
-      // Verifica si el producto ya está en el carrito
-      const productoExistente = carrito.find((item) => item.id === id);
-
-      if (productoExistente) {
-        // Si ya existe, solo suma 1 a la cantidad
-        productoExistente.cantidad += 1;
-      } else {
-        // Si no existe, lo agrega nuevo
-        carrito.push({ id, nombre, precio, cantidad: 1 });
-      }
-
-      localStorage.setItem("carrito", JSON.stringify(carrito));
-
-      alert(`${nombre} agregado al carrito`);
-    });
-  });
-});
-*/
 
