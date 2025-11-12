@@ -189,9 +189,16 @@ document.addEventListener("DOMContentLoaded", () => {
   // ====================================
   // Modal para editar productos
   // =======================================
+  // ====================================
+  // Modal para editar productos (CORREGIDO)
+  // =======================================
   function openEditModal(producto) {
     const modalOverlay = document.createElement("div");
     modalOverlay.classList.add("modal-overlay");
+
+    // Ajusta el nombre del campo de estado si en tu DTO se llama distinto:
+    const estaHabilitado = producto.habilitado ?? producto.enable ?? producto.estado ?? false;
+
     modalOverlay.innerHTML = `
     <div class="modal">
       <h3>Editar producto: ${escapeHtml(producto.nombre)}</h3>
@@ -203,11 +210,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
       <div class="btns">
         <button class="btn-save">Guardar</button>
-        <button class="btn-disable">${producto.enable ? "Habilitar" : "Deshabilitar"}</button>
+        <button class="btn-disable">${estaHabilitado ? "Deshabilitar" : "Habilitar"}</button>
         <button class="btn-close">Cerrar</button>
       </div>
     </div>
   `;
+
     document.body.appendChild(modalOverlay);
 
     const btnGuardar = modalOverlay.querySelector(".btn-save");
@@ -217,13 +225,16 @@ document.addEventListener("DOMContentLoaded", () => {
     // Cerrar modal
     btnCerrar.addEventListener("click", () => modalOverlay.remove());
 
-    // Guardar cambios
+    // ===========================
+    // GUARDAR CAMBIOS
+    // ===========================
     btnGuardar.addEventListener("click", async () => {
       const nuevoPrecio = parseFloat(document.getElementById("editPrecio").value);
       const nuevoStock = parseInt(document.getElementById("editStock").value);
 
       try {
-        const res = await fetch(`${API_URL}/admin/producto/mod/${producto.idProducto}`, {
+        // PATCH para actualizar precio
+        const resPrecio = await fetch(`${API_URL}/admin/producto/mod/${producto.idProducto}`, {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
@@ -232,44 +243,59 @@ document.addEventListener("DOMContentLoaded", () => {
           body: JSON.stringify({ precio: nuevoPrecio })
         });
 
-        if (!res.ok) throw new Error("Error al modificar precio");
+        if (!resPrecio.ok) throw new Error("Error al modificar precio");
 
-        const resStock = await fetch(`${API_URL}/admin/producto/aumentar/${producto.idProducto}/stock?stock=${nuevoStock}`, {
-          method: "PATCH",
-          headers: {
-            "Authorization": `Bearer ${token}`
-          }
-        });
-        if (!resStock.ok) throw new Error("Error al actualizar stock");
+        // Detectar si stock aumentó o disminuyó
+        let endpointStock = null;
+        if (nuevoStock > producto.stock) {
+          const diff = nuevoStock - producto.stock;
+          endpointStock = `${API_URL}/admin/producto/aumentar/${producto.idProducto}?stock=${diff}`;
+        } else if (nuevoStock < producto.stock) {
+          const diff = producto.stock - nuevoStock;
+          endpointStock = `${API_URL}/admin/producto/reducir/${producto.idProducto}?stock=${diff}`;
+        }
+
+        // Llamar a endpoint correspondiente si hay cambio
+        if (endpointStock) {
+          const resStock = await fetch(endpointStock, {
+            method: "PATCH",
+            headers: { "Authorization": `Bearer ${token}` }
+          });
+          if (!resStock.ok) throw new Error("Error al modificar stock");
+        }
 
         alert("Producto actualizado correctamente");
         modalOverlay.remove();
         loadProductList();
+
       } catch (err) {
         console.error(err);
         alert("No se pudo guardar los cambios");
       }
     });
 
-    // Habilitar / Deshabilitar
+    // ===========================
+    // HABILITAR / DESHABILITAR PRODUCTO
+    // ===========================
     btnDeshabilitar.addEventListener("click", async () => {
       try {
         const res = await fetch(`${API_URL}/admin/producto/estado/${producto.idProducto}`, {
           method: "PATCH",
-          headers: {
-            "Authorization": `Bearer ${token}`
-          }
+          headers: { "Authorization": `Bearer ${token}` }
         });
         if (!res.ok) throw new Error("Error al cambiar estado");
-        alert("Estado del producto actualizado");
+
+        alert("Estado del producto actualizado correctamente");
         modalOverlay.remove();
         loadProductList();
+
       } catch (err) {
         console.error(err);
         alert("No se pudo cambiar el estado del producto");
       }
     });
   }
+
   // =====================
   // MATERIALES (ver + agregar)
   // =====================
@@ -616,7 +642,7 @@ document.addEventListener("DOMContentLoaded", () => {
               "Content-Type": "application/json",
               "Authorization": `Bearer ${token}`
             },
-            body: JSON.stringify({ contacto: valor }) 
+            body: JSON.stringify({ contacto: valor })
           });
           if (!resp.ok) throw new Error("Error al guardar el nuevo contacto");
           alert("Se completo la carga");

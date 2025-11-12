@@ -74,13 +74,15 @@ public class ProductoService implements IProductoService {
     public List<ProductoRespDTO> obtenerProductos() {
         return productoRepository.findAll().stream()
                 .map(p -> new ProductoRespDTO(
+                        p.getIdProducto(),
                         p.getNombre(),
                         p.getDescripcion(),
                         p.getPrecio(),
                         p.getStock(),
                         p.getIva().getCategoria(),
                         p.getIva().getPorcentaje(),
-                        p.getUrl()
+                        p.getUrl(),
+                        p.isEnable()
                 ))
                 .collect(Collectors.toList());
     }
