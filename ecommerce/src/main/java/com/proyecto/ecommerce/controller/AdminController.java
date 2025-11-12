@@ -20,6 +20,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -250,4 +251,29 @@ public class AdminController {
                 LocalDateTime.now()
         );
         return ResponseEntity.ok(response);    }
+
+    @PatchMapping("/material/modImg/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<RespDTO> modificarImgMaterial(@PathVariable Long id,
+                                                        @NotNull (message = "Debes incluir una imagen para asignar al material.")
+                                                        @RequestParam MultipartFile img){
+
+        if (img.getSize() > 5_000_000){//asi se indica el tamaño aca 5mb maximo
+            throw new IllegalArgumentException("El tamaño de la imagen excede las 5mb permitidos");
+        }
+        String tipoArchivo = img.getContentType();
+        if (tipoArchivo == null || !tipoArchivo.startsWith("image/")){
+            //aca validamos el tipo de archivo para que sea una imagen
+            throw  new IllegalArgumentException("El archivo ingresado debe ser una imagen valida");
+        }
+
+        materialService.modificarImagen(id,img);
+
+        RespDTO response = new RespDTO(
+                "Se cambio la imagen del material correctamente",
+                true,
+                LocalDateTime.now()
+        );
+        return ResponseEntity.ok(response);
+    }
 }
