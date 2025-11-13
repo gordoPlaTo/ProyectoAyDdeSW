@@ -37,6 +37,13 @@ document.addEventListener("DOMContentLoaded", async () => {
       },
     });
 
+    if (res.status === 401) {
+            alert("La sesión ha expirado. Inicia sesión nuevamente.");
+            localStorage.clear();
+            window.location.href = "/Frontend/modules/login.html";
+            return null;
+          }
+
     if (!res.ok) {
       console.error("Error al obtener datos del administrador:", res.status);
       alert("No se pudieron cargar los datos del perfil.");

@@ -16,7 +16,7 @@ public record MaterialReqDTO (
                 message = "Solo se permiten letras, números, espacios, guiones, apóstrofes, comas, puntos, arrobas y paréntesis.")
         String descripcion,
 
-        @Min(value = 0, message = "El stock no puede ser negativo")
+        @Positive(message = "El stock no puede ser negativo")
         int stock,
 
         MultipartFile imgMaterial

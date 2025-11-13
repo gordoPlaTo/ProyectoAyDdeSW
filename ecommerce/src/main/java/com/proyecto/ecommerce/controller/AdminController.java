@@ -131,7 +131,8 @@ public class AdminController {
     @PatchMapping("/producto/aumentar/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<RespDTO> aumentarStockProd(@NotNull(message = "El id del producto es obligatorio")
-                                                        @Positive(message = "El id debe ser un número positivo") @PathVariable Long id,
+                                                        @Positive(message = "El id debe ser un número positivo")
+                                                         @PathVariable Long id,
                                            @RequestParam int stock){
         productoService.aumentarStock(id,stock);
 
@@ -146,7 +147,8 @@ public class AdminController {
     @PatchMapping("/producto/estado/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<RespDTO> habilitarDeshabilitarProducto (@NotNull(message = "El id del producto es obligatorio")
-                                                                     @Positive(message = "El id debe ser un número positivo") @PathVariable Long id){
+                                                                     @Positive(message = "El id debe ser un número positivo")
+                                                                      @PathVariable Long id){
         productoService.habDesProducto(id);
 
         RespDTO response = new RespDTO(
@@ -166,7 +168,9 @@ public class AdminController {
 
     @PatchMapping("/producto/mod/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<RespDTO> modificarProd(@PathVariable Long id,
+    public ResponseEntity<RespDTO> modificarProd(@NotNull(message = "El id del producto es obligatorio")
+                                                     @Positive(message = "El id debe ser un número positivo")
+                                                     @PathVariable Long id,
                                         @Valid @RequestBody ProductoPatchDTO prodDTO){
         productoService.modificarProducto(id,prodDTO);
         RespDTO response = new RespDTO(
@@ -208,8 +212,11 @@ public class AdminController {
     }
     @PatchMapping("/material/aumentar/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<RespDTO> aumentarStockMat(@PathVariable Long id,
-                                            @RequestParam int stock){
+    public ResponseEntity<RespDTO> aumentarStockMat(
+            @NotNull(message = "El id del contacto es obligatorio")
+            @Positive(message = "El id debe ser un número positivo")@PathVariable Long id,
+            @NotNull(message = "El stock del material es obligatorio")
+            @Positive(message = "El stock debe ser un número positivo")@RequestParam int stock){
         materialService.aumentarStock(id,stock);
 
         RespDTO response = new RespDTO(
@@ -229,7 +236,9 @@ public class AdminController {
 
     @PatchMapping("/material/mod/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<RespDTO> modificarMat(@PathVariable Long id,
+    public ResponseEntity<RespDTO> modificarMat(@NotNull(message = "El id del material es obligatorio")
+                                                    @Positive(message = "El id debe ser un número positivo")
+                                                    @PathVariable Long id,
                                         @Valid @RequestBody MaterialesPatchDTO matDTO){
         materialService.modificarMaterial(id,matDTO);
 
@@ -242,7 +251,10 @@ public class AdminController {
 
     @DeleteMapping("/material/borrar/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<RespDTO> borrarMaterial (@PathVariable Long id){
+    public ResponseEntity<RespDTO> borrarMaterial (
+            @NotNull(message = "El id del contacto es obligatorio")
+            @Positive(message = "El id debe ser un número positivo")
+            @PathVariable Long id){
         materialService.borrarMaterial(id);
 
         RespDTO response = new RespDTO(
@@ -254,9 +266,12 @@ public class AdminController {
 
     @PatchMapping("/material/modImg/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<RespDTO> modificarImgMaterial(@PathVariable Long id,
-                                                        @NotNull (message = "Debes incluir una imagen para asignar al material.")
-                                                        @RequestParam MultipartFile img){
+    public ResponseEntity<RespDTO> modificarImgMaterial(
+            @NotNull(message = "El id del material es obligatorio")
+            @Positive(message = "El id debe ser un número positivo")
+            @PathVariable Long id,
+            @NotNull (message = "Debes incluir una imagen para asignar al material.")
+            @RequestParam MultipartFile img){
 
         if (img.getSize() > 5_000_000){//asi se indica el tamaño aca 5mb maximo
             throw new IllegalArgumentException("El tamaño de la imagen excede las 5mb permitidos");

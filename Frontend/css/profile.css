@@ -29,10 +29,11 @@ body {
 }
 
 .profPic img {
-    width: 150px;
+    width: 150px;        
     height: 150px;
-    border-radius: 50%;
-    object-fit: cover;
+    border-radius: 50%;    
+    object-fit: cover;    
+    object-position: center; 
     border: 3px solid #28a745;
 }
 

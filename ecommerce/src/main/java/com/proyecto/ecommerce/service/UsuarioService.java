@@ -84,5 +84,7 @@ public class UsuarioService implements  IUsuarioService{
         Usuario user = obtenerUsuarioByEmail();
         user.setUrlPerfil(cloudinaryService.subirImagen(img,"foto-Perfil"));
 
+        userRepository.save(user);
+
     }
 }

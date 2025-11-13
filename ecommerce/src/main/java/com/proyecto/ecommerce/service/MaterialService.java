@@ -5,6 +5,7 @@ import com.proyecto.ecommerce.dto.MaterialesDTO.MaterialesPatchDTO;
 import com.proyecto.ecommerce.model.Material;
 import com.proyecto.ecommerce.model.Usuario;
 import com.proyecto.ecommerce.repository.IMaterialRepository;
+import com.proyecto.ecommerce.utils.ConvText;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class MaterialService implements IMaterialService{
@@ -24,7 +26,7 @@ public class MaterialService implements IMaterialService{
     @Override
     public Material crearMaterial(MaterialReqDTO matDTO) {
         Material mat = new Material();
-        mat.setNombre(mat.getNombre().toLowerCase());
+        mat.setNombre(matDTO.nombre().toLowerCase());
         mat.setDescripcion(matDTO.descripcion().toLowerCase());
         mat.setStock(matDTO.stock());
         mat.setUrlfoto(cloudinaryService.subirImagen(matDTO.imgMaterial(),"foto-Material"));
@@ -39,7 +41,11 @@ public class MaterialService implements IMaterialService{
     }
 
     @Override
-    public List<Material> obtenerMateriales() {
+    public List<Material> obtenerMateriales()
+    {
+        List<Material> listMat = materialRepository.findAll().stream()
+                .peek(m -> m.setNombre(ConvText.toUpperWords(m.getNombre())))
+                .toList();
         return materialRepository.findAll();
     }
 

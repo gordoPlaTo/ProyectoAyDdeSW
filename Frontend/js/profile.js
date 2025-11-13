@@ -1,56 +1,8 @@
-const uploadPhoto = document.getElementById("uploadPic");
-const userPhoto = document.getElementById("userPic");
-
-if (uploadPhoto && userPhoto) {
-  uploadPhoto.addEventListener("change", async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    if (!file.type.startsWith("image/")) {
-      alert("Por favor, selecciona un formato de imagen válido.");
-      return;
-    }
-
-    const token = localStorage.getItem("token");
-    const API_URL = "http://localhost:8080/api";
-
-    const formData = new FormData();
-    formData.append("imagenPerfil", file);
-
-    try {
-      const res = await fetch(`${API_URL}/user/modificar/imgPerfil`, {
-        method: "PATCH",
-        headers: { "Authorization": `Bearer ${token}` },
-        body: formData
-      });
-
-      const data = await res.json();
-
-      if (res.ok) {
-        alert("Foto de perfil actualizada correctamente.");
-
-        if (data && data.url) {
-          userPhoto.src = data.url;
-          localStorage.setItem("userProfilePic", data.url);
-        }
-
-      } else {
-        alert("Error al actualizar la foto de perfil: " + (data.message || "Error desconocido"));
-      }
-    } catch (err) {
-      console.error(err);
-      alert("Error al conectar con el servidor.");
-    }
-  });
-
-  const savedPic = localStorage.getItem("userProfilePic");
-  if (savedPic) userPhoto.src = savedPic;
-}
-
-
 document.addEventListener("DOMContentLoaded", async () => {
   const API_URL = "http://localhost:8080/api";
   const token = localStorage.getItem("token");
+
+  const DEFAULT_IMG = "/Frontend/img/userdefault.jpg";
 
   const fperfil = document.querySelector(".profPic");
   const nombreElem = document.querySelector(".profInfo h2");
@@ -77,21 +29,26 @@ document.addEventListener("DOMContentLoaded", async () => {
       alert("No se pudieron cargar los datos del perfil.");
       return;
     }
-
+    if (res.status === 401) {
+    alert("La sesión ha expirado. Inicia sesión nuevamente.");
+    localStorage.clear();
+    window.location.href = "/Frontend/modules/login.html";
+    return null;
+    }
     const userData = await res.json();
 
-    if(!userData.urlImg){
-      fperfil.innerHTML =  `
-            <img src="/Frontend/img/userdefault.jpg" alt="Foto de perfil" id="userPic">
-            <label for="uploadPic" class="uploadBtn">Cambiar foto</label>
-            <input type="file" id="uploadPic" accept="image/*" hidden></input>
+    const finalUrl = (userData.urlImg && userData.urlImg !== "null" && userData.urlImg !== "undefined")
+      ? userData.urlImg
+      : DEFAULT_IMG;
+
+    fperfil.innerHTML = `
+      <img src="${finalUrl}" alt="Foto de perfil" id="userPic">
+      <label for="uploadPic" class="uploadBtn">Cambiar foto</label>
+      <input type="file" id="uploadPic" accept="image/*" hidden>
     `;
-    }else{fperfil.innerHTML  =  `
-            <img src="${userData.urlImg}" alt="Foto de perfil" id="userPic">
-            <label for="uploadPic" class="uploadBtn">Cambiar foto</label>
-            <input type="file" id="uploadPic" accept="image/*" hidden></input>
-    `;}
-    
+
+    cambiarImagePerfil(finalUrl,API_URL,token);
+
     nombreElem.textContent = `${userData.nombre} ${userData.apellido}`;
     emailElem.textContent = `Email: ${userData.email || "No disponible"}`;
     direccionElem.textContent = `Dirección: ${userData.direccion || "No registrada"}`;
@@ -128,7 +85,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         pedidosContainer.innerHTML = `<p style="color:red;">Error al cargar tus pedidos (${res.status})</p>`;
         return;
       }
-
+      if (res.status === 401) {
+      alert("La sesión ha expirado. Inicia sesión nuevamente.");
+      localStorage.clear();
+      window.location.href = "/Frontend/modules/login.html";
+      return null;
+    }
       const pedidos = await res.json();
 
       if (!pedidos || pedidos.length === 0) {
@@ -180,6 +142,12 @@ document.addEventListener("DOMContentLoaded", async () => {
               method: "PATCH",
               headers: { "Authorization": `Bearer ${token}` }
             });
+            if (res.status === 401) {
+            alert("La sesión ha expirado. Inicia sesión nuevamente.");
+            localStorage.clear();
+            window.location.href = "/Frontend/modules/login.html";
+            return null;
+          }
 
             if (cancelRes.ok) {
               alert("Pedido cancelado correctamente");
@@ -246,6 +214,13 @@ document.querySelectorAll(".btn-comprobante").forEach(btn => {
           headers: { "Authorization": `Bearer ${token}` },
           body: formData
         });
+
+        if (res.status === 401) {
+            alert("La sesión ha expirado. Inicia sesión nuevamente.");
+            localStorage.clear();
+            window.location.href = "/Frontend/modules/login.html";
+            return null;
+          }
 
         if (res.ok) {
           const data = await res.json();
@@ -319,6 +294,13 @@ document.addEventListener("DOMContentLoaded", () => {
         }),
       });
 
+      if (res.status === 401) {
+            alert("La sesión ha expirado. Inicia sesión nuevamente.");
+            localStorage.clear();
+            window.location.href = "/Frontend/modules/login.html";
+            return null;
+          }
+
       if (!res.ok) {
         const errorMsg = await res.text();
         throw new Error(errorMsg || "Error al cambiar contraseña");
@@ -349,6 +331,13 @@ document.addEventListener("DOMContentLoaded", () => {
           "Authorization": `Bearer ${token}`,
         },
       });
+
+      if (res.status === 401) {
+            alert("La sesión ha expirado. Inicia sesión nuevamente.");
+            localStorage.clear();
+            window.location.href = "/Frontend/modules/login.html";
+            return null;
+          }
 
       if (!res.ok) {
         const errorMsg = await res.text();
@@ -409,6 +398,13 @@ document.addEventListener("DOMContentLoaded", () => {
         body: JSON.stringify({ direccion: newAddress })
       });
 
+      if (res.status === 401) {
+            alert("La sesión ha expirado. Inicia sesión nuevamente.");
+            localStorage.clear();
+            window.location.href = "/Frontend/modules/login.html";
+            return null;
+          }
+
       if (!res.ok) {
         const errorMsg = await res.text();
         throw new Error(errorMsg);
@@ -439,3 +435,70 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 });
+
+function cambiarImagePerfil(defaultURL, API_URL, token) {//traemos la url general y el token a este contexto
+
+  const DEFAULT_IMG = "/Frontend/img/userdefault.jpg";//La imagen por defecto, si no tiene ninguna el usuario
+  const uploadPhoto = document.getElementById("uploadPic");
+  const userPhoto = document.getElementById("userPic");
+
+  if (!uploadPhoto || !userPhoto) return;
+
+  const savedPic = localStorage.getItem("userProfilePic");
+
+  if (savedPic && savedPic !== "null" && savedPic !== "undefined") {
+    userPhoto.src = savedPic;
+  } else {
+    userPhoto.src = defaultURL || DEFAULT_IMG;
+  }
+
+  uploadPhoto.addEventListener("change", async (e) => { //espera a que se carge una foto
+    const file = e.target.files[0]; //Seleccionamos la img
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) { //Si el formato es valido / si es una imagen
+      alert("Por favor, selecciona un formato de imagen válido.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("imagenPerfil", file);
+
+    try {
+      const res = await fetch(`${API_URL}/user/modificar/imgPerfil`, {
+        method: "PATCH",
+        headers: { "Authorization": `Bearer ${token}` },
+        body: formData
+      });
+
+      const data = await res.json();
+
+      if (res.status === 401) {
+            alert("La sesión ha expirado. Inicia sesión nuevamente.");
+            localStorage.clear();
+            window.location.href = "/Frontend/modules/login.html";
+            return null;
+          }
+
+      if (!res.ok) {
+        alert("Error al actualizar la foto de perfil: " + data.message);
+        return;
+      }
+
+      alert("Foto de perfil actualizada correctamente.");
+
+      if (data && data.url) {
+        //Si esta, la asignamos al atributo de la img
+        userPhoto.src = data.url;
+        localStorage.setItem("userProfilePic", data.url);
+      } else {
+        //Aca se asigna la img por defecto
+        userPhoto.src = DEFAULT_IMG;
+      }
+
+    } catch (err) {
+      console.error(err);
+      alert("Error al conectar con el servidor.");
+    }
+  });
+}

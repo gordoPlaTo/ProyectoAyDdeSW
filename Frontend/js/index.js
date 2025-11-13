@@ -102,6 +102,8 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (error) {
       console.error("Error al obtener productos:", error);
       productosContainer.innerHTML = "<p style='color:red;'>Error al cargar los productos. Revisa consola o el backend.</p>";
+    
+    
     }
   }
   // ============================
@@ -254,11 +256,9 @@ document.addEventListener("DOMContentLoaded", () => {
         carrito.push({ id, nombre, precio, cantidad: 1 });
       }
 
-      // Guarda el carrito actualizado
       localStorage.setItem("carrito", JSON.stringify(carrito));
 
-      // (Opcional) pequeño feedback visual
-      alert(`✅ ${nombre} agregado al carrito`);
+      alert(`${nombre} agregado al carrito`);
 
       // Si querés actualizar algún contador de carrito en pantalla, lo podés hacer acá
       // updateCartBadge();

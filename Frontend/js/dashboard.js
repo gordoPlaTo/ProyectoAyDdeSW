@@ -99,6 +99,13 @@ document.addEventListener("DOMContentLoaded", () => {
           body: formData
         });
 
+        if (res.status === 401) {
+            alert("La sesión ha expirado. Inicia sesión nuevamente.");
+            localStorage.clear();
+            window.location.href = "/Frontend/modules/login.html";
+            return null;
+          }
+
         if (res.ok) {
           alert("Producto creado correctamente");
           loadProductList(); // refresca la lista
@@ -142,6 +149,13 @@ document.addEventListener("DOMContentLoaded", () => {
           "Authorization": `Bearer ${token}`
         }
       });
+
+      if (res.status === 401) {
+            alert("La sesión ha expirado. Inicia sesión nuevamente.");
+            localStorage.clear();
+            window.location.href = "/Frontend/modules/login.html";
+            return null;
+          }
 
       if (!res.ok) {
         const text = await res.text().catch(() => "");
@@ -189,9 +203,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // ====================================
   // Modal para editar productos
   // =======================================
-  // ====================================
-  // Modal para editar productos (CORREGIDO)
-  // =======================================
+
   function openEditModal(producto) {
     const modalOverlay = document.createElement("div");
     modalOverlay.classList.add("modal-overlay");
@@ -243,6 +255,13 @@ document.addEventListener("DOMContentLoaded", () => {
           body: JSON.stringify({ precio: nuevoPrecio })
         });
 
+        if (resPrecio.status === 401) {
+            alert("La sesión ha expirado. Inicia sesión nuevamente.");
+            localStorage.clear();
+            window.location.href = "/Frontend/modules/login.html";
+            return null;
+          }
+
         if (!resPrecio.ok) throw new Error("Error al modificar precio");
 
         // Detectar si stock aumentó o disminuyó
@@ -283,6 +302,14 @@ document.addEventListener("DOMContentLoaded", () => {
           method: "PATCH",
           headers: { "Authorization": `Bearer ${token}` }
         });
+
+        if (res.status === 401) {
+            alert("La sesión ha expirado. Inicia sesión nuevamente.");
+            localStorage.clear();
+            window.location.href = "/Frontend/modules/login.html";
+            return null;
+          }
+
         if (!res.ok) throw new Error("Error al cambiar estado");
 
         alert("Estado del producto actualizado correctamente");
@@ -340,6 +367,13 @@ document.addEventListener("DOMContentLoaded", () => {
         const res = await fetch(`${API_URL}/admin/material/obtenerTodos`, {
           headers: { "Authorization": `Bearer ${token}` }
         });
+
+        if (res.status === 401) {
+            alert("La sesión ha expirado. Inicia sesión nuevamente.");
+            localStorage.clear();
+            window.location.href = "/Frontend/modules/login.html";
+            return null;
+          }
 
         if (!res.ok) {
           materialesContainer.innerHTML = `<p style="color:red;">Error al obtener materiales.</p>`;
@@ -413,6 +447,13 @@ document.addEventListener("DOMContentLoaded", () => {
             body: formData
           });
 
+          if (res.status === 401) {
+            alert("La sesión ha expirado. Inicia sesión nuevamente.");
+            localStorage.clear();
+            window.location.href = "/Frontend/modules/login.html";
+            return null;
+          }
+
           if (!res.ok) {
             const msg = await res.text();
             alert("Error al crear material: " + msg);
@@ -446,6 +487,14 @@ document.addEventListener("DOMContentLoaded", () => {
           method: "PATCH",
           headers: { "Authorization": `Bearer ${token}` }
         });
+
+        if (res.status === 401) {
+            alert("La sesión ha expirado. Inicia sesión nuevamente.");
+            localStorage.clear();
+            window.location.href = "/Frontend/modules/login.html";
+            return null;
+          }
+
         if (res.ok) {
           alert("Stock modificado correctamente");
           loadMaterialList();
@@ -464,6 +513,14 @@ document.addEventListener("DOMContentLoaded", () => {
           method: "DELETE",
           headers: { "Authorization": `Bearer ${token}` }
         });
+
+        if (res.status === 401) {
+            alert("La sesión ha expirado. Inicia sesión nuevamente.");
+            localStorage.clear();
+            window.location.href = "/Frontend/modules/login.html";
+            return null;
+          }
+
         if (res.ok) {
           alert("Material eliminado correctamente");
           loadMaterialList();
@@ -550,6 +607,14 @@ document.addEventListener("DOMContentLoaded", () => {
           method: 'GET',
           headers: { "Content-Type": "application/json" }
         });
+
+        if (res.status === 401) {
+            alert("La sesión ha expirado. Inicia sesión nuevamente.");
+            localStorage.clear();
+            window.location.href = "/Frontend/modules/login.html";
+            return null;
+          }
+
         if (!res.ok) throw new Error("Error al obtener configuración");
         config = await res.json();
         renderConfig();
@@ -602,6 +667,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 "Authorization": `Bearer ${token}`
               }
             });
+
+            if (res.status === 401) {
+            alert("La sesión ha expirado. Inicia sesión nuevamente.");
+            localStorage.clear();
+            window.location.href = "/Frontend/modules/login.html";
+            return null;
+          }
+
             if (!resp.ok) throw new Error("Error al eliminar el contacto.");
 
           } catch (err) {
@@ -644,6 +717,14 @@ document.addEventListener("DOMContentLoaded", () => {
             },
             body: JSON.stringify({ contacto: valor })
           });
+
+          if (resp.status === 401) {
+            alert("La sesión ha expirado. Inicia sesión nuevamente.");
+            localStorage.clear();
+            window.location.href = "/Frontend/modules/login.html";
+            return null;
+          }
+
           if (!resp.ok) throw new Error("Error al guardar el nuevo contacto");
           alert("Se completo la carga");
 
@@ -684,6 +765,14 @@ document.addEventListener("DOMContentLoaded", () => {
           },
           body: JSON.stringify(bodyReq)
         });
+
+        if (res.status === 401) {
+            alert("La sesión ha expirado. Inicia sesión nuevamente.");
+            localStorage.clear();
+            window.location.href = "/Frontend/modules/login.html";
+            return null;
+          }
+
 
         if (!res.ok) throw new Error("Error al guardar en el backend");
         alert("Configuracion guardada correctamente");

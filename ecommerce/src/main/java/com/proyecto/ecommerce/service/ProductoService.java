@@ -8,6 +8,7 @@ import com.proyecto.ecommerce.model.IVA;
 import com.proyecto.ecommerce.model.Producto;
 import com.proyecto.ecommerce.repository.IIvaRepository;
 import com.proyecto.ecommerce.repository.IProductoRepository;
+import com.proyecto.ecommerce.utils.ConvText;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -75,7 +76,7 @@ public class ProductoService implements IProductoService {
         return productoRepository.findAll().stream()
                 .map(p -> new ProductoRespDTO(
                         p.getIdProducto(),
-                        p.getNombre(),
+                        ConvText.toUpperWords(p.getNombre()),
                         p.getDescripcion(),
                         p.getPrecio(),
                         p.getStock(),
