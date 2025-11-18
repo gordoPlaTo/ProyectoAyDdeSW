@@ -34,7 +34,7 @@ public class PedidoPagoLimite {
                         () -> new RuntimeException("No se encontro el estado 'Cancelado', para pedidos fuera del limite."));
                 pedido.setEstadoPedido(estado);
 
-                log.info("El pedido de "+pedido.getUsuario().getEmail() + " no se le ha cargado su comprobante. Se cancelara su pedido");
+                log.info("El pedido de "+ pedido.getUsuario().getEmail() + " no se le ha cargado su comprobante. Se cancelara su pedido");
             }
         });
         pedidoRepository.saveAll(listPedido);

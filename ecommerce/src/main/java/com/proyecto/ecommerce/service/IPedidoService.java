@@ -32,4 +32,6 @@ public interface IPedidoService {
 
     void completarPedido(PedidoCompletarDTO completarDTO);
 
+    List<PedidosClienteDTO> obtenerPedidosEnTramite();
+
 }

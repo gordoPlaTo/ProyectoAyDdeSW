@@ -119,6 +119,7 @@ public class PedidoService implements IPedidoService {
         Pedido ped = this.obtenerPedidoByIdEmail(comprobante.idPedido(),
                 SecurityContextHolder.getContext().getAuthentication().getName());
 
+
         ped.setUrlComprobante(cloudinaryService.subirImagen(comprobante.comprobante(),"comprobante"));
 
         EstadoPedido est = estadoPedido.findById(4L)
@@ -144,6 +145,13 @@ public class PedidoService implements IPedidoService {
         String email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
 
         Pedido ped = this.obtenerPedidoByIdEmail(id,email);
+
+        ped.getListDetallePedido().stream()
+                .peek(e -> {
+                    productoService.aumentarStock(e.getProducto().getIdProducto(),e.getCantidad());
+                });
+
+
 
 
         EstadoPedido estado = estadoPedido.findById(3L)
@@ -171,5 +179,35 @@ public class PedidoService implements IPedidoService {
         ped.setEstadoPedido(estado);
 
         pedidoRepository.save(ped);
+    }
+
+    @Override
+    public List<PedidosClienteDTO> obtenerPedidosEnTramite() {
+        try {
+            return pedidoRepository.obtenerPedidoEnTramite().stream()
+                    .map(ped -> new PedidosClienteDTO(
+                            ped.getIdPedido(),
+                            ped.getFechaCreacion(),
+                            ped.getTotalCompra(),
+                            ped.getUrlComprobante(),
+                            ped.getListDetallePedido().stream()
+                                    .map(det -> new DetallePedidoRespDTO(
+                                            det.getIdDetalle(),
+                                            det.getCantidad(),
+                                            det.getPrecioNeto(),
+                                            det.getMontoIva(),
+                                            det.getPrecioTotal(),
+                                            ConvText.toUpperWords(det.getProducto().getNombre())
+                                    ))
+                                    .toList(),
+                            ped.getUsuario().getUsername(),
+                            ped.getUsuario().getApellido(),
+                            ped.getUsuario().getEmail(),
+                            ped.getEstadoPedido().getDescripcion()
+                    ))
+                    .toList();
+        } catch (RuntimeException e) {
+            throw new RuntimeException("Algo sucedio mal al intentar traer los pedidos en tramite: " + e);
+        }
     }
 }

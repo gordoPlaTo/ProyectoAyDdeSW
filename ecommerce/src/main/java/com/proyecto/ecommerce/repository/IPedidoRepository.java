@@ -63,4 +63,11 @@ public interface IPedidoRepository extends JpaRepository<Pedido,Long> {
     """)
     List<Pedido> obtenerPendientesPago();
 
+
+    @Query("""
+        SELECT DISTINCT ped
+        FROM Pedido ped
+        WHERE ped.estadoPedido.descripcion = 'En Tramite'
+    """)
+    List<Pedido> obtenerPedidoEnTramite();
 }

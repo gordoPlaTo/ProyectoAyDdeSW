@@ -137,4 +137,13 @@ public class ComprasController {
 
 
 
+    @GetMapping("/pedido/enTramite")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<PedidosClienteDTO>> obtenerPedidosEnTramite(){
+        return ResponseEntity.ok(pedidoService.obtenerPedidosEnTramite());
+    }
+
+
+
+
 }
