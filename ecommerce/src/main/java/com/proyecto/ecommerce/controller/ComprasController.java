@@ -99,7 +99,7 @@ public class ComprasController {
     }
 
     //Marcar como completo el pedido
-    @PatchMapping("/completarPedido")
+    @PatchMapping("/pedido/completarPedido")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<RespDTO> completarPedido(@Valid @RequestBody PedidoCompletarDTO completarDTO){
         pedidoService.completarPedido(completarDTO);

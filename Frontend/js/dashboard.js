@@ -707,7 +707,7 @@ async function loadGestionVentas() {
   const token = localStorage.getItem("token");
 
   try {
-    const res = await fetch(`${API_URL}/compras/completarPedido`, {
+    const res = await fetch(`${API_URL}/compras/pedido/enTramite`, {
       method: "GET",
       headers: { "Authorization": `Bearer ${token}` }
     });
@@ -741,8 +741,8 @@ async function loadGestionVentas() {
         <p><strong>Total:</strong> $${p.totalCompra}</p>
 
         <h4>Cliente:</h4>
-        <p><strong>Nombre:</strong> ${p.usuario?.nombre ?? "N/A"}</p>
-        <p><strong>Email:</strong> ${p.usuario?.email ?? "N/A"}</p>
+        <p><strong>Nombre:</strong> ${p.nombre ?? "N/A"}</p>
+        <p><strong>Email:</strong> ${p.email ?? "N/A"}</p>
 
         ${p.urlComprobante 
             ? `<p><a href="${p.urlComprobante}" target="_blank">Ver comprobante</a></p>`
@@ -762,12 +762,16 @@ async function loadGestionVentas() {
     document.querySelectorAll(".btn-completar").forEach(btn => {
       btn.addEventListener("click", async () => {
         const id = btn.dataset.id;
+        const email = btn.dataset.email;
+
         if (!confirm("Marcar este pedido como COMPLETADO?")) return;
 
         try {
-          const res = await fetch(`${API_URL}/compras/pedido/admin/completar/${id}`, {
+          const res = await fetch(`${API_URL}/compras/pedido/completarPedido`, {
             method: "PATCH",
-            headers: { "Authorization": `Bearer ${token}` }
+            headers: { "Authorization": `Bearer ${token}` },
+
+            body: JSON.stringify({id:id, email:email})
           });
 
           if (!res.ok) {
