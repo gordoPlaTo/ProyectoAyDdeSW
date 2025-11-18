@@ -10,6 +10,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -141,27 +142,22 @@ public class PedidoService implements IPedidoService {
     }
 
     @Override
+    @Transactional
     public void cancelarPedido(Long id) {
         String email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
 
         Pedido ped = this.obtenerPedidoByIdEmail(id,email);
 
-        ped.getListDetallePedido().stream()
-                .peek(e -> {
-                    productoService.aumentarStock(e.getProducto().getIdProducto(),e.getCantidad());
-                });
+        ped.getListDetallePedido().forEach( e -> {
+            Producto prod = e.getProducto();
 
-
-
+            prod.setStock(prod.getStock() - e.getCantidad());
+        });
 
         EstadoPedido estado = estadoPedido.findById(3L)
                 .orElseThrow(()-> new EntityNotFoundException("No se encontro el estado a asignar al pedido."));
 
         ped.setEstadoPedido(estado);
-
-
-
-
         pedidoRepository.save(ped);
     }
 

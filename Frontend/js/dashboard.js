@@ -97,7 +97,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const res = await fetch(`${API_URL}/admin/producto/crear`, {
           method: "POST",
           headers: {
-            "Authorization": `Bearer ${token}`
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
           },
           body: formData
         });
@@ -212,22 +213,36 @@ document.addEventListener("DOMContentLoaded", () => {
     modalOverlay.classList.add("modal-overlay");
 
     // Ajusta el nombre del campo de estado si en tu DTO se llama distinto:
-    const estaHabilitado = producto.habilitado ?? producto.enable ?? producto.estado ?? false;
+    //const estaHabilitado = producto.habilitado ?? producto.enable ?? producto.estado ?? false;
+    const estaHabilitado = producto.Enable;
+
 
     modalOverlay.innerHTML = `
     <div class="modal">
       <h3>Editar producto: ${escapeHtml(producto.nombre)}</h3>
+      <label>Nombre:</label>
+      <input type="text" id="editNombre" value="${producto.nombre}">
+
+      <label>Descripción:</label>
+      <input type="text" id="editDescripcion" value="${producto.descripcion}">
+
       <label>Precio:</label>
       <input type="number" id="editPrecio" value="${producto.precio}" step="0.01">
-
-      <label>Stock:</label>
-      <input type="number" id="editStock" value="${producto.stock}" min="0">
 
       <div class="btns">
         <button class="btn-save">Guardar</button>
         <button class="btn-disable">${estaHabilitado ? "Deshabilitar" : "Habilitar"}</button>
         <button class="btn-close">Cerrar</button>
       </div>
+
+      <label>Stock Actual: ${producto.stock}</label>
+      <input type="number" id="editStock" placeholder="Stock a aum/dism" min="0">
+
+      <div class="btns-stock">
+        <button class="btn-aum">Aumentar Stock</button>
+        <button class="btn-dism">Disminuir Stock</button>
+      </div>
+
     </div>
   `;
 
@@ -236,26 +251,31 @@ document.addEventListener("DOMContentLoaded", () => {
     const btnGuardar = modalOverlay.querySelector(".btn-save");
     const btnCerrar = modalOverlay.querySelector(".btn-close");
     const btnDeshabilitar = modalOverlay.querySelector(".btn-disable");
+    const btnAum = modalOverlay.querySelector(".btn-aum");
+    const btnDism = modalOverlay.querySelector(".btn-dism");
+
 
     // Cerrar modal
     btnCerrar.addEventListener("click", () => modalOverlay.remove());
 
-    // ===========================
-    // GUARDAR CAMBIOS
-    // ===========================
+    // Guardar Cambios Producto
     btnGuardar.addEventListener("click", async () => {
       const nuevoPrecio = parseFloat(document.getElementById("editPrecio").value);
-      const nuevoStock = parseInt(document.getElementById("editStock").value);
-
+      const nuevoNombre = document.getElementById("editNombre").value;
+      const nuevaDescripcion = document.getElementById("editDescripcion").value;
       try {
-        // PATCH para actualizar precio
         const resPrecio = await fetch(`${API_URL}/admin/producto/mod/${producto.idProducto}`, {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${token}`
           },
-          body: JSON.stringify({ precio: nuevoPrecio })
+          body: JSON.stringify(
+            { 
+              nombre: nuevoNombre,
+              descripcion: nuevaDescripcion,
+              precio: nuevoPrecio 
+            })
         });
 
         if (resPrecio.status === 401) {
@@ -265,26 +285,11 @@ document.addEventListener("DOMContentLoaded", () => {
           return null;
         }
 
-        if (!resPrecio.ok) throw new Error("Error al modificar precio");
-
-        // Detectar si stock aumentó o disminuyó
-        let endpointStock = null;
-        if (nuevoStock > producto.stock) {
-          const diff = nuevoStock - producto.stock;
-          endpointStock = `${API_URL}/admin/producto/aumentar/${producto.idProducto}?stock=${diff}`;
-        } else if (nuevoStock < producto.stock) {
-          const diff = producto.stock - nuevoStock;
-          endpointStock = `${API_URL}/admin/producto/reducir/${producto.idProducto}?stock=${diff}`;
-        }
-
-        // Llamar a endpoint correspondiente si hay cambio
-        if (endpointStock) {
-          const resStock = await fetch(endpointStock, {
-            method: "PATCH",
-            headers: { "Authorization": `Bearer ${token}` }
-          });
-          if (!resStock.ok) throw new Error("Error al modificar stock");
-        }
+        if (!resPrecio.ok){
+          const er = await resPrecio.text();
+          alert(er);
+          throw new Error("Error al modificar precio");
+        };
 
         alert("Producto actualizado correctamente");
         modalOverlay.remove();
@@ -296,14 +301,62 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    // ===========================
-    // HABILITAR / DESHABILITAR PRODUCTO
-    // ===========================
+
+//Aumentar Stock
+btnAum.addEventListener("click", async () => {
+  const cantidad = parseInt(document.getElementById("editStock").value);
+
+  if (!cantidad || cantidad <= 0) return alert("Ingrese una cantidad válida");
+
+  try {
+    const res = await fetch(`${API_URL}/admin/producto/aumentar/${producto.idProducto}?stock=${cantidad}`, {
+      method: "PATCH",
+      headers: { "Authorization": `Bearer ${token}` },
+    });
+
+    if (!res.ok) throw new Error(await res.text());
+
+    alert("Stock aumentado correctamente");
+    modalOverlay.remove();
+    loadProductList();
+  } catch (error) {
+    console.error(error);
+    alert("Error al aumentar stock");
+  }
+});
+
+//Disminuir Stock
+btnDism.addEventListener("click", async () => {
+  const cantidad = parseInt(document.getElementById("editStock").value);
+
+  if (!cantidad || cantidad <= 0) return alert("Ingrese una cantidad válida");
+
+  try {
+    const res = await fetch(`${API_URL}/admin/producto/reducir/${producto.idProducto}?stock=${cantidad}`, {
+      method: "PATCH",
+      headers: { "Authorization": `Bearer ${token}` },
+    });
+
+    if (!res.ok){
+      throw new Error(await res.text());
+    } 
+
+    alert("Stock disminuido correctamente");
+    modalOverlay.remove();
+    loadProductList();
+  } catch (error) {
+    console.error(error);
+    alert("Error al disminuir stock");
+  }
+})
+
+    // Habilitar o Deshabilitar un Producto
     btnDeshabilitar.addEventListener("click", async () => {
       try {
         const res = await fetch(`${API_URL}/admin/producto/estado/${producto.idProducto}`, {
           method: "PATCH",
-          headers: { "Authorization": `Bearer ${token}` }
+          headers: { "Content-Type": "application/json",
+                      "Authorization": `Bearer ${token}` }
         });
 
         if (res.status === 401) {
@@ -314,6 +367,9 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         if (!res.ok) throw new Error("Error al cambiar estado");
+
+        const resp = await res.text();
+        alert(resp);
 
         alert("Estado del producto actualizado correctamente");
         modalOverlay.remove();
@@ -326,9 +382,8 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // =====================
-  // MATERIALES (ver + agregar)
-  // =====================
+  // MATERIALES (ver lista y apartado para agregar)
+
   async function loadMateriales() {
     mainContent.innerHTML = `
     <h2>Gestión de Materiales</h2>
@@ -368,7 +423,8 @@ document.addEventListener("DOMContentLoaded", () => {
     async function loadMaterialList() {
       try {
         const res = await fetch(`${API_URL}/admin/material/obtenerTodos`, {
-          headers: { "Authorization": `Bearer ${token}` }
+          headers: { "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json" }
         });
 
         if (res.status === 401) {
@@ -380,6 +436,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (!res.ok) {
           materialesContainer.innerHTML = `<p style="color:red;">Error al obtener materiales.</p>`;
+          const er = await res.text();
+          console.log(er);
           return;
         }
 
@@ -421,9 +479,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    // =====================
-    // AGREGAR MATERIAL
-    // ====================
+    // Agregar un nuevo Material
     const materialForm = document.getElementById("materialForm");
 
     if (materialForm) {
@@ -449,7 +505,8 @@ document.addEventListener("DOMContentLoaded", () => {
         try {
           const res = await fetch(`${API_URL}/admin/material/crear`, {
             method: "POST",
-            headers: { "Authorization": `Bearer ${token}` },
+            headers: { "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json" },
             body: formData
           });
 
@@ -477,9 +534,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
-    // =================
-    // FUNCIONES AUXILIARES
-    // =====================
+    // Funciones auxiliares
     async function modificarStock(id) {
       const cantidad = prompt("Ingrese cantidad (use signo - para reducir):");
       if (!cantidad) return;
@@ -506,6 +561,8 @@ document.addEventListener("DOMContentLoaded", () => {
           loadMaterialList();
         } else {
           alert("Error al modificar stock");
+          const er = await res.text();
+          console.log(er);
         }
       } catch (error) {
         console.error(error);
@@ -532,6 +589,8 @@ document.addEventListener("DOMContentLoaded", () => {
           loadMaterialList();
         } else {
           alert("Error al eliminar material");
+          const er = await res.text();
+          console.log(er);
         }
       } catch (error) {
         console.error(error);
@@ -566,7 +625,7 @@ async function loadVentas() {
     mainContent.innerHTML = `
     <style>
       /* Estilos simples para el gráfico CSS */
-      .stats-cards { display: flex; gap: 20px; margin-bottom: 30px; }
+      .stats-cards {display: flex; gap: 20px; margin-bottom: 30px; }
       .stat-card { flex: 1; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); text-align: center; }
       .stat-value { font-size: 2em; font-weight: bold; color: #333; }
       .stat-label { color: #666; font-size: 0.9em; text-transform: uppercase; }
@@ -605,6 +664,8 @@ async function loadVentas() {
 
         if (!res.ok) {
             contentDiv.innerHTML = `<p style="color:red;">Error al conectar con el servidor.</p>`;
+            const er = res.text();
+            console.log(er);
             return;
         }
 
@@ -750,7 +811,7 @@ async function loadGestionVentas() {
         }
 
         <div class="acciones-admin">
-          <button class="btn-completar" data-id="${p.id}">Completar</button>
+          <button class="btn-completar" data-id="${p.id}" data-email="${p.email}">Completar</button>
           <button class="btn-detalle" data-id="${p.id}">Detalle</button>
         </div>
       </div>
@@ -769,9 +830,14 @@ async function loadGestionVentas() {
         try {
           const res = await fetch(`${API_URL}/compras/pedido/completarPedido`, {
             method: "PATCH",
-            headers: { "Authorization": `Bearer ${token}` },
+            headers: { 
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}` },
 
-            body: JSON.stringify({id:id, email:email})
+            body: JSON.stringify({
+              id:id, 
+              email:email
+            })
           });
 
           if (!res.ok) {
@@ -1004,9 +1070,7 @@ async function loadGestionVentas() {
 
           if (!resp.ok) throw new Error("Error al guardar el nuevo contacto");
           alert("Se completo la carga");
-
-          const text = await resp.text();
-          alert(text.message);
+          
         } catch (error) {
           console.warn(error);
         }

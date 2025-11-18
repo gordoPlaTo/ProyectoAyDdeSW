@@ -50,20 +50,21 @@ public class ProductoService implements IProductoService {
 
     @Override
     public void aumentarStock(Long id, int stock) {
-        Producto prod =this.obtenerProductoById(id);
+        Producto prod = this.obtenerProductoById(id);
         prod.setStock(prod.getStock() + stock);
         productoRepository.save(prod);
     }
 
     @Override
     public void habDesProducto(Long id) {
-        Producto prod =this.obtenerProductoById(id);
+        Producto prod = this.obtenerProductoById(id);
         prod.setEnable(!prod.isEnable());
+        productoRepository.save(prod);
     }
 
     @Override
     public void reducirStock(Long id, int stock) {
-        Producto prod =this.obtenerProductoById(id);
+        Producto prod = this.obtenerProductoById(id);
         if (prod.getStock() < stock){
             throw new IllegalArgumentException ("No puedes restar mas stock del que realmente dispones en tu inventario.");
         }
