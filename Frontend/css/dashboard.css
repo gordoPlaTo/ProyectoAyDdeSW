@@ -445,3 +445,176 @@ body.darkMode button {
 .btn-add-admin:hover {
   background: #1565c0;
 }
+
+body.darkMode {
+  background-color: #1F2937;
+  color: #F9FAFB;
+}
+
+body.darkMode .header {
+  background-color: #111827;
+  color: #F9FAFB;
+}
+
+body.darkMode .sidebar {
+  background-color: #111827;
+  color: #E5E7EB;
+}
+
+body.darkMode .menu-btn {
+  color: #D1D5DB;
+}
+
+body.darkMode .menu-btn:hover {
+  background-color: #28a745;
+  color: #F9FAFB;
+}
+
+body.darkMode .main-content {
+  background-color: #1F2937;
+  color: #F9FAFB;
+  border-color: #374151;
+}
+
+body.darkMode input,
+body.darkMode select,
+body.darkMode textarea {
+  background-color: #374151;
+  color: #F9FAFB;
+  border-color: #4B5563;
+}
+
+body.darkMode button {
+  background-color: #28a745;
+  color: white;
+}
+
+body.darkMode button:hover {
+  background-color: #23913d;
+}
+
+body.darkMode .user-link {
+  color: #F9FAFB;
+}
+
+
+body.darkMode .productos-container {
+    background-color: #474c58;
+}
+
+body.darkMode .producto-card,
+body.darkMode .product-card {
+  background-color: #111827;
+  border-color: #374151;
+  color: #F9FAFB;
+}
+
+body.darkMode .producto-card p,
+body.darkMode .product-card p {
+  color: #D1D5DB;
+}
+
+body.darkMode .producto-card img,
+body.darkMode .product-card img {
+  border: 1px solid #374151;
+}
+
+body.darkMode .form-producto,
+body.darkMode .form-config {
+  background-color: #111827;
+  color: #F9FAFB;
+  border-color: #374151;
+}
+
+body.darkMode .form-producto input,
+body.darkMode .form-producto textarea,
+body.darkMode .form-config input,
+body.darkMode .form-config textarea {
+  background-color: #374151;
+  color: #F9FAFB;
+  border-color: #4B5563;
+}
+
+body.darkMode #listaContactos li {
+  background: #374151;
+  color: #F9FAFB;
+}
+
+body.darkMode .btn-eliminar-contacto {
+  background: #b71c1c;
+}
+
+body.darkMode .modal {
+  background-color: #1F2937;
+  color: #F9FAFB;
+}
+
+body.darkMode .modal input {
+  background: #374151;
+  border-color: #4B5563;
+  color: #F9FAFB;
+}
+
+body.darkMode .tabla-ventas thead {
+  background: #111827;
+  color: #FFF;
+}
+
+body.darkMode .tabla-ventas tr:nth-child(even) {
+  background: #2A2F3A;
+}
+
+body.darkMode .tabla-ventas td,
+body.darkMode .tabla-ventas th {
+  border-color: #374151;
+}
+
+body.darkMode .resumen-ventas {
+  background-color: #111827;
+  color: #F9FAFB;
+  border-color: #374151;
+}
+
+body.darkMode .btn-add-admin {
+  background: #1e88e5;
+  color: #FFF;
+}
+
+body.darkMode .btn-add-admin:hover {
+  background-color: #1565c0;
+}
+
+body.darkMode .material-form,
+body.darkMode .material-list {
+  background: #1F2937;
+  color: #F9FAFB;
+  border-color: #374151;
+}
+
+body.darkMode .material-card {
+  background: #111827;
+  border-color: #374151;
+  color: #F9FAFB;
+}
+
+body.darkMode .material-card h4 {
+  color: #28a745;
+}
+
+body.darkMode .material-card p {
+  color: #E5E7EB;
+}
+
+body.darkMode .material-img {
+  border: 1px solid #374151;
+  border-radius: 8px;
+}
+
+body.darkMode .acciones button {
+  background-color: #28a745;
+  color: white;
+}
+
+body.darkMode .acciones button:hover {
+  background-color: #23913d;
+}
