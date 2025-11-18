@@ -33,6 +33,9 @@ document.addEventListener("DOMContentLoaded", () => {
         case "ventas":
           loadVentas();
           break;
+        case "gestionVentas":
+          loadGestionVentas();
+          break;
         case "configuracion":
           loadConfiguracion();
           break;
@@ -552,84 +555,279 @@ document.addEventListener("DOMContentLoaded", () => {
       .replace(/'/g, "&#039;");
   }
 
-  // =========================
-  // Ventas
-  // =========================
-  async function loadVentas() {
+// =========================
+// Ventas (Estadísticas con CSS puro) - FIX DE BUGS
+// =========================
+async function loadVentas() {
+    const mainContent = document.getElementById("mainContent");
+    const token = localStorage.getItem("token");
+
+    // 1. Estructura base con estilos incrustados
     mainContent.innerHTML = `
-    <h2>Historial de ventas</h2>
-    <div id="ventasContainer" class="ventas-container">
-      <p>Cargando ventas...</p>
+    <style>
+      /* Estilos simples para el gráfico CSS */
+      .stats-cards { display: flex; gap: 20px; margin-bottom: 30px; }
+      .stat-card { flex: 1; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); text-align: center; }
+      .stat-value { font-size: 2em; font-weight: bold; color: #333; }
+      .stat-label { color: #666; font-size: 0.9em; text-transform: uppercase; }
+      
+      .chart-container { background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 30px; }
+      .bar-row { display: flex; align-items: center; margin-bottom: 15px; }
+      .bar-label { width: 150px; font-weight: bold; font-size: 0.9em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .bar-track { flex: 1; background: #f0f0f0; height: 25px; border-radius: 4px; margin: 0 15px; position: relative; }
+      .bar-fill { height: 100%; background: #4CAF50; border-radius: 4px; transition: width 0.5s ease; }
+      .bar-value { width: 80px; text-align: right; font-weight: bold; }
+    </style>
+
+    <h2>Dashboard de Ventas</h2>
+    <div id="ventasContent">
+      <p>Cargando estadísticas...</p>
     </div>
   `;
 
-    const ventasContainer = document.getElementById("ventasContainer");
-    const token = localStorage.getItem("token");
+    const contentDiv = document.getElementById("ventasContent");
 
     try {
-      const res = await fetch(`${API_URL}/compras/pedido/ventasRealizadas`, {
-        method: "GET",
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json"
+        const res = await fetch(`${API_URL}/compras/pedido/ventasRealizadas`, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"
+            }
+        });
+
+        if (res.status === 401) {
+            alert("La sesión ha expirado.");
+            localStorage.clear();
+            window.location.href = "../modules/login.html";
+            return;
+        }
+
+        if (!res.ok) {
+            contentDiv.innerHTML = `<p style="color:red;">Error al conectar con el servidor.</p>`;
+            return;
+        }
+
+        const ventas = await res.json();
+
+        if (!ventas || ventas.length === 0) {
+            contentDiv.innerHTML = `<p>No hay ventas registradas para generar estadísticas.</p>`;
+            return;
+        }
+
+        // 2. Cálculos matemáticos (FIX: Usamos || 0 en todas las reducciones)
+        const totalIngresos = ventas.reduce((acc, v) => acc + (v.totalGenerado || 0), 0);
+        const totalUnidades = ventas.reduce((acc, v) => acc + (v.cantidadVendida || 0), 0);
+        
+        // Buscamos el valor máximo (FIX: Usamos || 0 al mapear)
+        const maxVenta = Math.max(...ventas.map(v => v.totalGenerado || 0));
+
+        // 3. Generar HTML
+        // Tarjetas de resumen
+        let html = `
+        <div class="stats-cards">
+          <div class="stat-card">
+             <div class="stat-value">$${totalIngresos.toLocaleString('es-AR', {minimumFractionDigits: 2})}</div>
+             <div class="stat-label">Ingresos Totales</div>
+          </div>
+          <div class="stat-card">
+             <div class="stat-value">${totalUnidades}</div>
+             <div class="stat-label">Productos Vendidos</div>
+          </div>
+        </div>
+
+        <div class="chart-container">
+          <h3>Top Ventas (por Ingresos)</h3>
+    `;
+
+        // Generar barras
+        const ventasOrdenadas = ventas.sort((a, b) => (b.totalGenerado || 0) - (a.totalGenerado || 0));
+
+        ventasOrdenadas.forEach(v => {
+            // FIX: Usamos || 0 antes de calcular el porcentaje y antes de toFixed
+            const ingreso = v.totalGenerado || 0;
+            const porcentaje = maxVenta === 0 ? 0 : (ingreso / maxVenta) * 100;
+            
+            html += `
+            <div class="bar-row">
+              <div class="bar-label" title="${v.nombreProducto}">${v.nombreProducto}</div>
+              <div class="bar-track">
+                 <div class="bar-fill" style="width: ${porcentaje}%;"></div>
+              </div>
+              <div class="bar-value">$${ingreso.toFixed(0)}</div>
+            </div>
+            `;
+        });
+
+        html += `</div>`; // Cerrar chart-container
+
+        // Tabla detallada
+        html += `
+          <h3>Detalle Completo</h3>
+          <table class="tabla-ventas" style="width:100%; border-collapse:collapse; margin-top:10px;">
+            <thead>
+               <tr style="background:#eee; text-align:left;">
+                 <th style="padding:10px;">Producto</th>
+                 <th style="padding:10px;">Cant.</th>
+                 <th style="padding:10px;">Total</th>
+               </tr>
+            </thead>
+            <tbody>
+               ${ventasOrdenadas.map(v => `
+                 <tr style="border-bottom:1px solid #ddd;">
+                   <td style="padding:10px;">${v.nombreProducto}</td>
+                   <td style="padding:10px;">${v.cantidadVendida || 0}</td>
+                   <td style="padding:10px;">$${(v.totalGenerado || 0).toFixed(2)}</td> 
+                 </tr>
+               `).join('')}
+            </tbody>
+          </table>
+        `;
+
+        contentDiv.innerHTML = html;
+
+    } catch (err) {
+        console.error("Error:", err);
+        contentDiv.innerHTML = `<p style="color:red;">Ocurrió un error inesperado al cargar las ventas.</p>`;
+    }
+}
+
+  // =====================
+// GESTIONAR VENTAS (ADMIN)
+// =====================
+async function loadGestionVentas() {
+  mainContent.innerHTML = `
+    <h2>Gestionar Ventas</h2>
+    <div id="gestionVentasContainer" class="ventas-container">
+      <p>Cargando pedidos...</p>
+    </div>
+  `;
+
+  const cont = document.getElementById("gestionVentasContainer");
+  const token = localStorage.getItem("token");
+
+  try {
+    const res = await fetch(`${API_URL}/compras/completarPedido`, {
+      method: "GET",
+      headers: { "Authorization": `Bearer ${token}` }
+    });
+
+    if (res.status === 401) {
+      alert("La sesión ha expirado. Inicia sesión nuevamente.");
+      localStorage.clear();
+      window.location.href = "/Frontend/modules/login.html";
+      return;
+    }
+
+    if (!res.ok) {
+      cont.innerHTML = `<p style="color:red;">Error al obtener pedidos.</p>`;
+      return;
+    }
+
+    const pedidos = await res.json();
+
+    if (!pedidos || pedidos.length === 0) {
+      cont.innerHTML = "<p>No hay pedidos pendientes.</p>";
+      return;
+    }
+
+    cont.innerHTML = pedidos.map(p => `
+      <div class="pedido-card-admin" data-id="${p.id}">
+        <h3>Pedido #${p.id}</h3>
+
+        <p><strong>Fecha:</strong> ${p.fechaCreacion}</p>
+        <p><strong>Estado:</strong> ${p.estadoPedido}</p>
+
+        <p><strong>Total:</strong> $${p.totalCompra}</p>
+
+        <h4>Cliente:</h4>
+        <p><strong>Nombre:</strong> ${p.usuario?.nombre ?? "N/A"}</p>
+        <p><strong>Email:</strong> ${p.usuario?.email ?? "N/A"}</p>
+
+        ${p.urlComprobante 
+            ? `<p><a href="${p.urlComprobante}" target="_blank">Ver comprobante</a></p>`
+            : `<p style="color:red;">Sin comprobante</p>`
+        }
+
+        <div class="acciones-admin">
+          <button class="btn-completar" data-id="${p.id}">Completar</button>
+          <button class="btn-detalle" data-id="${p.id}">Detalle</button>
+        </div>
+      </div>
+    `).join("");
+
+    // ==================
+    // COMPLETAR PEDIDO
+    // ==================
+    document.querySelectorAll(".btn-completar").forEach(btn => {
+      btn.addEventListener("click", async () => {
+        const id = btn.dataset.id;
+        if (!confirm("Marcar este pedido como COMPLETADO?")) return;
+
+        try {
+          const res = await fetch(`${API_URL}/compras/pedido/admin/completar/${id}`, {
+            method: "PATCH",
+            headers: { "Authorization": `Bearer ${token}` }
+          });
+
+          if (!res.ok) {
+            const msg = await res.text();
+            alert("Error:\n" + msg);
+            return;
+          }
+
+          alert("Pedido completado correctamente.");
+          loadGestionVentas();
+
+        } catch (err) {
+          console.error(err);
+          alert("Error al conectar con el servidor");
         }
       });
+    });
 
-      if (res.status === 401) {
-        alert("La sesión ha expirado. Inicia sesión nuevamente.");
-        localStorage.clear();
-        window.location.href = "/Frontend/modules/login.html";
-        return;
-      }
+    // ==================
+    // VER DETALLE EN MODAL
+    // ==================
+    document.querySelectorAll(".btn-detalle").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const id = btn.dataset.id;
+        const pedido = pedidos.find(x => x.id == id);
 
-      if (!res.ok) {
-        ventasContainer.innerHTML = `<p style="color:red;">Error al obtener ventas.</p>`;
-        return;
-      }
+        const modal = document.createElement("div");
+        modal.classList.add("modal-overlay");
+        modal.innerHTML = `
+          <div class="modal">
+            <h3>Detalle del pedido #${pedido.id}</h3>
 
-      const ventas = await res.json();
+            <ul>
+              ${pedido.detallePedido.map(d => `
+                <li>
+                  <strong>${d.producto}</strong>  
+                  <br>Cantidad: ${d.cantidad}
+                  <br>Neto: $${d.precioNeto}
+                  <br>IVA: $${d.montoIva}
+                  <br>Total: $${d.precioTotal}
+                  <hr>
+                </li>
+              `).join("")}
+            </ul>
 
-      if (!ventas || ventas.length === 0) {
-        ventasContainer.innerHTML = `<p>No hay ventas registradas aún.</p>`;
-        return;
-      }
+            <button class="btn-close">Cerrar</button>
+          </div>
+        `;
 
-      // Calcular total
-      const totalProductosVendidos = ventas.reduce((acc, v) => acc + v.cantidadVendida, 0);
-      const totalGenerado = ventas.reduce((acc, v) => acc + v.totalGenerado, 0);
+        document.body.appendChild(modal);
+        modal.querySelector(".btn-close").addEventListener("click", () => modal.remove());
+      });
+    });
 
-      ventasContainer.innerHTML = `
-      <div class="resumen-ventas">
-        <h3>Resumen general</h3>
-        <p><strong>Total de productos vendidos:</strong> ${totalProductosVendidos}</p>
-        <p><strong>Total generado:</strong> $${totalGenerado.toFixed(2)}</p>
-      </div>
-
-      <h3>Ventas por producto</h3>
-      <table class="tabla-ventas">
-        <thead>
-          <tr>
-            <th>Producto</th>
-            <th>Cantidad vendida</th>
-            <th>Total generado</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${ventas.map(v => `
-            <tr>
-              <td>${v.nombreProducto}</td>
-              <td>${v.cantidadVendida}</td>
-              <td>$${v.totalGenerado.toFixed(2)}</td>
-            </tr>
-          `).join("")}
-        </tbody>
-      </table>
-    `;
-    } catch (err) {
-      console.error(err);
-      ventasContainer.innerHTML = `<p style="color:red;">Error al cargar ventas.</p>`;
-    }
+  } catch (err) {
+    console.error(err);
+    cont.innerHTML = "<p style='color:red;'>Error de conexión.</p>";
   }
+}
+
 
 
   // =====================
