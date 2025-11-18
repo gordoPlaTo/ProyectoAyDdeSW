@@ -18,28 +18,28 @@ function parseJwt(token) {
 
 // --- función de redirección inteligente ---
 async function smartRedirectToIndex() {
-  const origin = window.location.origin;
+    const origin = window.location.origin;
 
-  const candidates = [
-    new URL('../index.html', window.location.href).href,
-    `${origin}/Frontend/index.html`,
-    `${origin}/index.html`
-  ];
+    const candidates = [
+        new URL('../index.html', window.location.href).href,
+        `${origin}/Frontend/index.html`,
+        `${origin}/index.html`
+    ];
 
-  for (const url of candidates) {
-    try {
-      const resp = await fetch(url, { method: 'HEAD' });
-      if (resp.ok) {
-        window.location.href = url;
-        return;
-      }
-    } catch (err) {
-      // Ignoramos y probamos el siguiente
+    for (const url of candidates) {
+        try {
+            const resp = await fetch(url, { method: 'HEAD' });
+            if (resp.ok) {
+                window.location.href = url;
+                return;
+            }
+        } catch (err) {
+            // Ignoramos y probamos el siguiente
+        }
     }
-  }
 
-  // Si nada funcionó, intenta al menos ../index.html
-  window.location.href = new URL('../index.html', window.location.href).href;
+    // Si nada funcionó, intenta al menos ../index.html
+    window.location.href = new URL('../index.html', window.location.href).href;
 }
 
 
@@ -53,6 +53,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const loginForm = document.getElementById("loginForm");
 
     if (registerForm) {
+
+        // STEP 4: Obtener id del emprendimiento desde la URL
+        const params = new URLSearchParams(window.location.search);
+        const idEmprendimiento = params.get("id");
+
+
         registerForm.addEventListener("submit", async (e) => {
             e.preventDefault();
 
@@ -72,7 +78,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 direccion: document.getElementById("direction").value,
                 email: document.getElementById("email").value,
                 password: password,
-                acceptTerms: ATerms.checked
+                acceptTerms: ATerms.checked,
+                idEmprendimiento: idEmprendimiento
 
             };
             try {

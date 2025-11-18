@@ -1,21 +1,3 @@
-const uploadPhoto = document.getElementById("uploadPic");
-const userPhoto = document.getElementById("userPic");
-
-if (uploadPhoto && userPhoto) {
-  uploadPhoto.addEventListener("change", (e) => {
-    const file = e.target.files[0];
-    if (file && file.type.startsWith("image/")) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        userPhoto.src = event.target.result;
-      };
-      reader.readAsDataURL(file);
-    } else {
-      alert("Por favor, selecciona un formato de imagen válido.");
-    }
-  });
-}
-
 document.addEventListener("DOMContentLoaded", async () => {
   const API_URL = "http://localhost:8080/api";
   const token = localStorage.getItem("token");

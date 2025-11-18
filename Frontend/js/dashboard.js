@@ -100,11 +100,11 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         if (res.status === 401) {
-            alert("La sesión ha expirado. Inicia sesión nuevamente.");
-            localStorage.clear();
-            window.location.href = "/Frontend/modules/login.html";
-            return null;
-          }
+          alert("La sesión ha expirado. Inicia sesión nuevamente.");
+          localStorage.clear();
+          window.location.href = "/Frontend/modules/login.html";
+          return null;
+        }
 
         if (res.ok) {
           alert("Producto creado correctamente");
@@ -151,11 +151,11 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       if (res.status === 401) {
-            alert("La sesión ha expirado. Inicia sesión nuevamente.");
-            localStorage.clear();
-            window.location.href = "/Frontend/modules/login.html";
-            return null;
-          }
+        alert("La sesión ha expirado. Inicia sesión nuevamente.");
+        localStorage.clear();
+        window.location.href = "/Frontend/modules/login.html";
+        return null;
+      }
 
       if (!res.ok) {
         const text = await res.text().catch(() => "");
@@ -256,11 +256,11 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         if (resPrecio.status === 401) {
-            alert("La sesión ha expirado. Inicia sesión nuevamente.");
-            localStorage.clear();
-            window.location.href = "/Frontend/modules/login.html";
-            return null;
-          }
+          alert("La sesión ha expirado. Inicia sesión nuevamente.");
+          localStorage.clear();
+          window.location.href = "/Frontend/modules/login.html";
+          return null;
+        }
 
         if (!resPrecio.ok) throw new Error("Error al modificar precio");
 
@@ -304,11 +304,11 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         if (res.status === 401) {
-            alert("La sesión ha expirado. Inicia sesión nuevamente.");
-            localStorage.clear();
-            window.location.href = "/Frontend/modules/login.html";
-            return null;
-          }
+          alert("La sesión ha expirado. Inicia sesión nuevamente.");
+          localStorage.clear();
+          window.location.href = "/Frontend/modules/login.html";
+          return null;
+        }
 
         if (!res.ok) throw new Error("Error al cambiar estado");
 
@@ -369,11 +369,11 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         if (res.status === 401) {
-            alert("La sesión ha expirado. Inicia sesión nuevamente.");
-            localStorage.clear();
-            window.location.href = "/Frontend/modules/login.html";
-            return null;
-          }
+          alert("La sesión ha expirado. Inicia sesión nuevamente.");
+          localStorage.clear();
+          window.location.href = "/Frontend/modules/login.html";
+          return null;
+        }
 
         if (!res.ok) {
           materialesContainer.innerHTML = `<p style="color:red;">Error al obtener materiales.</p>`;
@@ -392,7 +392,10 @@ document.addEventListener("DOMContentLoaded", () => {
           <h4>${mat.nombre}</h4>
           <p>${mat.descripcion}</p>
           <p><strong>Stock:</strong> ${mat.stock}</p>
-          ${mat.url ? `<img src="${mat.url}" alt="${mat.nombre}" class="material-img">` : ""}
+
+          ${mat.urlfoto ? `<img src="${mat.urlfoto}" alt="${mat.nombre}" width="250" height="250" class="material-img">` : ""}
+
+
           <div class="acciones">
             <button class="btn-stock" data-id="${mat.idMaterial}">Modificar stock</button>
             <button class="btn-borrar" data-id="${mat.idMaterial}">Eliminar</button>
@@ -489,11 +492,11 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         if (res.status === 401) {
-            alert("La sesión ha expirado. Inicia sesión nuevamente.");
-            localStorage.clear();
-            window.location.href = "/Frontend/modules/login.html";
-            return null;
-          }
+          alert("La sesión ha expirado. Inicia sesión nuevamente.");
+          localStorage.clear();
+          window.location.href = "/Frontend/modules/login.html";
+          return null;
+        }
 
         if (res.ok) {
           alert("Stock modificado correctamente");
@@ -515,11 +518,11 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         if (res.status === 401) {
-            alert("La sesión ha expirado. Inicia sesión nuevamente.");
-            localStorage.clear();
-            window.location.href = "/Frontend/modules/login.html";
-            return null;
-          }
+          alert("La sesión ha expirado. Inicia sesión nuevamente.");
+          localStorage.clear();
+          window.location.href = "/Frontend/modules/login.html";
+          return null;
+        }
 
         if (res.ok) {
           alert("Material eliminado correctamente");
@@ -551,13 +554,83 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // =========================
   // Ventas
-  // ==================
-  function loadVentas() {
+  // =========================
+  async function loadVentas() {
     mainContent.innerHTML = `
-      <h2>Historial de ventas</h2>
-      <p>(Aquí se mostrarán las ventas realizadas)</p>
+    <h2>Historial de ventas</h2>
+    <div id="ventasContainer" class="ventas-container">
+      <p>Cargando ventas...</p>
+    </div>
+  `;
+
+    const ventasContainer = document.getElementById("ventasContainer");
+    const token = localStorage.getItem("token");
+
+    try {
+      const res = await fetch(`${API_URL}/compras/pedido/ventasRealizadas`, {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        }
+      });
+
+      if (res.status === 401) {
+        alert("La sesión ha expirado. Inicia sesión nuevamente.");
+        localStorage.clear();
+        window.location.href = "/Frontend/modules/login.html";
+        return;
+      }
+
+      if (!res.ok) {
+        ventasContainer.innerHTML = `<p style="color:red;">Error al obtener ventas.</p>`;
+        return;
+      }
+
+      const ventas = await res.json();
+
+      if (!ventas || ventas.length === 0) {
+        ventasContainer.innerHTML = `<p>No hay ventas registradas aún.</p>`;
+        return;
+      }
+
+      // Calcular total
+      const totalProductosVendidos = ventas.reduce((acc, v) => acc + v.cantidadVendida, 0);
+      const totalGenerado = ventas.reduce((acc, v) => acc + v.totalGenerado, 0);
+
+      ventasContainer.innerHTML = `
+      <div class="resumen-ventas">
+        <h3>Resumen general</h3>
+        <p><strong>Total de productos vendidos:</strong> ${totalProductosVendidos}</p>
+        <p><strong>Total generado:</strong> $${totalGenerado.toFixed(2)}</p>
+      </div>
+
+      <h3>Ventas por producto</h3>
+      <table class="tabla-ventas">
+        <thead>
+          <tr>
+            <th>Producto</th>
+            <th>Cantidad vendida</th>
+            <th>Total generado</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${ventas.map(v => `
+            <tr>
+              <td>${v.nombreProducto}</td>
+              <td>${v.cantidadVendida}</td>
+              <td>$${v.totalGenerado.toFixed(2)}</td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
     `;
+    } catch (err) {
+      console.error(err);
+      ventasContainer.innerHTML = `<p style="color:red;">Error al cargar ventas.</p>`;
+    }
   }
+
 
   // =====================
   // Configuracion
@@ -590,6 +663,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       <button type="submit">Guardar cambios</button>
     </form>
+
+    <button id="addAdminBtn" class="btn-add-admin">Agregar nuevo administrador</button>
   `;
 
     const listaContactos = document.getElementById("listaContactos");
@@ -609,11 +684,11 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         if (res.status === 401) {
-            alert("La sesión ha expirado. Inicia sesión nuevamente.");
-            localStorage.clear();
-            window.location.href = "/Frontend/modules/login.html";
-            return null;
-          }
+          alert("La sesión ha expirado. Inicia sesión nuevamente.");
+          localStorage.clear();
+          window.location.href = "/Frontend/modules/login.html";
+          return null;
+        }
 
         if (!res.ok) throw new Error("Error al obtener configuración");
         config = await res.json();
@@ -669,11 +744,11 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             if (res.status === 401) {
-            alert("La sesión ha expirado. Inicia sesión nuevamente.");
-            localStorage.clear();
-            window.location.href = "/Frontend/modules/login.html";
-            return null;
-          }
+              alert("La sesión ha expirado. Inicia sesión nuevamente.");
+              localStorage.clear();
+              window.location.href = "/Frontend/modules/login.html";
+              return null;
+            }
 
             if (!resp.ok) throw new Error("Error al eliminar el contacto.");
 
@@ -739,6 +814,11 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
+    document.getElementById("addAdminBtn").addEventListener("click", () => {
+      window.location.href = `/Frontend/modules/register.html?id=${config.idEmprendimiento}`;
+    });
+
+
     // =====================
     // Guardar cambios
     // =======================
@@ -767,11 +847,11 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         if (res.status === 401) {
-            alert("La sesión ha expirado. Inicia sesión nuevamente.");
-            localStorage.clear();
-            window.location.href = "/Frontend/modules/login.html";
-            return null;
-          }
+          alert("La sesión ha expirado. Inicia sesión nuevamente.");
+          localStorage.clear();
+          window.location.href = "/Frontend/modules/login.html";
+          return null;
+        }
 
 
         if (!res.ok) throw new Error("Error al guardar en el backend");
