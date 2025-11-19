@@ -521,8 +521,7 @@ btnDism.addEventListener("click", async () => {
         try {
           const res = await fetch(`${API_URL}/admin/material/crear`, {
             method: "POST",
-            headers: { "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json" },
+            headers: { "Authorization": `Bearer ${token}`},
             body: formData
           });
 
@@ -693,11 +692,11 @@ async function loadVentas() {
         }
 
         // 2. Cálculos matemáticos (FIX: Usamos || 0 en todas las reducciones)
-        const totalIngresos = ventas.reduce((acc, v) => acc + (v.totalGenerado || 0), 0);
-        const totalUnidades = ventas.reduce((acc, v) => acc + (v.cantidadVendida || 0), 0);
+        const totalIngresos = ventas.reduce((acc, v) => acc + (v.total || 0), 0);
+        const totalUnidades = ventas.reduce((acc, v) => acc + (v.cantidad || 0), 0);
         
         // Buscamos el valor máximo (FIX: Usamos || 0 al mapear)
-        const maxVenta = Math.max(...ventas.map(v => v.totalGenerado || 0));
+        const maxVenta = Math.max(...ventas.map(v => v.total || 0));
 
         // 3. Generar HTML
         // Tarjetas de resumen
@@ -718,16 +717,16 @@ async function loadVentas() {
     `;
 
         // Generar barras
-        const ventasOrdenadas = ventas.sort((a, b) => (b.totalGenerado || 0) - (a.totalGenerado || 0));
+        const ventasOrdenadas = ventas.sort((a, b) => (b.total || 0) - (a.total || 0));
 
         ventasOrdenadas.forEach(v => {
             // FIX: Usamos || 0 antes de calcular el porcentaje y antes de toFixed
-            const ingreso = v.totalGenerado || 0;
+            const ingreso = v.total || 0;
             const porcentaje = maxVenta === 0 ? 0 : (ingreso / maxVenta) * 100;
             
             html += `
             <div class="bar-row">
-              <div class="bar-label" title="${v.nombreProducto}">${v.nombreProducto}</div>
+              <div class="bar-label" title="${v.nombre}">${v.nombre}</div>
               <div class="bar-track">
                  <div class="bar-fill" style="width: ${porcentaje}%;"></div>
               </div>
@@ -747,14 +746,16 @@ async function loadVentas() {
                  <th style="padding:10px;">Producto</th>
                  <th style="padding:10px;">Cant.</th>
                  <th style="padding:10px;">Total</th>
+                 <th style="padding:10px;">Ganancia</th>
                </tr>
             </thead>
             <tbody>
                ${ventasOrdenadas.map(v => `
                  <tr style="border-bottom:1px solid #ddd;">
-                   <td style="padding:10px;">${v.nombreProducto}</td>
-                   <td style="padding:10px;">${v.cantidadVendida || 0}</td>
-                   <td style="padding:10px;">$${(v.totalGenerado || 0).toFixed(2)}</td> 
+                   <td style="padding:10px;">${v.nombre}</td>
+                   <td style="padding:10px;">${v.cantidad || 0}</td>
+                   <td style="padding:10px;">$${(v.total || 0).toFixed(2)}</td>
+                   <td style="padding:10px;">$${v.ganancia}</td> 
                  </tr>
                `).join('')}
             </tbody>
