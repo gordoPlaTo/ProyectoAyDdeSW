@@ -99,7 +99,6 @@ public class AdminController {
 
         String tipoArchivo = prod.imgProducto().getContentType();
         if (tipoArchivo == null || !tipoArchivo.startsWith("image/")){
-            //aca validamos el tipo de archivo para que sea una imagen
             throw  new IllegalArgumentException("El archivo ingresado debe ser una imagen valida");
         }
 

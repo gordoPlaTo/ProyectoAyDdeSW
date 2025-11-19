@@ -1049,7 +1049,7 @@ async function loadGestionVentas() {
     btnAgregar.addEventListener("click", async () => {
       const valor = inputContacto.value.trim();
       if (valor) {
-        config.contactos.push(valor);
+        //config.contactos.push(valor);
 
         try {
           const resp = await fetch(`${API_URL}/admin/contacto/new`, {
@@ -1103,7 +1103,7 @@ async function loadGestionVentas() {
         email: config.email
       };
       try {
-        const res = await fetch(`${API_URL}/emprendimiento/info/mod`, {
+        const res = await fetch(`${API_URL}/admin/emprendimiento/info/mod`, {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
@@ -1120,7 +1120,12 @@ async function loadGestionVentas() {
         }
 
 
-        if (!res.ok) throw new Error("Error al guardar en el backend");
+        if (!res.ok){
+          const resp = await res.text();
+          alert(resp);
+          throw new Error("Error al guardar en el backend");
+
+        }
         alert("Configuracion guardada correctamente");
 
         // Guarda copia local
