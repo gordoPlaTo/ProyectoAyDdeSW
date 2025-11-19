@@ -41,18 +41,22 @@ document.addEventListener("DOMContentLoaded", async () => {
       ? userData.urlImg
       : DEFAULT_IMG;
 
+    localStorage.setItem("urlPerfil",finalUrl);
+
     fperfil.innerHTML = `
       <img src="${finalUrl}" alt="Foto de perfil" id="userPic">
       <label for="uploadPic" class="uploadBtn">Cambiar foto</label>
       <input type="file" id="uploadPic" accept="image/*" hidden>
     `;
 
-    cambiarImagePerfil(finalUrl,API_URL,token);
-
     nombreElem.textContent = `${userData.nombre} ${userData.apellido}`;
     emailElem.textContent = `Email: ${userData.email || "No disponible"}`;
     direccionElem.textContent = `Dirección: ${userData.direccion || "No registrada"}`;
     dniElem.textContent =  `DNI: ${userData.dni || "No registrado"}`;
+
+    cambiarImagePerfil(finalUrl,API_URL,token);
+
+  
  
 
   } catch (err) {

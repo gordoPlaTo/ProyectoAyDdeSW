@@ -6,6 +6,7 @@ function toggleSidebar() {
 const productosContainer = document.querySelector(".product-container");
 
 document.addEventListener("DOMContentLoaded", () => {
+  const urlperfil = localStorage.getItem("urlPerfil");
 
   // =================
   // Obtener Productos
@@ -259,17 +260,8 @@ document.addEventListener("DOMContentLoaded", () => {
       localStorage.setItem("carrito", JSON.stringify(carrito));
 
       alert(`${nombre} agregado al carrito`);
-
-      // Si querés actualizar algún contador de carrito en pantalla, lo podés hacer acá
-      // updateCartBadge();
     });
   });
 });
 
-function updateCartBadge() {
-  const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
-  const totalItems = carrito.reduce((acc, item) => acc + item.cantidad, 0);
-  document.getElementById("cart-count").textContent = totalItems;
-}
 
-document.addEventListener("DOMContentLoaded", updateCartBadge);
