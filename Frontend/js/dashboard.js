@@ -172,6 +172,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (!productos || productos.length === 0) {
         productosContainer.innerHTML = "<p>No hay productos cargados aún.</p>";
+        productosContainer.innerHTML = `
+          <div class="product-card-vac">
+            <div class="text-vac1"></div>
+            <div class="img-vac"></div>
+            <div class="text-vac2"></div>
+            <div class="text-vac3"></div>
+            <div class="btn-vac"></div>
+          </div>`;
         return;
       }
 
@@ -445,6 +453,14 @@ btnDism.addEventListener("click", async () => {
 
         if (!materiales || materiales.length === 0) {
           materialesContainer.innerHTML = "<p>No hay materiales cargados aún.</p>";
+          materialesContainer.innerHTML = `
+          <div class="product-card-vac">
+            <div class="text-vac1"></div>
+            <div class="img-vac"></div>
+            <div class="text-vac2"></div>
+            <div class="text-vac3"></div>
+            <div class="btn-vac"></div>
+          </div>`;
           return;
         }
 

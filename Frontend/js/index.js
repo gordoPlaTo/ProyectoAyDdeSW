@@ -40,6 +40,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (!productos || productos.length === 0) {
         productosContainer.innerHTML = "<p>No hay productos cargados aún.</p>";
+        productosContainer.innerHTML = `
+          <div class="product-card-vac">
+            <div class="text-vac1"></div>
+            <div class="img-vac"></div>
+            <div class="text-vac2"></div>
+            <div class="text-vac3"></div>
+            <div class="btn-vac"></div>
+          </div>`;
+    
         return;
       }
 
@@ -102,7 +111,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     } catch (error) {
       console.error("Error al obtener productos:", error);
-      productosContainer.innerHTML = "<p style='color:red;'>Error al cargar los productos. Revisa consola o el backend.</p>";
+      productosContainer.innerHTML = `
+      <div class="product-card-vac">
+        <div class="text-vac1"></div>
+        <div class="img-vac"></div>
+        <div class="text-vac2"></div>
+        <div class="text-vac3"></div>
+        <div class="btn-vac"></div>
+      </div>`;
     
     
     }
