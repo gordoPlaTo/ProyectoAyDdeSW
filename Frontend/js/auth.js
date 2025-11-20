@@ -41,7 +41,7 @@ async function smartRedirectToIndex() {
 
 
 const API_URL = "http://localhost:8080/api/auth";
-const BASE_PATH = "/Frontend"; 
+const BASE_PATH = "/Frontend";
 
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -55,6 +55,10 @@ document.addEventListener("DOMContentLoaded", () => {
         const idEmprendimiento = params.get("id");
         const roleParam = params.get("role") || "CLIENTE";
 
+        const endpoint =
+            roleParam === "ADMIN"
+                ? `${API_URL}/registerAdmin`
+                : `${API_URL}/register`;
 
         registerForm.addEventListener("submit", async (e) => {
             e.preventDefault();
@@ -66,6 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 alert("Las contraseñas no coinciden!");
                 return;
             }
+
             const ATerms = document.getElementById("terms");
             const data = {
                 nombre: document.getElementById("name").value,
@@ -75,34 +80,45 @@ document.addEventListener("DOMContentLoaded", () => {
                 direccion: document.getElementById("direction").value,
                 email: document.getElementById("email").value,
                 password: password,
-                acceptTerms: ATerms.checked,
-                idEmprendimiento: idEmprendimiento,
-                rol: roleParam
+                acceptTerms: ATerms ? ATerms.checked : true,
+                idEmprendimiento: idEmprendimiento
             };
+
             try {
-                const res = await fetch(`${API_URL}/register`, {
+                const token = localStorage.getItem("token");
+                const headers = { "Content-Type": "application/json" };
+
+                if (roleParam === "ADMIN") {
+                    headers["Authorization"] = `Bearer ${token}`;
+                }
+
+                const res = await fetch(endpoint, {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
+                    headers,
                     body: JSON.stringify(data)
                 });
 
-                if (res.ok) {
-                    alert("Registro exitoso. A continuación inicie sesión.");
-                    window.location.href = "login.html";
-                } else {
-                    alert("Error en el registro!");
+                if (!res.ok) {
                     const errorHttp = await res.text();
-                    console.error(errorHttp);
                     alert(errorHttp);
-
+                    return;
                 }
+
+                if (roleParam === "ADMIN") {
+                    alert("Administrador creado correctamente");
+                    window.location.href = "../modules/dashboard.html";
+                } else {
+                    alert("Cuenta creada, ahora inicie sesión");
+                    window.location.href = "login.html";
+                }
+
             } catch (error) {
                 console.error("Error al conectar con el servidor:", error);
                 alert("Error al conectar con el servidor.");
             }
-
         });
     }
+
 
     if (loginForm) {
         loginForm.addEventListener("submit", async (e) => {
