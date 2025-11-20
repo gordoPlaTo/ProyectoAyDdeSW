@@ -26,3 +26,8 @@ INSERT INTO IVA (categoria, porcentaje) VALUES
 ----------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------
+
+#DB local con pgAdmin por si se cae Neon
+#spring.datasource.url=jdbc:postgresql://localhost:5432/ProyFinal
+#spring.datasource.username=postgres
+#spring.datasource.password=${DB_LOCAL_PASS}

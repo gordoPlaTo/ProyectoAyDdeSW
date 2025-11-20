@@ -290,4 +290,13 @@ public class AdminController {
         );
         return ResponseEntity.ok(response);
     }
+
+
+    //-----------------------------------IVA--------------------------------------
+    @GetMapping("iva/obtenerTodos")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<IVA>> obtenerIVA(){
+        return ResponseEntity.status(HttpStatus.OK).body(ivaService.obtenerTodos());
+    }
+
 }

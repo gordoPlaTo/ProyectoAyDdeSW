@@ -16,4 +16,10 @@ public class IvaService implements IIvaService{
     public List<IVA> obtenerIva() {
         return ivaRepository.findAll();
     }
+
+    @Override
+    public List<IVA> obtenerTodos() {
+        return ivaRepository.findAll();
+    }
+
 }

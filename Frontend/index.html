@@ -16,19 +16,24 @@
             <script>
                 const token = localStorage.getItem("token");
                 const userAct = document.querySelector(".user-actions");
+                const urlImg = localStorage.getItem("urlPerfil");
+                const defaultImg = "/Frontend/img/userdefault.jpg";
+
                 if(!token){       
                     userAct.innerHTML = `
                     <a href="/Frontend/modules/register.html" class="user-link">Registrarse</a>
                     <a href="/Frontend/modules/login.html" class="user-link">Iniciar sesión</a>`     
-                }
+                }else{
+                    const imgToShow =
+                        urlImg && urlImg !== "null" && urlImg.trim() !== ""
+                        ? urlImg
+                        : defaultImg;
 
-                const urlImg = localStorage.getItem("urlPerfil");
-                if(token){
                     userAct.innerHTML = `
-                    <a href="/Frontend/modules/profile.html">
-                        <img src="${urlImg}" alt="Usuario" class="user-icon" />
-                    </a>
-                    ` 
+                        <a href="/Frontend/modules/profile.html">
+                            <img src="${imgToShow}" alt="Usuario" class="user-icon" />
+                        </a>
+                    `;
                 }
 
             </script>

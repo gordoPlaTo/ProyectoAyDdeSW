@@ -130,6 +130,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 localStorage.setItem("email", result.email);
                 localStorage.setItem("message", result.message)
                 localStorage.setItem("token", result.token);
+                localStorage.setItem("urlPerfil", result.urlPerfil);
 
                 const payload = JSON.parse(atob(token.split(".")[1]));
                 const authorities = payload.authorities;

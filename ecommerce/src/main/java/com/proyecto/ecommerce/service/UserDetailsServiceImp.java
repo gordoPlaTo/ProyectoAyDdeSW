@@ -101,7 +101,11 @@ public class UserDetailsServiceImp implements UserDetailsService {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String accesToken = jwtUtils.createToken(authentication);
-        AuthResponseDTO authResponseDTO = new AuthResponseDTO(email,"Autenticacion Realizada con Exito", accesToken, true);
+
+        Usuario user = userRepository.findUserEntityByEmail(email)
+                .orElseThrow(() -> new NoSuchElementException("No se encontro la cuenta con el email que especificaste."));
+        AuthResponseDTO authResponseDTO = new AuthResponseDTO(email,user.getUrlPerfil(),
+                "Autenticacion Realizada con Exito", accesToken, true);
         return authResponseDTO;
 
     }

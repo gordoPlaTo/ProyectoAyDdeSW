@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonPropertyOrder
 public record AuthResponseDTO (String email,
+                               String urlPerfil,
                                String message,
                                String token,
                                boolean status) {

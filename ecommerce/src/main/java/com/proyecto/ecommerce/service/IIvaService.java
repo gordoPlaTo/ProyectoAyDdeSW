@@ -7,4 +7,6 @@ import java.util.List;
 public interface IIvaService {
 
     List<IVA> obtenerIva();
+
+    List<IVA> obtenerTodos();
 }
