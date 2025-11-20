@@ -1068,8 +1068,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     document.getElementById("addAdminBtn").addEventListener("click", () => {
-      window.location.href = `/Frontend/modules/register.html?id=${config.idEmprendimiento}`;
+      window.location.href = "/Frontend/modules/register.html?role=ADMIN";
     });
+
 
 
 

@@ -19,14 +19,14 @@ public record InfoEmpRequestDTO(
                 regexp = "^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\\s@._\\-=',()]+$",
                 message = "Solo se permiten letras, espacios, guiones, numeros y apóstrofes."
         )
-        @Size(max = 120, message = "Se permiten como máximo 120 caracteres en este campo")
+        @Size(max = 2500, message = "Se permiten como máximo 2500 caracteres en este campo")
         String descripcion,
 
         @Pattern(
                 regexp = "^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\\s@._\\-=',()]+$",
                 message = "Solo se permiten letras, espacios, guiones, numeros y apóstrofes."
         )
-        @Size(max = 120, message = "Se permiten como máximo 120 caracteres en este campo")
+        @Size(max = 650, message = "Se permiten como máximo 650 caracteres en este campo")
         String direccion,
 
         @Pattern(

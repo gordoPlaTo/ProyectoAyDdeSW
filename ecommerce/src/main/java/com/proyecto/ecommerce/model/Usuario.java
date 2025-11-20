@@ -53,7 +53,7 @@ public class Usuario {
     @Column(nullable = false)
     private LocalDate fechaNac;
 
-    @Column(nullable = false, length = 120 )
+    @Column(nullable = false, length = 650 )
     private String direccion;
 
     @Column(name = "imgPerfil")

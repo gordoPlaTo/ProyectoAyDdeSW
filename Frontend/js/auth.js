@@ -53,6 +53,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const params = new URLSearchParams(window.location.search);
         const idEmprendimiento = params.get("id");
+        const roleParam = params.get("role") || "CLIENTE";
 
 
         registerForm.addEventListener("submit", async (e) => {
@@ -75,8 +76,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 email: document.getElementById("email").value,
                 password: password,
                 acceptTerms: ATerms.checked,
-                idEmprendimiento: idEmprendimiento
-
+                idEmprendimiento: idEmprendimiento,
+                rol: roleParam
             };
             try {
                 const res = await fetch(`${API_URL}/register`, {
@@ -92,6 +93,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     alert("Error en el registro!");
                     const errorHttp = await res.text();
                     console.error(errorHttp);
+                    alert(errorHttp);
 
                 }
             } catch (error) {
