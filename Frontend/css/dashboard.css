@@ -238,9 +238,31 @@ body.darkMode button {
   overflow: hidden;
   text-align: center;
   transition: transform 0.2s ease;
-
-
 }
+
+.iva-lista {
+  margin-top: 10px;
+  padding: 10px;
+  border: 1px solid #aaa;
+  background: #f8f8f8;
+  border-radius: 6px;
+  max-width: 350px;
+  font-size: 0.88rem;
+}
+
+.iva-lista h4 {
+  margin-bottom: 5px;
+}
+
+.iva-lista ul {
+  padding-left: 15px;
+  list-style: none;
+}
+
+.iva-lista ul li {
+  margin: 3px 0;
+}
+
 
 .producto-card img {
   width: 100%;

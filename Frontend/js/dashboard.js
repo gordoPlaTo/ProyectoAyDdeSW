@@ -64,6 +64,31 @@ document.addEventListener("DOMContentLoaded", () => {
         <label>ID de IVA:</label>
         <input type="number" id="idIva" min="1" required>
 
+        <div class="iva-lista">
+          <h4>Tabla de IVA (Referencia)</h4>
+          <ul>
+            <li><strong>1</strong> - Exento (0.00%)</li>
+            <li><strong>2</strong> - No Gravado / Exportaciones (0.00%)</li>
+            <li><strong>3</strong> - General 21% - Productos de consumo general</li>
+            <li><strong>4</strong> - Reducido 10.5% - Alimentos básicos y medicamentos</li>
+            <li><strong>5</strong> - Incrementado 27% - Servicios y energía eléctrica</li>
+            <li><strong>6</strong> - Servicios de telecomunicaciones (27%)</li>
+            <li><strong>7</strong> - Transporte público o escolar (10.5%)</li>
+            <li><strong>8</strong> - Servicios de agua y cloacas (10.5%)</li>
+            <li><strong>9</strong> - Medicamentos y productos farmacéuticos (10.5%)</li>
+            <li><strong>10</strong> - Alimentos de primera necesidad (10.5%)</li>
+            <li><strong>11</strong> - Productos de lujo o electrónica (21%)</li>
+            <li><strong>12</strong> - Automóviles y motovehículos (21%)</li>
+            <li><strong>13</strong> - Educación privada (0%)</li>
+            <li><strong>14</strong> - Salud pública (0%)</li>
+            <li><strong>15</strong> - Servicios financieros y bancarios (21%)</li>
+            <li><strong>16</strong> - Construcción y obras públicas (10.5%)</li>
+            <li><strong>17</strong> - Importaciones (21%)</li>
+            <li><strong>18</strong> - Reparaciones y mantenimiento general (21%)</li>
+            <li><strong>19</strong> - Software y servicios digitales (21%)</li>
+          </ul>
+        </div>
+
         <label>Imágen representativa</label>
         <input type="file" id="image" name="image" accept="image/*" required></input>
 
@@ -95,7 +120,6 @@ document.addEventListener("DOMContentLoaded", () => {
           method: "POST",
           headers: {
             "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json"
           },
           body: formData
         });
