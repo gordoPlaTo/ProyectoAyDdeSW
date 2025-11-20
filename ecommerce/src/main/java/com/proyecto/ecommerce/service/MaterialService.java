@@ -83,7 +83,7 @@ public class MaterialService implements IMaterialService{
     @Override
     public void aumentarStock(Long id, int stock) {
         Material mat = this.obtenerMaterialById(id);
-        mat.setStock(mat.getStock() - stock);
+        mat.setStock(mat.getStock() + stock);
         materialRepository.save(mat);
     }
 

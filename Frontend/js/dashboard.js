@@ -265,10 +265,10 @@ document.addEventListener("DOMContentLoaded", () => {
             "Authorization": `Bearer ${token}`
           },
           body: JSON.stringify(
-            { 
+            {
               nombre: nuevoNombre,
               descripcion: nuevaDescripcion,
-              precio: nuevoPrecio 
+              precio: nuevoPrecio
             })
         });
 
@@ -279,7 +279,7 @@ document.addEventListener("DOMContentLoaded", () => {
           return null;
         }
 
-        if (!resPrecio.ok){
+        if (!resPrecio.ok) {
           const er = await resPrecio.text();
           alert(er);
           throw new Error("Error al modificar precio");
@@ -296,59 +296,61 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 
-btnAum.addEventListener("click", async () => {
-  const cantidad = parseInt(document.getElementById("editStock").value);
+    btnAum.addEventListener("click", async () => {
+      const cantidad = parseInt(document.getElementById("editStock").value);
 
-  if (!cantidad || cantidad <= 0) return alert("Ingrese una cantidad válida");
+      if (!cantidad || cantidad <= 0) return alert("Ingrese una cantidad válida");
 
-  try {
-    const res = await fetch(`${API_URL}/admin/producto/aumentar/${producto.idProducto}?stock=${cantidad}`, {
-      method: "PATCH",
-      headers: { "Authorization": `Bearer ${token}` },
+      try {
+        const res = await fetch(`${API_URL}/admin/producto/aumentar/${producto.idProducto}?stock=${cantidad}`, {
+          method: "PATCH",
+          headers: { "Authorization": `Bearer ${token}` },
+        });
+
+        if (!res.ok) throw new Error(await res.text());
+
+        alert("Stock aumentado correctamente");
+        modalOverlay.remove();
+        loadProductList();
+      } catch (error) {
+        console.error(error);
+        alert("Error al aumentar stock");
+      }
     });
 
-    if (!res.ok) throw new Error(await res.text());
+    btnDism.addEventListener("click", async () => {
+      const cantidad = parseInt(document.getElementById("editStock").value);
 
-    alert("Stock aumentado correctamente");
-    modalOverlay.remove();
-    loadProductList();
-  } catch (error) {
-    console.error(error);
-    alert("Error al aumentar stock");
-  }
-});
+      if (!cantidad || cantidad <= 0) return alert("Ingrese una cantidad válida");
 
-btnDism.addEventListener("click", async () => {
-  const cantidad = parseInt(document.getElementById("editStock").value);
+      try {
+        const res = await fetch(`${API_URL}/admin/producto/reducir/${producto.idProducto}?stock=${cantidad}`, {
+          method: "PATCH",
+          headers: { "Authorization": `Bearer ${token}` },
+        });
 
-  if (!cantidad || cantidad <= 0) return alert("Ingrese una cantidad válida");
+        if (!res.ok) {
+          throw new Error(await res.text());
+        }
 
-  try {
-    const res = await fetch(`${API_URL}/admin/producto/reducir/${producto.idProducto}?stock=${cantidad}`, {
-      method: "PATCH",
-      headers: { "Authorization": `Bearer ${token}` },
-    });
-
-    if (!res.ok){
-      throw new Error(await res.text());
-    } 
-
-    alert("Stock disminuido correctamente");
-    modalOverlay.remove();
-    loadProductList();
-  } catch (error) {
-    console.error(error);
-    alert("Error al disminuir stock");
-  }
-})
+        alert("Stock disminuido correctamente");
+        modalOverlay.remove();
+        loadProductList();
+      } catch (error) {
+        console.error(error);
+        alert("Error al disminuir stock");
+      }
+    })
 
     // Habilitar o Deshabilitar un Producto
     btnDeshabilitar.addEventListener("click", async () => {
       try {
         const res = await fetch(`${API_URL}/admin/producto/estado/${producto.idProducto}`, {
           method: "PATCH",
-          headers: { "Content-Type": "application/json",
-                      "Authorization": `Bearer ${token}` }
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          }
         });
 
         if (res.status === 401) {
@@ -411,8 +413,10 @@ btnDism.addEventListener("click", async () => {
     async function loadMaterialList() {
       try {
         const res = await fetch(`${API_URL}/admin/material/obtenerTodos`, {
-          headers: { "Authorization": `Bearer ${token}`,
-                    "Content-Type": "application/json" }
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+          }
         });
 
         if (res.status === 401) {
@@ -499,7 +503,7 @@ btnDism.addEventListener("click", async () => {
         try {
           const res = await fetch(`${API_URL}/admin/material/crear`, {
             method: "POST",
-            headers: { "Authorization": `Bearer ${token}`},
+            headers: { "Authorization": `Bearer ${token}` },
             body: formData
           });
 
@@ -528,12 +532,27 @@ btnDism.addEventListener("click", async () => {
     }
 
     async function modificarStock(id) {
-      const cantidad = prompt("Ingrese cantidad (use signo - para reducir):");
-      if (!cantidad) return;
+      let cantidad = prompt("Ingrese cantidad:\n(Use signo '-' para restar stock)");
 
-      const endpoint = cantidad.startsWith("-")
-        ? `${API_URL}/admin/material/reducir/${id}?stock=${Math.abs(cantidad)}`
-        : `${API_URL}/admin/material/aumentar/${id}?stock=${cantidad}`;
+      if (cantidad === null) return; // usuario canceló
+
+      cantidad = cantidad.trim();
+
+      if (cantidad === "" || isNaN(cantidad)) {
+        alert("Debe ingresar un número válido.");
+        return;
+      }
+
+      const valor = Number(cantidad);
+
+      if (valor === 0) {
+        alert("La cantidad no puede ser 0.");
+        return;
+      }
+
+      const endpoint = valor < 0
+        ? `${API_URL}/admin/material/reducir/${id}?stock=${Math.abs(valor)}`
+        : `${API_URL}/admin/material/aumentar/${id}?stock=${valor}`;
 
       try {
         const res = await fetch(endpoint, {
@@ -545,21 +564,23 @@ btnDism.addEventListener("click", async () => {
           alert("La sesión ha expirado. Inicia sesión nuevamente.");
           localStorage.clear();
           window.location.href = "/Frontend/modules/login.html";
-          return null;
+          return;
         }
 
         if (res.ok) {
           alert("Stock modificado correctamente");
           loadMaterialList();
         } else {
-          alert("Error al modificar stock");
           const er = await res.text();
-          console.log(er);
+          alert("Error al modificar stock:\n" + er);
         }
+
       } catch (error) {
         console.error(error);
+        alert("Error de conexión con el servidor.");
       }
     }
+
 
     async function eliminarMaterial(id) {
       if (!confirm("¿Seguro que deseas eliminar este material?")) return;
@@ -603,19 +624,27 @@ btnDism.addEventListener("click", async () => {
       .replace(/'/g, "&#039;");
   }
 
-async function loadVentas() {
+  async function loadVentas() {
     const mainContent = document.getElementById("mainContent");
     const token = localStorage.getItem("token");
 
     mainContent.innerHTML = `
     <style>
-      /* Estilos simples para el gráfico CSS */
       .stats-cards {display: flex; gap: 20px; margin-bottom: 30px; }
+      .darkMode .stats-cards {background: #2b2b2bff;}
+
       .stat-card { flex: 1; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); text-align: center; }
-      .stat-value { font-size: 2em; font-weight: bold; color: #333; }
-      .stat-label { color: #666; font-size: 0.9em; text-transform: uppercase; }
+      .darkMode .stat-card {background: #2b2b2bff;}
+
+      .stat-value { font-size: 2em; font-weight: bold; color: #000000ff; }
+      .darkMode .stat-value{ color: #f0f0f0;}
+
+      .stat-label { color: #000000ff; font-size: 0.9em; text-transform: uppercase; }
+      .darkMode .stat-label{ color: #f0f0f0;}
       
       .chart-container { background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 30px; }
+      .darkMode .chart-container { background: #2b2b2bff;}
+      
       .bar-row { display: flex; align-items: center; margin-bottom: 15px; }
       .bar-label { width: 150px; font-weight: bold; font-size: 0.9em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
       .bar-track { flex: 1; background: #f0f0f0; height: 25px; border-radius: 4px; margin: 0 15px; position: relative; }
@@ -632,45 +661,45 @@ async function loadVentas() {
     const contentDiv = document.getElementById("ventasContent");
 
     try {
-        const res = await fetch(`${API_URL}/compras/pedido/ventasRealizadas`, {
-            method: "GET",
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json"
-            }
-        });
-
-        if (res.status === 401) {
-            alert("La sesión ha expirado.");
-            localStorage.clear();
-            window.location.href = "../modules/login.html";
-            return;
+      const res = await fetch(`${API_URL}/compras/pedido/ventasRealizadas`, {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
         }
+      });
 
-        if (!res.ok) {
-            contentDiv.innerHTML = `<p style="color:red;">Error al conectar con el servidor.</p>`;
-            const er = res.text();
-            console.log(er);
-            return;
-        }
+      if (res.status === 401) {
+        alert("La sesión ha expirado.");
+        localStorage.clear();
+        window.location.href = "../modules/login.html";
+        return;
+      }
 
-        const ventas = await res.json();
+      if (!res.ok) {
+        contentDiv.innerHTML = `<p style="color:red;">Error al conectar con el servidor.</p>`;
+        const er = res.text();
+        console.log(er);
+        return;
+      }
 
-        if (!ventas || ventas.length === 0) {
-            contentDiv.innerHTML = `<p>No hay ventas registradas para generar estadísticas.</p>`;
-            return;
-        }
+      const ventas = await res.json();
 
-        const totalIngresos = ventas.reduce((acc, v) => acc + (v.total || 0), 0);
-        const totalUnidades = ventas.reduce((acc, v) => acc + (v.cantidad || 0), 0);
-        
-        const maxVenta = Math.max(...ventas.map(v => v.total || 0));
+      if (!ventas || ventas.length === 0) {
+        contentDiv.innerHTML = `<p>No hay ventas registradas para generar estadísticas.</p>`;
+        return;
+      }
+
+      const totalIngresos = ventas.reduce((acc, v) => acc + (v.total || 0), 0);
+      const totalUnidades = ventas.reduce((acc, v) => acc + (v.cantidad || 0), 0);
+
+      const maxVenta = Math.max(...ventas.map(v => v.total || 0));
 
 
-        let html = `
+      let html = `
         <div class="stats-cards">
           <div class="stat-card">
-             <div class="stat-value">$${totalIngresos.toLocaleString('es-AR', {minimumFractionDigits: 2})}</div>
+             <div class="stat-value">$${totalIngresos.toLocaleString('es-AR', { minimumFractionDigits: 2 })}</div>
              <div class="stat-label">Ingresos Totales</div>
           </div>
           <div class="stat-card">
@@ -683,13 +712,13 @@ async function loadVentas() {
           <h3>Top Ventas (por Ingresos)</h3>
     `;
 
-        const ventasOrdenadas = ventas.sort((a, b) => (b.total || 0) - (a.total || 0));
+      const ventasOrdenadas = ventas.sort((a, b) => (b.total || 0) - (a.total || 0));
 
-        ventasOrdenadas.forEach(v => {
-            const ingreso = v.total || 0;
-            const porcentaje = maxVenta === 0 ? 0 : (ingreso / maxVenta) * 100;
-            
-            html += `
+      ventasOrdenadas.forEach(v => {
+        const ingreso = v.total || 0;
+        const porcentaje = maxVenta === 0 ? 0 : (ingreso / maxVenta) * 100;
+
+        html += `
             <div class="bar-row">
               <div class="bar-label" title="${v.nombre}">${v.nombre}</div>
               <div class="bar-track">
@@ -698,15 +727,15 @@ async function loadVentas() {
               <div class="bar-value">$${ingreso.toFixed(0)}</div>
             </div>
             `;
-        });
+      });
 
-        html += `</div>`; 
+      html += `</div>`;
 
-        html += `
+      html += `
           <h3>Detalle Completo</h3>
           <table class="tabla-ventas" style="width:100%; border-collapse:collapse; margin-top:10px;">
             <thead>
-               <tr style="background:#eee; text-align:left;">
+               <tr style="background:#2b2b2bff; text-align:left;">
                  <th style="padding:10px;">Producto</th>
                  <th style="padding:10px;">Cant.</th>
                  <th style="padding:10px;">Total</th>
@@ -726,52 +755,52 @@ async function loadVentas() {
           </table>
         `;
 
-        contentDiv.innerHTML = html;
+      contentDiv.innerHTML = html;
 
     } catch (err) {
-        console.error("Error:", err);
-        contentDiv.innerHTML = `<p style="color:red;">Ocurrió un error inesperado al cargar las ventas.</p>`;
+      console.error("Error:", err);
+      contentDiv.innerHTML = `<p style="color:red;">Ocurrió un error inesperado al cargar las ventas.</p>`;
     }
-}
+  }
 
 
-async function loadGestionVentas() {
-  mainContent.innerHTML = `
+  async function loadGestionVentas() {
+    mainContent.innerHTML = `
     <h2>Gestionar Ventas</h2>
     <div id="gestionVentasContainer" class="ventas-container">
       <p>Cargando pedidos...</p>
     </div>
   `;
 
-  const cont = document.getElementById("gestionVentasContainer");
-  const token = localStorage.getItem("token");
+    const cont = document.getElementById("gestionVentasContainer");
+    const token = localStorage.getItem("token");
 
-  try {
-    const res = await fetch(`${API_URL}/compras/pedido/enTramite`, {
-      method: "GET",
-      headers: { "Authorization": `Bearer ${token}` }
-    });
+    try {
+      const res = await fetch(`${API_URL}/compras/pedido/enTramite`, {
+        method: "GET",
+        headers: { "Authorization": `Bearer ${token}` }
+      });
 
-    if (res.status === 401) {
-      alert("La sesión ha expirado. Inicia sesión nuevamente.");
-      localStorage.clear();
-      window.location.href = "/Frontend/modules/login.html";
-      return;
-    }
+      if (res.status === 401) {
+        alert("La sesión ha expirado. Inicia sesión nuevamente.");
+        localStorage.clear();
+        window.location.href = "/Frontend/modules/login.html";
+        return;
+      }
 
-    if (!res.ok) {
-      cont.innerHTML = `<p style="color:red;">Error al obtener pedidos.</p>`;
-      return;
-    }
+      if (!res.ok) {
+        cont.innerHTML = `<p style="color:red;">Error al obtener pedidos.</p>`;
+        return;
+      }
 
-    const pedidos = await res.json();
+      const pedidos = await res.json();
 
-    if (!pedidos || pedidos.length === 0) {
-      cont.innerHTML = "<p>No hay pedidos pendientes.</p>";
-      return;
-    }
+      if (!pedidos || pedidos.length === 0) {
+        cont.innerHTML = "<p>No hay pedidos pendientes.</p>";
+        return;
+      }
 
-    cont.innerHTML = pedidos.map(p => `
+      cont.innerHTML = pedidos.map(p => `
       <div class="pedido-card-admin" data-id="${p.id}">
         <h3>Pedido #${p.id}</h3>
 
@@ -784,9 +813,9 @@ async function loadGestionVentas() {
         <p><strong>Nombre:</strong> ${p.nombre ?? "N/A"}</p>
         <p><strong>Email:</strong> ${p.email ?? "N/A"}</p>
 
-        ${p.urlComprobante 
-            ? `<p><a href="${p.urlComprobante}" target="_blank">Ver comprobante</a></p>`
-            : `<p style="color:red;">Sin comprobante</p>`
+        ${p.urlComprobante
+          ? `<p><a href="${p.urlComprobante}" target="_blank">Ver comprobante</a></p>`
+          : `<p style="color:red;">Sin comprobante</p>`
         }
 
         <div class="acciones-admin">
@@ -797,51 +826,52 @@ async function loadGestionVentas() {
     `).join("");
 
 
-    document.querySelectorAll(".btn-completar").forEach(btn => {
-      btn.addEventListener("click", async () => {
-        const id = btn.dataset.id;
-        const email = btn.dataset.email;
+      document.querySelectorAll(".btn-completar").forEach(btn => {
+        btn.addEventListener("click", async () => {
+          const id = btn.dataset.id;
+          const email = btn.dataset.email;
 
-        if (!confirm("Marcar este pedido como COMPLETADO?")) return;
+          if (!confirm("Marcar este pedido como COMPLETADO?")) return;
 
-        try {
-          const res = await fetch(`${API_URL}/compras/pedido/completarPedido`, {
-            method: "PATCH",
-            headers: { 
-              "Content-Type": "application/json",
-              "Authorization": `Bearer ${token}` },
+          try {
+            const res = await fetch(`${API_URL}/compras/pedido/completarPedido`, {
+              method: "PATCH",
+              headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+              },
 
-            body: JSON.stringify({
-              id:id, 
-              email:email
-            })
-          });
+              body: JSON.stringify({
+                id: id,
+                email: email
+              })
+            });
 
-          if (!res.ok) {
-            const msg = await res.text();
-            alert("Error:\n" + msg);
-            return;
+            if (!res.ok) {
+              const msg = await res.text();
+              alert("Error:\n" + msg);
+              return;
+            }
+
+            alert("Pedido completado correctamente.");
+            loadGestionVentas();
+
+          } catch (err) {
+            console.error(err);
+            alert("Error al conectar con el servidor");
           }
-
-          alert("Pedido completado correctamente.");
-          loadGestionVentas();
-
-        } catch (err) {
-          console.error(err);
-          alert("Error al conectar con el servidor");
-        }
+        });
       });
-    });
 
 
-    document.querySelectorAll(".btn-detalle").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const id = btn.dataset.id;
-        const pedido = pedidos.find(x => x.id == id);
+      document.querySelectorAll(".btn-detalle").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const id = btn.dataset.id;
+          const pedido = pedidos.find(x => x.id == id);
 
-        const modal = document.createElement("div");
-        modal.classList.add("modal-overlay");
-        modal.innerHTML = `
+          const modal = document.createElement("div");
+          modal.classList.add("modal-overlay");
+          modal.innerHTML = `
           <div class="modal">
             <h3>Detalle del pedido #${pedido.id}</h3>
 
@@ -862,16 +892,16 @@ async function loadGestionVentas() {
           </div>
         `;
 
-        document.body.appendChild(modal);
-        modal.querySelector(".btn-close").addEventListener("click", () => modal.remove());
+          document.body.appendChild(modal);
+          modal.querySelector(".btn-close").addEventListener("click", () => modal.remove());
+        });
       });
-    });
 
-  } catch (err) {
-    console.error(err);
-    cont.innerHTML = "<p style='color:red;'>Error de conexión.</p>";
+    } catch (err) {
+      console.error(err);
+      cont.innerHTML = "<p style='color:red;'>Error de conexión.</p>";
+    }
   }
-}
 
 
   function loadConfiguracion() {
@@ -1027,7 +1057,7 @@ async function loadGestionVentas() {
 
           if (!resp.ok) throw new Error("Error al guardar el nuevo contacto");
           alert("Se completo la carga");
-          
+
         } catch (error) {
           console.warn(error);
         }
@@ -1075,7 +1105,7 @@ async function loadGestionVentas() {
         }
 
 
-        if (!res.ok){
+        if (!res.ok) {
           const resp = await res.text();
           alert(resp);
           throw new Error("Error al guardar en el backend");
